@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(quarto:*)",
+      "Bash(google-chrome --headless:*)",
+      "Bash(source ~/software/manim/.venv/bin/activate:*)",
+      "Bash(manim:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(ffprobe:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(ls:*)",
+      "Bash(du:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(for :*)",
+      "Bash(jq:*)",
+      "WebSearch"
+    ]
+  }
+}

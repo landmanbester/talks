@@ -16,5 +16,8 @@ media/
 # Packaged skill (regenerate with package_skill.py)
 *.skill
 
+# Local Claude Code settings (personal overrides, not shared)
+.claude/settings.local.json
+
 # Source PDFs from Canva (large binaries, not version-controlled)
 reference_pdfs/
