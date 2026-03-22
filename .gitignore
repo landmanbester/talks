@@ -1,0 +1,20 @@
+# Rendered outputs
+*_files/
+*.html
+!templates/*.html
+
+# Quarto cache
+.quarto/
+_freeze/
+
+# Manim render intermediates
+media/
+
+# OS files
+.DS_Store
+
+# Packaged skill (regenerate with package_skill.py)
+*.skill
+
+# Source PDFs from Canva (large binaries, not version-controlled)
+reference_pdfs/
