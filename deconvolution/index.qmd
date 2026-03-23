@@ -1,7 +1,7 @@
 ---
 title: "Deconvolution"
 author: "Landman Bester"
-date: "19 March 2026"
+date: today
 institute: "AIMS South Africa"
 format:
   revealjs:

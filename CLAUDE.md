@@ -16,9 +16,9 @@ talks/
 │       ├── sarao-nrf.png           # Shared logos
 │       ├── aims.png
 │       └── meerkat-milkyway.jpg    # Standard title slide background
-├── YYYY-MM-DD-talk-name/
+├── talk-name/
 │   ├── index.qmd                   # The presentation
-│   ├── custom.css                  # Optional per-talk CSS overrides
+│   ├── custom.css                  # Per-talk CSS overrides (scrollbar fix)
 │   └── images/                     # Images for this talk (copy shared assets here)
 └── ...
 ```
@@ -39,6 +39,8 @@ The skill contains:
 - **scripts/** — `scaffold_talk.py` for creating a new talk directory
 
 Key conventions:
+- **Directory naming** — use descriptive slugs without dates (e.g. `stimela-fundamentals/`, not `2025-10-01-stimela-fundamentals/`)
+- **Dynamic date** — always use `date: today` in YAML front matter (renders the current date at build time). Never hard-code dates
 - Theme path from a talk: `../templates/dark-academic.scss`
 - **No footer** — omit `footer:` entirely; it takes up too much space on dense slides
 - **Standard title background**: copy `../assets/logos/meerkat-milkyway.jpg` to `images/` and set `data-background-image: images/meerkat-milkyway.jpg` with `data-background-opacity: "0.5"` in `title-slide-attributes`
@@ -51,7 +53,7 @@ Key conventions:
 ### 2. Render
 
 ```bash
-cd talks/YYYY-MM-DD-talk-name
+cd talks/talk-name
 quarto preview index.qmd
 ```
 
