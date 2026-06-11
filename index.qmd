@@ -1,0 +1,18 @@
+---
+title: "Talks"
+format:
+  html:
+    theme: darkly
+listing:
+  contents:
+    - "*/index.qmd"
+  type: table
+  fields: [title, institute]
+  field-display-names:
+    institute: "Venue"
+  sort: "title"
+  sort-ui: false
+  filter-ui: false
+---
+
+Quarto revealjs presentations. Click a title to open the slides.

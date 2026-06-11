@@ -21,3 +21,8 @@ media/
 
 # Source PDFs from Canva (large binaries, not version-controlled)
 reference_pdfs/
+
+/.quarto/
+
+# Website project output
+/_site/

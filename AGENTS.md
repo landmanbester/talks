@@ -13,6 +13,8 @@ Prioritize semantic structure, reproducible visualizations, and clean Markdown o
 ```
 talks/
 ├── AGENTS.md / CLAUDE.md (symlink)
+├── _quarto.yml                     # Website project: renders all talks + listing into _site/
+├── index.qmd                       # Listing page of all talks
 ├── .claude/skills/
 │   ├── quarto-revealjs/            # Scaffolding + porting skill (references, examples, scripts)
 │   ├── manim-composer/             # Plan 3b1b-style animations (use BEFORE writing manim code)
@@ -73,11 +75,19 @@ The skill contains:
 
 ### 2. Render and preview
 
+The repo root is a Quarto website project (`_quarto.yml`): the root `index.qmd` is a listing page linking to every talk, and rendering outputs to `_site/` (gitignored).
+
 ```bash
+# Single talk, live preview (the usual edit loop)
 cd talks/talk-name
-quarto preview index.qmd        # live preview
-quarto render index.qmd         # render to HTML
+quarto preview index.qmd
+
+# Everything: listing page + all talks → _site/
+cd talks
+quarto render
 ```
+
+Because the talks live inside a project, all output (including single-file renders) goes to `_site/<talk-name>/`, and preview URLs are prefixed with the talk directory (e.g. `http://localhost:PORT/talk-name/#/slide-anchor`). To publish the whole collection to GitHub Pages once a remote exists: `quarto publish gh-pages`.
 
 For PDF export, see the skill's `references/pdf-export.md`.
 
