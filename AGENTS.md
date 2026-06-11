@@ -1,93 +1,182 @@
-# AGENTS.md
+# Talks — Agent Context
 
-## 🤖 Role & Persona
-You are an expert Presentation Engineer specializing in Quarto Revealjs, Python integrations, and Mermaid diagrams. Your primary objective is to help the user build structural, version-controlled, and highly readable `.qmd` presentations for technical audiences and academic conferences. 
+> Single source of truth for AI coding agents. `CLAUDE.md` is a symlink to this file.
 
-Prioritize semantic structure, reproducible data visualizations, and clean code over pixel-perfect, drag-and-drop visual mimicry.
+## Project overview
 
----
+This directory contains Quarto revealjs presentations for technical talks at SARAO / AIMS South Africa. The workflow is: port presentations from Canva (PDF export) or Beamer into Quarto revealjs, then refine until the slides look right.
 
-## 🏗️ Core Quarto Revealjs Directives
-- **Structure Over Pixels:** Never use inline HTML, inline `<style>` tags, complex CSS flexbox, or JavaScript to force absolute element positioning.
-- **Multi-Column Layouts:** Always use Quarto's native fenced divs. Do not use HTML `<div>` tags.
+Prioritize semantic structure, reproducible visualizations, and clean Markdown over pixel-perfect mimicry of the original deck. Never recreate Canva's visual layouts with custom HTML/JS positioning hacks.
+
+## Directory structure
+
+```
+talks/
+├── AGENTS.md / CLAUDE.md (symlink)
+├── .claude/skills/
+│   ├── quarto-revealjs/            # Scaffolding + porting skill (references, examples, scripts)
+│   ├── manim-composer/             # Plan 3b1b-style animations (use BEFORE writing manim code)
+│   └── manimce-best-practices/     # ManimCE implementation reference
+├── templates/
+│   └── dark-academic.scss          # Shared dark theme for all talks (canonical copy)
+├── assets/
+│   └── logos/                      # Shared logos + meerkat-milkyway.jpg title background
+├── reference_pdfs/                 # Canva PDF exports to port from (gitignored)
+├── talk-name/
+│   ├── index.qmd                   # The presentation (always index.qmd)
+│   ├── custom.css                  # Per-talk CSS overrides (scrollbar fix)
+│   ├── images/                     # Images for this talk (copy shared assets here)
+│   └── videos/                     # Manim renders (webm)
+└── ...
+```
+
+## Workflow: PDF → Quarto
+
+### 1. Scaffold and port
+
+Use the `quarto-revealjs` skill to scaffold and port:
+
+```
+/quarto-revealjs
+```
+
+The skill contains:
+- **references/** — theme guide, scaffolding conventions, porting guide, PDF export
+- **examples/** — reference presentations to follow for style and structure
+- **scripts/** — `scaffold_talk.py` for creating a new talk directory
+
+### Authoring conventions
+
+- **Directory naming** — descriptive slugs without dates (e.g. `stimela-fundamentals/`, not `2025-10-01-stimela-fundamentals/`)
+- **Dynamic date** — always `date: today` in YAML front matter. Never hard-code dates
+- Theme path from a talk: `../templates/dark-academic.scss`
+- **No footer** — omit `footer:` entirely; it takes up too much space on dense slides
+- **Standard title background**: copy `../assets/logos/meerkat-milkyway.jpg` to `images/` and set `data-background-image: images/meerkat-milkyway.jpg` with `data-background-opacity: "0.5"` in `title-slide-attributes`
+- MathJax macros use MathJax 2 syntax: `TeX: { Macros: {} }` (uppercase, not `tex: { macros: }`)
+- **No inline HTML for layout** — no `<style>` tags, no flexbox hacks, no JS positioning. Use Quarto's native fenced divs:
   ```markdown
-  ::: {.columns}
+  :::: {.columns}
   ::: {.column width="50%"}
   Left content
   :::
   ::: {.column width="50%"}
   Right content
   :::
-  :::
+  ::::
   ```
-- **Visual Assets:** - For full-slide graphics, use slide header attributes: `## Slide Title {background-image="asset.png"}`.
-  - For clickable website screenshots, use the modern image link attribute: `![alt](screenshot.png){fig-link="https://url.com"}`.
-- **Animations:** Use Quarto's built-in `.fragment` classes for stepping through lists or elements. Do not write custom CSS animations unless explicitly requested.
-- **Executable Code:** When demonstrating software functionality, use executable Python blocks rather than static text where applicable.
-  ```python
-  #| echo: true
-  #| eval: false
-  import hip_cargo
-  import pfb
-  ```
+- **Full-slide graphics**: slide header attributes — `## Slide Title {background-image="images/asset.png"}`
+- **Clickable screenshots**: `![alt](images/screenshot.png){fig-link="https://url.com"}`
+- **Executable code**: when demonstrating software, prefer executable Python blocks (`#| echo: true`, `#| eval: false`) over static text
+- **Fragments**: pauses (`. . .`) must be at **top level** — they break silently inside `:::` divs (render as literal dots). Inside divs, use `{.incremental}` for lists or wrap content in `{.fragment}` divs. Use these built-in mechanisms; no custom CSS animations
+- Dense slides: use `{.smaller}` on the heading (not a wrapping div) to reduce font without breaking fragments
+- **Code block scrollbars**: Quarto injects `.reveal div.sourceCode { overflow: auto; }` which causes a cosmetic horizontal scrollbar even when code fits. Fix with a `custom.css` containing `.reveal div.sourceCode { overflow-x: hidden !important; }`, referenced via `css: custom.css` in the YAML `revealjs:` block
 
----
+### 2. Render and preview
 
-## 🎬 Manim Video Standards (The Decoupled Workflow)
-When tasked with visualizing complex math or physics concepts, generate standalone Python scripts using the `manim` library. 
-
-**1. Transparent Export (Two-Step Process)**
-Render to `.mov` first (reliable ARGB alpha), then convert to WebM with VP9 alpha:
 ```bash
-# Step 1: Render transparent .mov
+cd talks/talk-name
+quarto preview index.qmd        # live preview
+quarto render index.qmd         # render to HTML
+```
+
+For PDF export, see the skill's `references/pdf-export.md`.
+
+### 3. Inspect with headless Chrome
+
+With the preview server running (note the port from the `quarto preview` output), screenshot any slide to see exactly what renders:
+
+```bash
+google-chrome --headless=new \
+  --screenshot=/tmp/slide.png \
+  --window-size=1600,900 \
+  --virtual-time-budget=5000 \
+  "http://localhost:PORT/#/slide-anchor"
+```
+
+- Use the slide heading text as the anchor, lowercased and hyphenated (e.g. `#/the-proximal-operator`)
+- For nested slides (slides under a `#` section): use `#/H/V` where H = horizontal section index (0-indexed), V = vertical slide within that section (0-indexed). Example: `#/2/3` = 4th slide in the 3rd horizontal section
+- Fragment state cannot be controlled via URL — headless screenshots always show the pre-fragment (initial) state
+- Read `/tmp/slide.png` with the Read tool to see the rendered result
+
+### 4. Fix overflow
+
+Common causes of content falling off the bottom of the slide:
+
+| Problem | Fix |
+|---|---|
+| Too much text / too many equations | Add `{.smaller}` to the `## Heading` |
+| Two independent blocks of content | Two-column layout with `:::: {.columns}` |
+| Slide genuinely has too much content | Split into two slides |
+| Long callout at the bottom | Shorten, or move to a column, or its own slide |
+
+Avoid wrapping content in arbitrary `{style="font-size:..."}` divs — this breaks `. . .` fragment pauses.
+
+## Theme classes (dark-academic.scss)
+
+| Class | Use |
+|---|---|
+| `.highlight-box` | Key equations, definitions (blue border) |
+| `.result-box` | Important results, theorems (green border) |
+| `.muted` | Secondary notes, small print |
+| `.small` | Explicit small text (0.7em) |
+| `.closing-slide` | The final "Thanks!" slide |
+| `.contact` | Monospace contact line on closing slide |
+| `{.smaller}` on heading | Reduce entire slide font to ~70% |
+| `{.incremental}` on list | Reveal list items one by one |
+
+## Mermaid diagrams
+
+Translate pipelines, architectures, and systems into Mermaid code blocks. Plain unstyled Mermaid looks too bare on dark slides — always style.
+
+- Set `mermaid-format: svg` in the YAML front matter (under `revealjs:`) — the default `js` format overrides custom themes
+- Use **YAML config blocks inside the Mermaid cell** (NOT the older `%%{init:...}%%` directive syntax) with `theme: base` and custom `themeVariables` for full control over colors matching the dark-academic palette
+- Use `%%|` cell options for sizing (e.g. `%%| fig-width: 4.5`)
+- The first line after config must declare the diagram type (e.g. `flowchart TD`, `sequenceDiagram`)
+- **Forbidden characters**: no quotation marks or parentheses inside node labels — they break the parser
+- Use `<br />` for line breaks in labels (not `\n`)
+- Start node labels with a Unicode emoji for semantic meaning (e.g. `📡 Array`, `📦 CABS`, `⚙️ Stimela`)
+- Add `&nbsp;` padding in labels for wider nodes
+
+## Manim animations
+
+For complex math/physics visualizations beyond static slides, use standalone Python scripts with the `manim` library (Manim Community Edition).
+
+Two skills support this: `manim-composer` (plan the animation scene-by-scene BEFORE writing code) and `manimce-best-practices` (implementation reference).
+
+### Environment
+
+Manim lives in a uv-managed environment at `~/software/manim/.venv`. Either activate it or call the binary directly:
+
+```bash
 source ~/software/manim/.venv/bin/activate
-manim -t -qm script.py SceneName
-
-# Step 2: Convert to WebM with proper alpha
-ffmpeg -y -i media/videos/script/720p30/SceneName.mov \
-  -c:v libvpx-vp9 -pix_fmt yuva420p -auto-alt-ref 0 \
-  -b:v 2M images/animation.webm
-```
-- **Crucial Note:** Do NOT use `manim -t --format=webm` directly — it has a bug where VP9 alpha is not properly encoded. The two-step `.mov` → `.webm` conversion is required for working transparency.
-
-**2. Quarto Embedding**
-Embed the resulting transparent video file into the `.qmd` document using the native Quarto video shortcode. Do not use raw HTML `<video>` tags.
-```markdown
-## Visibility Function
-
-{{< video images/visibility_equation.webm >}}
+# or, without activation:
+~/software/manim/.venv/bin/manim -t -qm script.py SceneName
 ```
 
----
+### Workflow
 
-## 🧜‍♀️ Mermaid Diagram Standards
-Always translate logical diagrams, data reduction pipelines, architectures, and systems into Mermaid code blocks (` ```mermaid `). 
+1. **Write** a standalone `.py` script (not an inline code block)
+2. **Render** to `.mov` with transparent background, then convert (two-step process):
+   ```bash
+   # Step 1: Render to .mov (reliable alpha via ARGB)
+   manim -t -qm script.py SceneName
 
-**1. Syntax & Label Rules**
-- The first line must declare the diagram type (e.g., `flowchart TD`, `sequenceDiagram`).
-- **Forbidden Characters:** Do not use quotation marks (`"`) or parentheses (`(` or `)`) inside node labels, as they break the parser.
-- **Line Breaks:** Use `<br />` for line breaks inside nodes.
-- **Semantics:** Start node labels with an appropriate Unicode emoji to convey meaning visually (e.g., `📡 Array`, `💾 Buffer`, `⚙️ Processing`).
+   # Step 2: Convert to WebM with proper VP9 alpha
+   ffmpeg -y -i media/videos/script/720p30/SceneName.mov \
+     -c:v libvpx-vp9 -pix_fmt yuva420p -auto-alt-ref 0 \
+     -b:v 2M images/animation.webm
+   ```
+   - `-t` = transparent background (alpha channel)
+   - `-qm` = medium quality (720p30, good for development; use `-qh` for final render)
+   - Do NOT use `manim -t --format=webm` directly — it has a bug where VP9 alpha is not properly encoded
+   - The `-auto-alt-ref 0` flag is required for VP9 alpha to work
+3. **Embed** in `.qmd` using the native Quarto video shortcode:
+   ```markdown
+   {{< video images/animation.webm >}}
+   ```
+   Do NOT use raw `<video>` HTML tags.
 
-**2. The Golden Styling Rule**
-Never use Mermaid's default harsh black lines. It looks unprofessional in modern presentations. Always apply a curated palette using the init directive at the very top of the diagram block to soften the lines:
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#94a3b8'}}}%%
-flowchart TD
-    A[📡 Data Stream] --> B[⚙️ pfb-imaging]
-```
+## Boundaries
 
----
-
-## 💻 Commands & Execution
-When tasked with building or testing the presentation, use these commands:
-- **Live Preview:** `quarto preview presentation.qmd`
-- **Render to HTML:** `quarto render presentation.qmd`
-- **Render to PDF:** `quarto render presentation.qmd --to pdf`
-
----
-
-## 🚧 Boundaries & Safety
-- **✅ Always Do:** Write clean, readable Markdown. Ensure LaTeX equations are properly formatted with `$` or `$$`.
-- **⚠️ Ask First:** Before making cross-cutting structural changes to the `_quarto.yml` configuration file, adding custom SCSS/CSS files, or doing repository-wide refactors.
-- **🚫 Never Do:** Never try to recreate Canva's visual layouts using custom HTML/JS. Never use destructive terminal commands (like `rm` or `rmdir`) without explicit human approval.
+- **Ask first** before cross-cutting structural changes: editing the shared theme (`templates/dark-academic.scss`), adding new shared CSS/SCSS files, or repository-wide refactors
+- **Never** run destructive commands (`rm -rf`, history rewrites) without explicit approval
