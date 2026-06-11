@@ -39,68 +39,68 @@ def scaffold_talk(
     logo_line = f"\n    logo: {logo_path}" if logo_path else ""
     footer_line = f'\n    footer: "{footer}"' if footer else ""
 
-    qmd_content = dedent(f"""\
-    ---
-    title: "{title}"
-    author: "{author}"
-    date: today{institute_line}
-    format:
-      revealjs:
-        theme: [dark, {theme_ref}]
-        slide-number: true
-        code-line-numbers: false
-        code-copy: true
-        highlight-style: monokai
-        center: true
-        transition: slide
-        mermaid-format: svg{logo_line}{footer_line}
-        css: custom.css
-        title-slide-attributes:
-          data-background-image: images/meerkat-milkyway.jpg
-          data-background-opacity: "0.5"
-    ---
+    # NOTE: the template must be flush-left. An earlier version used dedent()
+    # on a 4-space-indented template, but the interpolated {institute_line}
+    # had no indent, so dedent found no common prefix and emitted broken
+    # (indented) YAML.
+    qmd_content = f"""\
+---
+title: "{title}"
+author: "{author}"
+date: today{institute_line}
+format:
+  revealjs:
+    theme: [dark, {theme_ref}]
+    slide-number: true
+    code-line-numbers: false
+    code-copy: true
+    highlight-style: monokai
+    center: true
+    transition: slide
+    mermaid-format: svg{logo_line}{footer_line}
+    css: custom.css
+    title-slide-attributes:
+      data-background-image: images/meerkat-milkyway.jpg
+      data-background-opacity: "0.5"
+---
 
-    ## Introduction
+## Introduction
 
-    <!-- Replace with your opening content -->
+<!-- Replace with your opening content -->
 
-    ---
+---
 
-    ## Main Content
+## Main Content
 
-    <!-- Your slides here -->
+<!-- Your slides here -->
 
-    $$
-    y = Rx + \\epsilon, \\quad \\epsilon \\sim \\mathcal{{N}}(0, \\Sigma)
-    $$
+$$
+y = Rx + \\epsilon, \\quad \\epsilon \\sim \\mathcal{{N}}(0, \\Sigma)
+$$
 
-    . . .
+. . .
 
-    This appears on click.
+This appears on click.
 
-    ---
+---
 
-    ## Code Example
+## Code Example
 
-    ```python
-    import jax.numpy as jnp
+```python
+import jax.numpy as jnp
 
-    def fft_matvec(c, x):
-        return jnp.fft.ifft(jnp.fft.fft(c) * jnp.fft.fft(x)).real
-    ```
+def fft_matvec(c, x):
+    return jnp.fft.ifft(jnp.fft.fft(c) * jnp.fft.fft(x)).real
+```
 
-    ---
+---
 
-    ## {{background-color="#0d1117"}}
+## Thanks! {{background-color="#0d1117" .closing-slide}}
 
-    ::: {{.closing-slide}}
-    ## Thanks!
-
-    ::: {{.contact}}
-    {author.lower().replace(" ", ".")}@sarao.ac.za
-    :::
-    :::
-    """)
+::: {{.contact}}
+{author.lower().replace(" ", ".")}@sarao.ac.za
+:::
+"""
 
     (out_path / "index.qmd").write_text(qmd_content)
 

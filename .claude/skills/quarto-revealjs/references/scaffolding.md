@@ -130,12 +130,14 @@ Content here.
 
 ---
 
-## {background-color="#0d1117"}
+## Thanks! {background-color="#0d1117" .closing-slide}
 
-### Thanks! {.center}
-
+::: {.contact}
 author@email.com
+:::
 ```
+
+Put the slide attributes on the `## Thanks!` heading itself. Do NOT use an empty `## {background-color=...}` slide with a `## Thanks!` heading nested inside a `.closing-slide` div — pandoc splits the inner heading into its own slide, leaving a stray empty slide before it.
 
 ### Title slide background
 

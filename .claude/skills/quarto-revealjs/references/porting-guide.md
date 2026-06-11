@@ -6,6 +6,33 @@ There is no automated conversion from Canva, PDF, or PowerPoint to Quarto `.qmd`
 
 ## Step-by-Step Process
 
+### Step 0: Inventory a Canva PDF Export Efficiently
+
+Canva exports **one PDF page per animation build**, so an 88-page PDF typically collapses to ~25 unique slides. Inventory it with contact sheets instead of reading pages one by one:
+
+```bash
+pdfinfo deck.pdf                          # page count, page size
+pdftotext -layout deck.pdf /tmp/deck.txt  # text inventory (math/figures will be missing — they are images)
+mkdir -p /tmp/pages && pdftoppm -png -r 50 deck.pdf /tmp/pages/page
+cd /tmp/pages && for i in $(seq 0 9); do
+  montage page-{...}.png -tile 3x3 -geometry +5+5 -label "%f" -background gray20 -fill white /tmp/sheet-$i.png
+done
+```
+
+Read the sheets to map page ranges → unique slides. Port the **final build** of each group and recreate the build steps as fragments.
+
+**Extracting figures**: render the needed pages at 150 dpi (`pdftoppm -png -r 150 -f N -l N`) and crop with ImageMagick using fractions of the page size. Verify all crops at once with a labelled montage, then iterate on the bad ones:
+
+```bash
+convert pN.png -crop ${W}x${H}+${X}+${Y} +repage images/figure.png
+montage images/*.png -tile 4x -geometry 280x158+4+4 -label "%f" /tmp/check.png
+```
+
+- Earlier build pages often contain a figure **without** the text overlays that later builds add — crop from those instead of fighting the overlap
+- An overlapping element on a white-background diagram can be painted out: `-fill white -draw "rectangle x1,y1 x2,y2"`
+- `pdfimages` can pull original embedded rasters, but matching images/smasks to slides across duplicated build pages is fiddly — page-render cropping is usually faster and good enough
+- **Embedded video links are NOT preserved** by Canva's PDF export (no `/URI` annotations — verify with `mutool clean -d deck.pdf out.pdf && grep -ao '/URI *([^)]*)' out.pdf`). Ask the user for the URLs
+
 ### Step 1: Extract Content Inventory
 
 Go through the source presentation slide by slide and catalog:

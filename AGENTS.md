@@ -55,6 +55,7 @@ The skill contains:
 - **No footer** — omit `footer:` entirely; it takes up too much space on dense slides
 - **Standard title background**: copy `../assets/logos/meerkat-milkyway.jpg` to `images/` and set `data-background-image: images/meerkat-milkyway.jpg` with `data-background-opacity: "0.5"` in `title-slide-attributes`
 - MathJax macros use MathJax 2 syntax: `TeX: { Macros: {} }` (uppercase, not `tex: { macros: }`)
+- **Unsupported LaTeX commands**: Quarto's bundled MathJax cannot load `\cancel` (the `cancel.js` extension fails — renders red `\cancel` or `[Math Processing Error]`) and has no mathtools commands like `\xleftrightarrow`. Substitutes that work: `\underbrace{w_{pq}(n-1)}_{\approx\, 0}` for striking out a term, `\overset{\mathcal{F}}{\longleftrightarrow}` for a labelled arrow
 - **No inline HTML for layout** — no `<style>` tags, no flexbox hacks, no JS positioning. Use Quarto's native fenced divs:
   ```markdown
   :::: {.columns}
@@ -69,7 +70,10 @@ The skill contains:
 - **Full-slide graphics**: slide header attributes — `## Slide Title {background-image="images/asset.png"}`
 - **Clickable screenshots**: `![alt](images/screenshot.png){fig-link="https://url.com"}`
 - **Executable code**: when demonstrating software, prefer executable Python blocks (`#| echo: true`, `#| eval: false`) over static text
-- **Fragments**: pauses (`. . .`) must be at **top level** — they break silently inside `:::` divs (render as literal dots). Inside divs, use `{.incremental}` for lists or wrap content in `{.fragment}` divs. Use these built-in mechanisms; no custom CSS animations
+- **Fragments**: pauses (`. . .`) must be at **top level** — they break silently inside `:::` divs (render as three literal white dots on the slide). Inside divs, use `{.incremental}` for lists or wrap content in `{.fragment}` divs. Use these built-in mechanisms; no custom CSS animations
+- **Syncing fragments across columns**: fragments fire in DOM order, so a fragment in the left column always fires before one in the right. Use explicit `fragment-index` to control order, e.g. `::: {.fragment fragment-index=2}` — works on image attributes too: `![](img.png){.fragment fragment-index=1}`
+- **Progressive image swap**: stack images in `::: {.r-stack}` with `.fragment` on all but the first; pair with `fragment-index` on text bullets to swap the image as each bullet appears
+- **Closing slide**: use `## Thanks! {background-color="#0d1117" .closing-slide}` with a `::: {.contact}` div. Do NOT nest a `## Thanks!` heading inside a `.closing-slide` div on an empty `##` slide — pandoc splits the inner heading into its own slide, leaving a stray empty slide before it
 - Dense slides: use `{.smaller}` on the heading (not a wrapping div) to reduce font without breaking fragments
 - **Code block scrollbars**: Quarto injects `.reveal div.sourceCode { overflow: auto; }` which causes a cosmetic horizontal scrollbar even when code fits. Fix with a `custom.css` containing `.reveal div.sourceCode { overflow-x: hidden !important; }`, referenced via `css: custom.css` in the YAML `revealjs:` block
 
@@ -106,6 +110,8 @@ google-chrome --headless=new \
 - Use the slide heading text as the anchor, lowercased and hyphenated (e.g. `#/the-proximal-operator`)
 - For nested slides (slides under a `#` section): use `#/H/V` where H = horizontal section index (0-indexed), V = vertical slide within that section (0-indexed). Example: `#/2/3` = 4th slide in the 3rd horizontal section
 - Fragment state cannot be controlled via URL — headless screenshots always show the pre-fragment (initial) state
+- **Checking the fully-revealed state**: temporarily add `fragments: false` under `revealjs:` in the YAML, render, screenshot every slide (all fragments visible), then **remove the option and re-render**. This is the only reliable way to catch overflow that only appears after the last fragment click. Verify restoration with `grep -c 'class="fragment"' _site/<talk>/index.html` (should be > 0)
+- Hidden fragments still occupy layout space (reveal.js uses `visibility: hidden`), so vertical positions in a pre-fragment screenshot match the final layout — only the text is invisible
 - Read `/tmp/slide.png` with the Read tool to see the rendered result
 
 ### 4. Fix overflow
@@ -118,6 +124,8 @@ Common causes of content falling off the bottom of the slide:
 | Two independent blocks of content | Two-column layout with `:::: {.columns}` |
 | Slide genuinely has too much content | Split into two slides |
 | Long callout at the bottom | Shorten, or move to a column, or its own slide |
+| Mermaid diagram pushes content off the slide | Set `%%| fig-height:` on the cell — without it the SVG container reserves a huge vertical block even for a short diagram |
+| Tall image in a column | Constrain with `{height="500"}` instead of `width="100%"` |
 
 Avoid wrapping content in arbitrary `{style="font-size:..."}` divs — this breaks `. . .` fragment pauses.
 
@@ -141,6 +149,7 @@ Translate pipelines, architectures, and systems into Mermaid code blocks. Plain 
 - Set `mermaid-format: svg` in the YAML front matter (under `revealjs:`) — the default `js` format overrides custom themes
 - Use **YAML config blocks inside the Mermaid cell** (NOT the older `%%{init:...}%%` directive syntax) with `theme: base` and custom `themeVariables` for full control over colors matching the dark-academic palette
 - Use `%%|` cell options for sizing (e.g. `%%| fig-width: 4.5`)
+- **Always set `%%| fig-height:` too** — without it the SVG container reserves far more vertical space than the diagram needs and pushes following content off the slide (e.g. a 4-node `flowchart LR` wants `fig-width: 9`, `fig-height: 1.8`). Too large a `fig-width` overflows horizontally and produces a scrollbar under the diagram
 - The first line after config must declare the diagram type (e.g. `flowchart TD`, `sequenceDiagram`)
 - **Forbidden characters**: no quotation marks or parentheses inside node labels — they break the parser
 - Use `<br />` for line breaks in labels (not `\n`)
