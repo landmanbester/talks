@@ -7,8 +7,9 @@
 .quarto/
 _freeze/
 
-# Manim render intermediates
+# Manim render intermediates (final movies live under media/ too)
 media/
+__pycache__/
 
 # OS files
 .DS_Store
