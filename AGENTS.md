@@ -24,6 +24,10 @@ talks/
 ├── assets/
 │   └── logos/                      # Shared logos + meerkat-milkyway.jpg title background
 ├── reference_pdfs/                 # Canva PDF exports to port from (gitignored)
+├── _animations/
+│   └── video-name/                 # Standalone manim explainer video: scenes.md plan +
+│                                   #   one script; media/ output gitignored; the leading
+│                                   #   underscore keeps Quarto's site render away
 ├── talk-name/
 │   ├── index.qmd                   # The presentation (always index.qmd)
 │   ├── custom.css                  # Per-talk CSS overrides (scrollbar fix)
@@ -172,7 +176,10 @@ source ~/software/manim/.venv/bin/activate
 ~/software/manim/.venv/bin/manim -t -qm script.py SceneName
 ```
 
-### Workflow
+There are two distinct products: **transparent clips embedded in talk slides**
+and **standalone explainer videos** under `_animations/` (opaque, mp4).
+
+### Workflow: slide clips (transparent webm)
 
 1. **Write** a standalone `.py` script (not an inline code block)
 2. **Render** to `.mov` with transparent background, then convert (two-step process):
@@ -194,6 +201,89 @@ source ~/software/manim/.venv/bin/activate
    {{< video images/animation.webm >}}
    ```
    Do NOT use raw `<video>` HTML tags.
+
+### Workflow: standalone explainer videos (`_animations/`)
+
+One directory per video: a `scenes.md` plan (write it with the `manim-composer`
+skill BEFORE any code) plus a single standalone script with one `Scene` class.
+Only those two files are committed — `media/` and `__pycache__/` are gitignored,
+so every video is regenerable from its script.
+
+Scaffold a new episode (creates the directory, a `scenes.md` skeleton, and a
+script pre-loaded with the series boilerplate — palette, master clock, caption
+helper, title/closing cards):
+
+```bash
+python _animations/scaffold_video.py <slug> <SceneClassName> "<Title>" --subtitle "..."
+```
+
+- Render opaque (no `-t`): `-ql` (480p15) for the dev loop, `-qh` (1080p60) for
+  the final. Output: `media/videos/<script-stem>/<quality>/<SceneName>.mp4`
+- The existing series (`two-element-interferometer` → `what-is-a-visibility` →
+  `aperture-synthesis` → `uvw-and-lmn`) shares conventions new episodes should
+  follow: dark-academic palette (bg `#0d1117`, blue `#58a6ff` antenna p, amber
+  `#d29922` antenna q / sky brightness, green `#3fb950` measurements/results,
+  red `#f85149` mismatch), `Text` captions at the top edge (font 27), a title
+  card, and a closing card with a "next: ..." tease into the following episode
+- **Master-clock architecture** for physics animations: one `ValueTracker`
+  clock advanced by a dt-updater scaled by a `rate` tracker; every moving
+  element is an `always_redraw` reading the same trackers. Consistency (wave
+  crests vs trace phases, uv coverage vs reconstructed image) then holds by
+  construction instead of choreography
+- Prefer computing real data in updaters over staging effects — e.g. the
+  aperture-synthesis reconstruction is a genuine masked-FFT inverse
+  (`ImageMobject` from a uint8 numpy array inside `always_redraw`)
+
+### Verifying renders (the dev loop)
+
+Two helper scripts in `_animations/` wrap the repeatable parts — prefer them
+over hand-rolled manim/ffmpeg invocations:
+
+```bash
+# dev render + frame sheet: renders -ql, extracts 10 evenly spaced frames
+# (or the timestamps you pass), prints their paths — Read them, fix, repeat
+_animations/preview.sh <script.py> <SceneName>
+_animations/preview.sh --no-render <script.py> <SceneName> 35 60   # reuse last render
+
+# final render: clears stale partials first, renders -qh with a real exit
+# code, ffprobe-checks duration against the dev render (warns on >5s drift)
+_animations/final.sh <script.py> <SceneName>      # background this for 3D/long scenes
+```
+
+Check every scene's key beat at `-ql` before the final run. Knowledge baked
+into the scripts (still true when running manim by hand):
+
+- Piping manim (e.g. `| tail`) masks its exit code — run it bare
+- A killed render leaves a truncated segment in `partial_movie_files/` that
+  poisons later runs (silently short mp4 or `InvalidDataError`;
+  `--flush_cache` does NOT fix it) — delete that quality's
+  `partial_movie_files/` before a final render
+- Always ffprobe the final duration; frame-rate rounding gives ~1s drift
+  between 15fps and 60fps renders of the same scene, a broken stitch loses
+  tens of seconds
+
+### ManimCE gotchas (hit in this repo)
+
+- `always_redraw` mobjects only render after an explicit `self.add(...)` —
+  easy to construct one and forget to add it (invisible, no error)
+- Rate functions are namespaced: `rate_func=rate_functions.ease_in_out_sine`
+- `.set_opacity()` on a plotted curve also sets fill opacity, visually closing
+  the path — use `.set_stroke(opacity=...)` on line-like mobjects
+- Mixing `ImageMobject` with vector mobjects needs `Group`, not `VGroup`
+- Swap a caption out *before* animating to the state it doesn't describe —
+  a lingering caption over a sweep reads as wrong physics
+- `ThreeDScene` (see `_animations/uvw-and-lmn/`):
+  - Fixed captions: `self.add_fixed_in_frame_mobjects(c)` then `self.remove(c)`
+    then animate `FadeIn(c)` normally; 3D labels that should face the camera go
+    through `add_fixed_orientation_mobjects` the same way
+  - "Look along an axis" shots suffer perspective parallax (a point and its
+    projection along the view axis don't coincide on screen) — pass a large
+    `focal_distance` (e.g. 60) to `move_camera` for that shot, restore after
+  - Depth sorting draws a translucent `Surface`'s fill over floor-level
+    VMobjects, dimming them badly — brighten the floor mobject and re-`add` it
+  - Camera angles: `theta` is the camera's azimuth; to look down direction
+    `(sin φ, 0, cos φ)` use `phi=φ, theta=0` — and verify the alignment with a
+    screenshot rather than trusting the convention
 
 ## Boundaries
 

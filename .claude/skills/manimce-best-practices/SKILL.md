@@ -8,6 +8,17 @@ description: |
   NOT for ManimGL/3b1b version (which uses `manimlib` imports and `manimgl` CLI).
 ---
 
+## This repo
+
+For the standalone explainer videos under `_animations/`, use the repo helper
+scripts instead of raw CLI calls: `_animations/preview.sh` (dev render +
+spot-check frame extraction), `_animations/final.sh` (final render with
+stale-partials cleanup + duration check), and `_animations/scaffold_video.py`
+(new episode with series boilerplate). Repo-specific ManimCE gotchas (always_redraw
+needs self.add, set_opacity vs set_stroke on curves, ThreeDScene fixed-frame /
+focal-distance / depth-sorting traps, partial_movie_files corruption) live in
+the **Manim animations** section of `AGENTS.md` — read it before writing code.
+
 ## How to use
 
 Read individual rule files for detailed explanations and code examples:

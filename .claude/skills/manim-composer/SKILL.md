@@ -8,6 +8,22 @@ description: |
   Use this BEFORE writing any Manim code. This skill plans the video; use manimce-best-practices or manimgl-best-practices for implementation.
 ---
 
+## This repo
+
+For episodes of the `_animations/` explainer series, scaffold the directory
+(scenes.md skeleton + boilerplate script with the series palette, master-clock
+trackers, title/closing cards) with:
+
+```bash
+python _animations/scaffold_video.py <slug> <SceneClassName> "<Title>" --subtitle "..."
+```
+
+Series conventions (palette, captions, the "next: ..." tease chain, the
+master-clock architecture) are documented in the **Manim animations** section
+of `AGENTS.md` — the plan should respect them, and each episode's scenes.md
+should include a *consistency checklist* of physically-verifiable facts the
+rendered frames must show.
+
 ## Workflow
 
 ### Phase 1: Understand the Concept
