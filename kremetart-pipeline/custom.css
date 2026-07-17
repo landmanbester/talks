@@ -19,6 +19,25 @@
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
 }
 
+/* Full-bleed autoplaying background clip. A raw <video> is used (not reveal's
+   background-video) so `muted`/`autoplay` are parse-time attributes — the only
+   form browsers reliably honour for muted autoplay. position:fixed resolves
+   against reveal's transformed .slides box, so it covers the whole slide even
+   though center:true shrink-wraps the section. */
+.reveal .bg-fill {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover;
+  z-index: 1;
+}
+.reveal .overlay-caption { position: relative; z-index: 2; }
+
 /* Tech-stack logo wall: each logo sits on a uniform white rounded chip so
    every logo — light, dark, or transparent — reads on the dark slide. */
 .reveal .logo-wall { text-align: center; }

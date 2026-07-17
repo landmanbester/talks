@@ -1,6 +1,6 @@
 # Talks
 
-Quarto revealjs presentations for technical talks at SARAO / AIMS South Africa.
+Quarto revealjs presentations for technical talks at SARAO / Rhodes/ AIMS South Africa.
 One directory per talk, a shared dark theme, and a root-level Quarto **website
 project** that builds everything into a single browsable site.
 

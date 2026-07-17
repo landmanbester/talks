@@ -27,7 +27,11 @@ I thought we'd see many of these.
 :::
 
 
-## {background-video="videos/street-scene.mp4" background-video-loop="true" background-video-muted="true" background-color="#0d1117"}
+## {background-color="#0d1117"}
+
+<video class="bg-fill" autoplay loop muted playsinline data-autoplay>
+<source src="videos/street-scene.mp4" type="video/mp4">
+</video>
 
 ::: {.overlay-caption .fragment}
 …instead, we got this.
@@ -36,8 +40,9 @@ I thought we'd see many of these.
 ## A barmy idea
 
 ::: {.incremental}
-- Online implementation of the TRON pipeline
-- Real-time calibration, imaging and transient detection for **MeerKAT** (goal 1 s, 1 Hz)
+- Online implementation of the TRON pipeline (RadioStreams)
+- Real-time calibration, imaging and transient detection for **MeerKAT**/**ATA**
+- Breakthrough Listen invisions doing this at 1 s, 1 Hz resolution
 - Need to start simpler...
 :::
 
@@ -183,12 +188,12 @@ flowchart LR
 ## **kremetart** software package
 
 ```bash
-pip install kremetart          # lightweight CLI
+pip install kremetart          # lightweight CLI + cabs
 pip install "kremetart[full]"  # full GPU streaming stack
 ```
 
 ::: {.muted}
-GPU-resident streaming on **NVIDIA Holoscan** + **CuPy / CUDA**, imaging on **HEALPix**, atop the scientific-Python stack — first release shipping to PyPI now.
+GPU-resident streaming on **NVIDIA Holoscan** + **CuPy / CUDA**, imaging on **HEALPix** — first release shipped to PyPI.
 :::
 
 ::: {.logo-wall}
@@ -212,13 +217,14 @@ GPU-resident streaming on **NVIDIA Holoscan** + **CuPy / CUDA**, imaging on **HE
 - Online calibration (hyper-parameters learned offline)
 - Jointly image data from multiple TARTs
 - Vet the transient detection machinery
+- Combine with VLBI (zoom on detections)
 - Contributions welcome
 :::
 
 
 ## Thanks! {background-color="#0d1117" .closing-slide}
 
-One engine. One architectural idea. Staged & gated.
+Looking forward to painting the full sky with your TART!
 
 ::: {.contact}
 lbester@sarao.ac.za
