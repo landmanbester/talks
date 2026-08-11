@@ -6,7 +6,7 @@ date: today
 institute: "SARAO / Rhodes"
 format:
   revealjs:
-    theme: [dark, ../templates/dark-academic.scss]
+    theme: [dark, ../../templates/dark-academic.scss]
     slide-number: true
     code-line-numbers: false
     code-copy: true
