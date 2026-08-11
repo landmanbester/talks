@@ -27,3 +27,5 @@ reference_pdfs/
 
 # Website project output
 /_site/
+
+**/*.quarto_ipynb
