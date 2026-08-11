@@ -8,7 +8,9 @@ date: today
 
 format:
   revealjs:
-    theme: [dark, ../../templates/dark-academic.scss]
+    theme: [dark, ../../templates/dark-academic.scss, ../../templates/lectures.scss]
+    template-partials:
+      - ../../templates/title-slide.html
     slide-number: true
     code-line-numbers: false
     code-copy: true
@@ -20,3 +22,11 @@ format:
     title-slide-attributes:
       data-background-image: images/meerkat-milkyway.jpg
       data-background-opacity: "0.5"
+
+# Institutional logos, rendered as a strip on the title slide by
+# templates/title-slide.html. Paths are project-root-relative; Quarto rewrites
+# them and copies the files via the `resources:` block in _quarto.yml.
+logos:
+  # - /assets/logos/nrf.png     # uncomment once the file exists
+  - /assets/logos/sarao_logo.jpg
+  - /assets/logos/rhodes_banner.jpg

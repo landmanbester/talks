@@ -10,7 +10,9 @@ author: "Landman Bester"
 
 format:
   revealjs:
-    theme: [dark, ../../templates/dark-academic.scss]
+    theme: [dark, ../../templates/dark-academic.scss, ../../templates/contributions.scss]
+    template-partials:
+      - ../../templates/title-slide.html
     slide-number: true
     code-line-numbers: false
     code-copy: true
@@ -22,3 +24,11 @@ format:
     title-slide-attributes:
       data-background-image: images/meerkat-milkyway.jpg
       data-background-opacity: "0.5"
+
+# Institutional logos, rendered as a strip on the title slide. A contribution
+# adds its event's logos by redeclaring this whole list in its own front
+# matter — YAML lists replace rather than merge.
+logos:
+  # - /assets/logos/nrf.png     # uncomment once the file exists
+  - /assets/logos/sarao_logo.jpg
+  - /assets/logos/rhodes_banner.jpg
