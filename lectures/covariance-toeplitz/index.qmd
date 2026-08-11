@@ -1,21 +1,8 @@
 ---
 title: "Covariance, Toeplitz and Power Spectra"
-author: "Landman Bester"
-date: today
 institute: "AI4RI"
 format:
   revealjs:
-    theme: [dark, ../../templates/dark-academic.scss]
-    slide-number: true
-    code-line-numbers: false
-    code-copy: true
-    highlight-style: monokai
-    center: true
-    transition: slide
-    footer: "SARAO | AIMS South Africa"
-    title-slide-attributes:
-      data-background-image: images/meerkat-milkyway.jpg
-      data-background-opacity: "0.5"
     include-in-header:
       text: |
         <script>

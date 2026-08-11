@@ -1,23 +1,8 @@
 ---
 title: "KREMETART"
 subtitle: "Streaming calibration, imaging & transient detection for TART"
-author: "Landman Bester"
-date: today
 institute: "SARAO / Rhodes"
-format:
-  revealjs:
-    theme: [dark, ../../templates/dark-academic.scss]
-    slide-number: true
-    code-line-numbers: false
-    code-copy: true
-    highlight-style: monokai
-    center: true
-    transition: slide
-    mermaid-format: svg
-    css: custom.css
-    title-slide-attributes:
-      data-background-image: images/meerkat-milkyway.jpg
-      data-background-opacity: "0.5"
+date: "2026-08-11"
 ---
 
 ## {background-image="images/baobab.jpg" background-size="cover" background-color="#0d1117"}

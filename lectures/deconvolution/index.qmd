@@ -1,17 +1,8 @@
 ---
 title: "Deconvolution"
-author: "Landman Bester"
-date: today
 institute: "AIMS South Africa"
 format:
   revealjs:
-    theme: [dark, ../../templates/dark-academic.scss]
-    slide-number: true
-    code-line-numbers: false
-    code-copy: true
-    highlight-style: monokai
-    center: true
-    transition: slide
     mermaid:
       theme: dark
     title-slide-attributes:

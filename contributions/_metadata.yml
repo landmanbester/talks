@@ -1,0 +1,24 @@
+# Shared front matter for every contribution. A deck's own front matter
+# overrides anything set here.
+#
+# Deliberately no `date:` — each contribution sets the date of its event.
+# Defaulting to `today` would silently restamp an old talk on every rebuild.
+#
+# Relative paths below are resolved from the *document*
+# (contributions/<slug>/index.qmd), not from this file — hence ../../templates/.
+author: "Landman Bester"
+
+format:
+  revealjs:
+    theme: [dark, ../../templates/dark-academic.scss]
+    slide-number: true
+    code-line-numbers: false
+    code-copy: true
+    highlight-style: monokai
+    center: true
+    transition: slide
+    mermaid-format: svg
+    css: custom.css
+    title-slide-attributes:
+      data-background-image: images/meerkat-milkyway.jpg
+      data-background-opacity: "0.5"
