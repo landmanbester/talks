@@ -81,8 +81,13 @@ quarto preview           # from the repo root
 ```
 
 To create a new talk, use the `quarto-revealjs` skill in Claude Code
-(`/quarto-revealjs`) — it scaffolds the directory, theme reference, custom.css,
-and title-slide background.
+(`/quarto-revealjs`), or run the scaffold script directly with the required
+class argument:
+
+```bash
+python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py lecture "Interferometry Basics"
+python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KAT-7 Transient Search"
+```
 
 ## Rendering to PDF
 

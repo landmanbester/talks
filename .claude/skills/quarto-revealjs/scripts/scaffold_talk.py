@@ -1,67 +1,62 @@
 #!/usr/bin/env python3
-"""Scaffold a new Quarto revealjs talk directory."""
+"""Scaffold a new Quarto revealjs talk directory.
+
+Talks belong to one of two classes, and the class decides where the directory
+lands and which rules apply to it:
+
+    lecture      -> lectures/<slug>/       (undated, re-given)
+    contribution -> contributions/<slug>/  (dated, given once at an event)
+
+Shared front matter (theme, revealjs options, title background, logos, css)
+lives in each class's `_metadata.yml`, so a scaffolded deck is deliberately
+thin — it carries only what is specific to it.
+"""
 
 import argparse
-import os
 from pathlib import Path
 from textwrap import dedent
 
+CLASS_DIRS = {"lecture": "lectures", "contribution": "contributions"}
+
 
 def scaffold_talk(
+    talk_class: str,
     title: str,
-    author: str = "Landman Bester",
-    event: str = "",
+    institute: str = "",
     output: str | None = None,
-    theme_path: str = "dark-academic.scss",
-    logo_path: str = "",
-    footer: str = "",
-    standalone: bool = False,
 ):
     """Create a new talk directory with index.qmd and supporting files."""
     if output is None:
         slug = title.lower().replace(" ", "-").replace(",", "")
         slug = "".join(c for c in slug if c.isalnum() or c == "-")
-        output = slug
+        output = f"{CLASS_DIRS[talk_class]}/{slug}"
 
     out_path = Path(output)
     out_path.mkdir(parents=True, exist_ok=True)
     (out_path / "images").mkdir(exist_ok=True)
 
-    # Determine theme reference
-    if standalone:
-        # Copy theme into talk directory
-        theme_ref = "dark-academic.scss"
-    else:
-        theme_ref = theme_path
+    # `institute` is the course/host for a lecture, and your own affiliation
+    # for a contribution — the venue there is `event:`.
+    institute_line = f'\ninstitute: "{institute}"' if institute else ""
 
-    # Build YAML front matter
-    institute_line = f'\ninstitute: "{event}"' if event else ""
-    logo_line = f"\n    logo: {logo_path}" if logo_path else ""
-    footer_line = f'\n    footer: "{footer}"' if footer else ""
+    # Contributions are dated records of a talk given once. Nothing is
+    # enforced, so these ship as empty stubs rather than required fields.
+    if talk_class == "contribution":
+        meta_lines = institute_line + (
+            '\ndate: ""            # event date, e.g. "2026-06-18"'
+            '\nevent: ""           # conference or workshop name'
+            '\nlocation: ""        # city, country'
+        )
+    else:
+        meta_lines = institute_line
 
     # NOTE: the template must be flush-left. An earlier version used dedent()
-    # on a 4-space-indented template, but the interpolated {institute_line}
+    # on a 4-space-indented template, but the interpolated {meta_lines}
     # had no indent, so dedent found no common prefix and emitted broken
     # (indented) YAML.
     qmd_content = f"""\
 ---
-title: "{title}"
-author: "{author}"
-date: today{institute_line}
-format:
-  revealjs:
-    theme: [dark, {theme_ref}]
-    slide-number: true
-    code-line-numbers: false
-    code-copy: true
-    highlight-style: monokai
-    center: true
-    transition: slide
-    mermaid-format: svg{logo_line}{footer_line}
-    css: custom.css
-    title-slide-attributes:
-      data-background-image: images/meerkat-milkyway.jpg
-      data-background-opacity: "0.5"
+title: "{title}"{meta_lines}
 ---
 
 ## Introduction
@@ -84,27 +79,17 @@ This appears on click.
 
 ---
 
-## Code Example
-
-```python
-import jax.numpy as jnp
-
-def fft_matvec(c, x):
-    return jnp.fft.ifft(jnp.fft.fft(c) * jnp.fft.fft(x)).real
-```
-
----
-
 ## Thanks! {{background-color="#0d1117" .closing-slide}}
 
 ::: {{.contact}}
-{author.lower().replace(" ", ".")}@sarao.ac.za
+landman.bester@gmail.com
 :::
 """
 
     (out_path / "index.qmd").write_text(qmd_content)
 
-    # Create custom.css to fix Quarto's injected scrollbar on code blocks
+    # custom.css is load-bearing: `css: custom.css` is hoisted into the class
+    # _metadata.yml, so a deck without this file fails to render.
     custom_css = dedent("""\
     /* Quarto injects `.reveal div.sourceCode { overflow: auto; }` which adds
        a cosmetic horizontal scrollbar even when code fits. Override it. */
@@ -112,44 +97,41 @@ def fft_matvec(c, x):
     """)
     (out_path / "custom.css").write_text(custom_css)
 
-    print(f"Created talk scaffold at: {out_path}/")
+    print(f"Created {talk_class} scaffold at: {out_path}/")
     print(f"  index.qmd   — edit this file")
-    print(f"  custom.css  — fixes Quarto's code block scrollbar bug")
+    print(f"  custom.css  — required; fixes Quarto's code block scrollbar bug")
     print(f"  images/     — put images here")
-    print(f"\nNote: copy meerkat-milkyway.jpg into images/ for the title background.")
-    print(f"  cp ../assets/logos/meerkat-milkyway.jpg {out_path}/images/")
-    print(f"\nTo render: cd {out_path} && quarto render index.qmd")
+    print(f"\nTheme, logos, and revealjs options come from "
+          f"{CLASS_DIRS[talk_class]}/_metadata.yml — see "
+          f"{CLASS_DIRS[talk_class]}/AGENTS.md for the class rules.")
+    print(f"\nCopy the title background into images/:")
+    print(f"  cp assets/logos/meerkat-milkyway.jpg {out_path}/images/")
+    print(f"\nTo render: quarto render {out_path}/index.qmd")
+    print(f"To preview: cd {out_path} && quarto preview index.qmd")
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="Scaffold a new Quarto revealjs talk"
     )
+    parser.add_argument(
+        "talk_class", choices=["lecture", "contribution"],
+        help="lecture -> lectures/ (undated); contribution -> contributions/ (dated)"
+    )
     parser.add_argument("title", help="Talk title")
-    parser.add_argument("--author", default="Landman Bester")
-    parser.add_argument("--event", default="")
+    parser.add_argument(
+        "--institute", default="",
+        help="Course or host institution for a lecture; your own affiliation "
+             "for a contribution"
+    )
     parser.add_argument("--output", default=None, help="Output directory path")
-    parser.add_argument(
-        "--theme", default="../templates/dark-academic.scss",
-        help="Path to SCSS theme (relative to the talk directory)"
-    )
-    parser.add_argument("--logo", default="", help="Path to logo image")
-    parser.add_argument("--footer", default="", help="Footer text (omit by default — takes up space on dense slides)")
-    parser.add_argument(
-        "--standalone", action="store_true",
-        help="Create a self-contained talk (copy theme into directory)"
-    )
 
     args = parser.parse_args()
     scaffold_talk(
+        talk_class=args.talk_class,
         title=args.title,
-        author=args.author,
-        event=args.event,
+        institute=args.institute,
         output=args.output,
-        theme_path=args.theme,
-        logo_path=args.logo,
-        footer=args.footer,
-        standalone=args.standalone,
     )
 
 

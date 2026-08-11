@@ -86,17 +86,39 @@ MathJax = {
 
 ## Using the Scaffold Script
 
-The scaffold script creates a new talk directory with the correct structure:
+Talks belong to one of two classes, and the class is a **required** first
+argument. It decides where the directory lands and which rules apply:
 
 ```bash
-python scaffold_talk.py "Talk Title" --author "Author Name" \
-    --event "AI4RI" --output talks/learned-denoisers
+python scaffold_talk.py lecture "Interferometry Basics" --institute "NASSP"
+# → lectures/interferometry-basics/
+
+python scaffold_talk.py contribution "KAT-7 Transient Search"
+# → contributions/kat-7-transient-search/
 ```
 
+| Class | Directory | Dates |
+|---|---|---|
+| `lecture` | `lectures/<slug>/` | inherits `date: today`; never hard-coded |
+| `contribution` | `contributions/<slug>/` | stub `date:` for the event date, plus `event:` and `location:` |
+
 This creates:
-- `index.qmd` with front matter pre-filled (using `date: today` for dynamic dates)
+- `index.qmd` with **thin** front matter — theme, revealjs options, title
+  background, logos, and `css:` all come from the class `_metadata.yml`, so the
+  deck carries only what is specific to it
 - `images/` directory
-- `custom.css` with the code block scrollbar fix
+- `custom.css` with the code block scrollbar fix — **required**, since `css:`
+  is hoisted and a deck without this file fails to render
+
+`--institute` is the course or host institution for a lecture, and your own
+affiliation for a contribution (where the venue is `event:` instead).
+
+None of the generated fields are enforced. A deck with only a `title:` renders
+and inherits the full class theme; the contribution stubs are prompts, not
+requirements.
+
+Do not prefix a talk directory with `_` — Quarto skips underscore-prefixed
+directories and the deck will silently not render.
 
 ### What the scaffold generates
 
