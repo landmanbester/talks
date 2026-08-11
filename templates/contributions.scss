@@ -1,0 +1,10 @@
+/*-- scss:rules --*/
+
+// Contributions: a fuller strip with room for event logos alongside the
+// institutional ones, sized to stay legible from the back of a lecture hall.
+.reveal .logo-strip {
+  gap: 1.1em;
+  margin-top: 1.5em;
+
+  img { height: 60px; }
+}

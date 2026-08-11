@@ -2,8 +2,10 @@ project:
   type: website
   render:
     - index.qmd
-    - "*/index.qmd"
+    - "*/*/index.qmd"
+  resources:
+    - assets/logos/**
 
 website:
   title: "Talks — Landman Bester"
-  description: "Technical talks for SARAO / AIMS South Africa"
+  description: "Lectures and conference contributions — SARAO / Rhodes / AIMS South Africa"

@@ -10,29 +10,48 @@ Prioritize semantic structure, reproducible visualizations, and clean Markdown o
 
 ## Directory structure
 
+Talks are split into two classes. **The class a deck lives in decides its
+formatting and which rules apply** — each class directory carries its own
+`AGENTS.md`, loaded automatically when working in that subtree.
+
+- **`lectures/`** — teaching material, revised and re-given. Undated.
+- **`contributions/`** — conference and workshop talks, each given once, dated.
+
 ```
 talks/
-├── AGENTS.md / CLAUDE.md (symlink)
-├── _quarto.yml                     # Website project: renders all talks + listing into _site/
-├── index.qmd                       # Listing page of all talks
+├── AGENTS.md / CLAUDE.md (symlink)  # Shared conventions (this file)
+├── _quarto.yml                     # Website project: renders */*/index.qmd into _site/
+├── index.qmd                       # Listing page: one table per class
 ├── .claude/skills/
 │   ├── quarto-revealjs/            # Scaffolding + porting skill (references, examples, scripts)
 │   ├── manim-composer/             # Plan 3b1b-style animations (use BEFORE writing manim code)
 │   └── manimce-best-practices/     # ManimCE implementation reference
 ├── templates/
-│   └── dark-academic.scss          # Shared dark theme for all talks (canonical copy)
+│   ├── dark-academic.scss          # Shared dark theme (canonical copy)
+│   ├── lectures.scss               # Lecture layer on top of the shared theme
+│   ├── contributions.scss          # Contribution layer
+│   └── title-slide.html            # Title-slide partial; renders the logo strip
 ├── assets/
 │   └── logos/                      # Shared logos + meerkat-milkyway.jpg title background
+├── scripts/
+│   └── shoot-decks.sh              # Render + screenshot every deck (verification harness)
 ├── reference_pdfs/                 # Canva PDF exports to port from (gitignored)
 ├── _animations/
 │   └── video-name/                 # Standalone manim explainer video: scenes.md plan +
 │                                   #   one script; media/ output gitignored; the leading
 │                                   #   underscore keeps Quarto's site render away
-├── talk-name/
-│   ├── index.qmd                   # The presentation (always index.qmd)
-│   ├── custom.css                  # Per-talk CSS overrides (scrollbar fix)
-│   ├── images/                     # Images for this talk (copy shared assets here)
-│   └── videos/                     # Manim renders (webm)
+├── lectures/
+│   ├── AGENTS.md / CLAUDE.md       # Lecture-specific rules — read before authoring
+│   ├── _metadata.yml               # Shared front matter for every lecture
+│   └── talk-name/
+│       ├── index.qmd               # The presentation (always index.qmd)
+│       ├── custom.css              # Scrollbar fix — REQUIRED, `css:` is hoisted
+│       ├── images/                 # Images for this talk (copy shared assets here)
+│       └── videos/                 # Manim renders (webm)
+├── contributions/
+│   ├── AGENTS.md / CLAUDE.md       # Contribution-specific rules
+│   ├── _metadata.yml               # Shared front matter for every contribution
+│   └── talk-name/                  # Same shape as a lecture
 └── ...
 ```
 
@@ -46,6 +65,17 @@ Use the `quarto-revealjs` skill to scaffold and port:
 /quarto-revealjs
 ```
 
+Scaffolding takes a required class argument:
+
+```bash
+python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py lecture "Interferometry Basics"
+python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KAT-7 Transient Search"
+```
+
+For citations, cross-references, and conditional content — anything beyond
+slide layout — use the `quarto-authoring` skill (v1.4, written against Quarto
+1.9.36; this repo runs 1.10.18).
+
 The skill contains:
 - **references/** — theme guide, scaffolding conventions, porting guide, PDF export
 - **examples/** — reference presentations to follow for style and structure
@@ -53,9 +83,9 @@ The skill contains:
 
 ### Authoring conventions
 
-- **Directory naming** — descriptive slugs without dates (e.g. `stimela-fundamentals/`, not `2025-10-01-stimela-fundamentals/`)
-- **Dynamic date** — always `date: today` in YAML front matter. Never hard-code dates
-- Theme path from a talk: `../templates/dark-academic.scss`
+- **Directory naming** — descriptive slugs without dates (e.g. `stimela-fundamentals/`, not `2025-10-01-stimela-fundamentals/`). Never prefix with `_` — Quarto skips underscore-prefixed directories and the deck silently will not render
+- **Class rules live with the class** — `lectures/AGENTS.md` and `contributions/AGENTS.md` carry the front-matter, style, logo, and citation rules for their subtree, and load automatically when working there. **Dates differ between the two**: lectures use `date: today` and never hard-code; contributions hard-code the event date. Read the class file before authoring
+- **Shared front matter is hoisted** — theme, revealjs options, title background, logos, and `css:` come from the class `_metadata.yml`. A deck's own front matter carries only what is specific to it. Relative paths in `_metadata.yml` resolve from the *document*, so the theme path is `../../templates/dark-academic.scss`
 - **No footer** — omit `footer:` entirely; it takes up too much space on dense slides
 - **Standard title background**: copy `../assets/logos/meerkat-milkyway.jpg` to `images/` and set `data-background-image: images/meerkat-milkyway.jpg` with `data-background-opacity: "0.5"` in `title-slide-attributes`
 - MathJax macros use MathJax 2 syntax: `TeX: { Macros: {} }` (uppercase, not `tex: { macros: }`)
@@ -287,5 +317,7 @@ into the scripts (still true when running manim by hand):
 
 ## Boundaries
 
+- **Every deck needs a `custom.css`** — `css: custom.css` is hoisted into both class `_metadata.yml` files, so a deck without that file fails to render. The scaffold script creates it; hand-made directories need it too
+- **Nothing in front matter is enforced** — a deck with only a `title:` must render and the site must build. Never add schema checks or validation
 - **Ask first** before cross-cutting structural changes: editing the shared theme (`templates/dark-academic.scss`), adding new shared CSS/SCSS files, or repository-wide refactors
 - **Never** run destructive commands (`rm -rf`, history rewrites) without explicit approval

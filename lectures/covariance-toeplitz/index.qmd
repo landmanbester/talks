@@ -1,27 +1,14 @@
 ---
 title: "Covariance, Toeplitz and Power Spectra"
-author: "Landman Bester"
-date: "11 March 2025"
 institute: "AI4RI"
 format:
   revealjs:
-    theme: [dark, ../templates/dark-academic.scss]
-    slide-number: true
-    code-line-numbers: false
-    code-copy: true
-    highlight-style: monokai
-    center: true
-    transition: slide
-    footer: "SARAO | AIMS South Africa"
-    title-slide-attributes:
-      data-background-image: images/meerkat-milkyway.png
-      data-background-opacity: "0.5"
     include-in-header:
       text: |
         <script>
         MathJax = {
-          tex: {
-            macros: {
+          TeX: {
+            Macros: {
               bm: ["{\\boldsymbol{#1}}", 1],
               Fourier: "{\\mathcal{F}}",
               Normal: ["{\\mathcal{N}\\left(#1, #2\\right)}", 2]

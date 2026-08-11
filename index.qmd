@@ -4,15 +4,39 @@ format:
   html:
     theme: darkly
 listing:
-  contents:
-    - "*/index.qmd"
-  type: table
-  fields: [title, institute]
-  field-display-names:
-    institute: "Venue"
-  sort: "title"
-  sort-ui: false
-  filter-ui: false
+  - id: contributions
+    contents: "contributions/*/index.qmd"
+    type: table
+    fields: [date, title, event, institute]
+    field-display-names:
+      event: "Event"
+      institute: "Affiliation"
+    sort: "date desc"
+    sort-ui: false
+    filter-ui: false
+  - id: lectures
+    contents: "lectures/*/index.qmd"
+    type: table
+    fields: [title, institute]
+    field-display-names:
+      institute: "Venue"
+    sort: "title"
+    sort-ui: false
+    filter-ui: false
 ---
 
 Quarto revealjs presentations. Click a title to open the slides.
+
+## Contributions
+
+Conference and workshop talks, each given once on the date shown.
+
+::: {#contributions}
+:::
+
+## Lectures
+
+Teaching material, revised and re-given. No fixed date.
+
+::: {#lectures}
+:::

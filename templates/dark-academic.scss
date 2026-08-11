@@ -325,3 +325,33 @@ $border-radius: 6px;
     font-size: 0.9em;
   }
 }
+
+// Logo strip — title slide (via templates/title-slide.html) and closing slides.
+// Each logo sits on a white rounded chip so light, dark, and transparent
+// source images all read against the dark background.
+.reveal .logo-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9em;
+  margin-top: 1.4em;
+  max-width: 100%;
+
+  img {
+    height: 52px;
+    width: auto;
+    margin: 0;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 7px 11px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+}
+
+// Event / location line on a contribution's title slide.
+.reveal .event {
+  font-size: 0.75em;
+  color: #8b949e;
+}

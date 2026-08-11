@@ -1,22 +1,6 @@
 ---
 title: "CASA and cult-cargo"
-author: "Landman Bester"
-date: today
 institute: "SARAO"
-format:
-  revealjs:
-    theme: [dark, ../templates/dark-academic.scss]
-    slide-number: true
-    code-line-numbers: false
-    code-copy: true
-    highlight-style: monokai
-    center: true
-    transition: slide
-    mermaid-format: svg
-    css: custom.css
-    title-slide-attributes:
-      data-background-image: images/meerkat-milkyway.jpg
-      data-background-opacity: "0.5"
 ---
 
 ## Stimela Recap — Cabs

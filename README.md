@@ -9,21 +9,41 @@ Agent conventions (porting workflow, theme classes, Mermaid/Manim rules) live in
 
 ## Layout
 
+Talks come in two classes, and the class a deck lives in decides its
+formatting and the agent rules that apply to it:
+
+- **`lectures/`** — teaching material, revised and re-given. Undated
+  (`date: today`), institutional logos only.
+- **`contributions/`** — conference and workshop talks, each given once.
+  Carries the event date, and event logos alongside the institutional ones.
+
 ```
 talks/
-├── _quarto.yml            # Website project config — renders index.qmd + */index.qmd
-├── index.qmd              # Listing page: auto-generated table of all talks
+├── _quarto.yml            # Website project config — renders index.qmd + */*/index.qmd
+├── index.qmd              # Listing page: one table per class
 ├── templates/
-│   └── dark-academic.scss # Shared theme (canonical copy; the skill symlinks to it)
+│   ├── dark-academic.scss # Shared theme (canonical copy; the skill symlinks to it)
+│   ├── lectures.scss      # Lecture-specific layer on top of the shared theme
+│   ├── contributions.scss # Contribution-specific layer
+│   └── title-slide.html   # Title-slide partial; renders the logo strip
 ├── assets/logos/          # Shared logos + meerkat-milkyway.jpg title background
+├── scripts/
+│   └── shoot-decks.sh     # Render + screenshot every deck (verification harness)
 ├── reference_pdfs/        # Canva PDF exports to port from (gitignored)
 ├── .claude/skills/        # quarto-revealjs + manim skills for Claude Code
 ├── _animations/           # Standalone manim explainer videos (one dir per video:
 │   └── <video-name>/      #   scenes.md plan + script; renders land in media/, gitignored)
-├── <talk-name>/
-│   ├── index.qmd          # The presentation (always index.qmd)
-│   ├── custom.css         # Scrollbar fix
-│   └── images/            # Talk-specific images
+├── lectures/
+│   ├── AGENTS.md          # Lecture rules (CLAUDE.md symlinks to it)
+│   ├── _metadata.yml      # Shared front matter for every lecture
+│   └── <talk-name>/
+│       ├── index.qmd      # The presentation (always index.qmd)
+│       ├── custom.css     # Scrollbar fix (required — `css:` is hoisted)
+│       └── images/        # Talk-specific images
+├── contributions/
+│   ├── AGENTS.md          # Contribution rules (CLAUDE.md symlinks to it)
+│   ├── _metadata.yml      # Shared front matter for every contribution
+│   └── <talk-name>/       # Same shape as a lecture
 └── _site/                 # Rendered site (gitignored — never edit by hand)
 ```
 
@@ -33,10 +53,14 @@ The root `_quarto.yml` makes this directory a Quarto project. Any `quarto`
 command run anywhere inside it operates in project context:
 
 - **All output goes to `_site/`** — including single-talk renders, which land in
-  `_site/<talk-name>/`. Nothing renders in-place next to the `.qmd` anymore.
-- The root `index.qmd` is a **listing page**: it reads `title` and `institute`
-  from each talk's front matter and builds the table automatically. Add a new
-  talk directory → it appears on the next render. No manual index editing.
+  `_site/<class>/<talk-name>/`. Nothing renders in-place next to the `.qmd`.
+- The root `index.qmd` is a **listing page** with one table per class: dated
+  contributions sorted most-recent-first, then undated lectures sorted by
+  title. Add a new talk directory under either class → it appears on the next
+  render. No manual index editing.
+- **Shared front matter is hoisted.** Theme, revealjs options, title
+  background, and `css:` come from the class `_metadata.yml`, so a deck's own
+  front matter carries only what is specific to it.
 - Referenced resources (images, webm animations) are copied into `_site/`
   automatically.
 
@@ -44,9 +68,9 @@ command run anywhere inside it operates in project context:
 
 ```bash
 # Edit loop: live preview of one talk (auto-reloads on save)
-cd <talk-name>
+cd lectures/<talk-name>          # or contributions/<talk-name>
 quarto preview index.qmd
-# → serves at http://localhost:PORT/<talk-name>/  (note the prefix!)
+# → serves at http://localhost:PORT/lectures/<talk-name>/  (note the prefix!)
 
 # Build everything: listing page + all talks
 quarto render            # from the repo root → _site/
@@ -57,8 +81,13 @@ quarto preview           # from the repo root
 ```
 
 To create a new talk, use the `quarto-revealjs` skill in Claude Code
-(`/quarto-revealjs`) — it scaffolds the directory, theme reference, custom.css,
-and title-slide background.
+(`/quarto-revealjs`), or run the scaffold script directly with the required
+class argument:
+
+```bash
+python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py lecture "Interferometry Basics"
+python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KAT-7 Transient Search"
+```
 
 ## Rendering to PDF
 
@@ -68,14 +97,14 @@ Three options, in order of preference (full details in
 **1. decktape — best fidelity to the HTML slides**
 
 ```bash
-quarto render <talk-name>/index.qmd
-npx decktape reveal --size 1600x900 _site/<talk-name>/index.html slides.pdf
+quarto render lectures/<talk-name>/index.qmd
+npx decktape reveal --size 1600x900 _site/lectures/<talk-name>/index.html slides.pdf
 ```
 
 **2. Browser print-to-PDF — no tooling needed**
 
 Open the talk with `?print-pdf` appended, e.g.
-`http://localhost:PORT/<talk-name>/?print-pdf`, then Ctrl+P → Save as PDF
+`http://localhost:PORT/lectures/<talk-name>/?print-pdf`, then Ctrl+P → Save as PDF
 (enable background graphics).
 
 By default all fragments appear expanded on one page. For one page per

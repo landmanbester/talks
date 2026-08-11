@@ -23,7 +23,12 @@ __pycache__/
 # Source PDFs from Canva (large binaries, not version-controlled)
 reference_pdfs/
 
+# Rendered deck exports (regenerate with decktape — see README)
+*.pdf
+
 /.quarto/
 
 # Website project output
 /_site/
+
+**/*.quarto_ipynb

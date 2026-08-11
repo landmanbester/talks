@@ -1,0 +1,33 @@
+<!-- Quarto's stock revealjs title-slide partial, extended with an optional
+     event line and logo strip.
+
+     NOTE: pandoc parses template directives inside HTML comments too, so this
+     comment must not contain any dollar-delimited sequences.
+
+     The title-slide-attributes loop below is what applies each deck's
+     background image — do not drop it.
+
+     Every added block is guarded by a conditional, so a deck that sets none of
+     `event`, `location`, or `logos` renders exactly the stock title slide.
+     That is what keeps these fields optional. -->
+<section id="$idprefix$title-slide"$for(title-slide-attributes/pairs)$ $it.key$="$it.value$"$endfor$>
+  <h1 class="title">$title$</h1>
+$if(subtitle)$
+  <p class="subtitle">$subtitle$</p>
+$endif$
+$for(author)$
+  <p class="author">$author$</p>
+$endfor$
+$for(institute)$
+  <p class="institute">$institute$</p>
+$endfor$
+$if(date)$
+  <p class="date">$date$</p>
+$endif$
+$if(event)$
+  <p class="event">$event$$if(location)$ &middot; $location$$endif$</p>
+$endif$
+$if(logos)$
+  <div class="logo-strip">$for(logos)$<img src="$logos$" alt="" />$endfor$</div>
+$endif$
+</section>

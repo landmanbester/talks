@@ -43,7 +43,7 @@ every deck repeats the same twelve lines of front matter and a single
 
 The installed Quarto is **1.6.42**; the current release is **1.10.18**
 (2026-07-24). The `quarto-authoring` skill consulted for this work is written
-against **1.8.26**, so guidance already runs ahead of the binary.
+against **1.9.36** (skill v1.4), so guidance already runs ahead of the binary.
 
 The upgrade happens **before** the refactor, as its own commit, so that visual
 regressions from the upgrade stay separable from regressions caused by the
@@ -149,15 +149,40 @@ MathJax macro blocks in `deconvolution` and `covariance-toeplitz`.
 Each deck's front matter then shrinks to what is genuinely specific to it:
 title, subtitle, institute, macros, and overrides.
 
-### Two prerequisites this forces
+### Prerequisites this forces
 
-1. `covariance-toeplitz/` and `deconvolution/` have no `custom.css`. The hoisted
-   `css: custom.css` would fail for them, so both get the standard
-   scrollbar-fix file:
-   `.reveal div.sourceCode { overflow-x: hidden !important; }`
-2. `covariance-toeplitz/covariance-toeplitz.qmd` is a stale duplicate of that
-   deck's `index.qmd`. It is not rendered today; under the new glob it would
-   remain unrendered, but it is dead weight that will drift. Delete it.
+`covariance-toeplitz/` and `deconvolution/` have no `custom.css`. The hoisted
+`css: custom.css` would fail for them, so both get the standard scrollbar-fix
+file: `.reveal div.sourceCode { overflow-x: hidden !important; }`
+
+## Housekeeping
+
+Three tracked files were audited while scoping the move.
+
+**`covariance-toeplitz/covariance-toeplitz.qmd` — delete.** Confirmed stale by
+diff: it is not a copy of `index.qmd` but its superseded predecessor, carrying a
+hard-coded `date: "11 March 2025"`, a `.png` background the deck no longer
+uses, and the lowercase `tex:/macros:` MathJax syntax that `AGENTS.md`
+documents as broken. `index.qmd` is the corrected successor. Git history
+retains it.
+
+**`deconvolution/deconvolution.pdf` — untrack, keep on disk.** A 424 KB
+rendered export committed alongside the deck, inconsistent with the repo
+ignoring rendered output everywhere else. `git rm --cached` removes it from the
+index without deleting the file, and `.gitignore` gains a rule so exports stop
+being committed. The existing `reference_pdfs/` rule is separate and
+unaffected, so Canva sources keep their current handling.
+
+**`kremetart-pipeline/sphere_painting.py` and `sphere_painting_scenes.md` —
+keep.** Not stale: the script renders `videos/sphere-painting.webm`, embedded at
+`index.qmd:121`. It is the slide-clip workflow from `AGENTS.md`, which does not
+prescribe a location for the script, and it moves with its deck.
+
+Noted but out of scope: `kremetart-pipeline/index.qmd` uses raw `<video>` tags
+where `AGENTS.md` calls for the `{{< video >}}` shortcode. One is a full-slide
+background video the shortcode cannot express, so it is justified; the other
+(line 121) could be converted. Left alone — this refactor does not restyle deck
+content.
 
 ## Front matter contract
 
@@ -165,13 +190,33 @@ title, subtitle, institute, macros, and overrides.
 |---|---|---|
 | `date` | `today`, never hard-coded | hard-coded date of the event |
 | `institute` | course or host institution | own affiliation, e.g. `SARAO / Rhodes` |
-| `event` | — | **required**: conference or workshop name |
-| `location` | — | **required**: city, country |
+| `event` | — | recommended: conference or workshop name |
+| `location` | — | recommended: city, country |
 | `logos` | inherited institutional set | inherited institutional set **plus** event logos |
-| `bibliography` | optional | **required** — see Citations |
+| `bibliography` | optional | recommended — see Citations |
 
 The "never hard-code dates" rule that currently applies repo-wide becomes
 lecture-scoped. Contributions invert it: the date is the point.
+
+### Nothing is mandatory
+
+No field is enforced. A contribution consisting of nothing but a `title` must
+render, and the site must build. The class rules describe conventions, not
+validation, and there is no schema check anywhere in this design.
+
+This constrains two things:
+
+- **`contributions/_metadata.yml` sets no `date:` fallback.** A contribution
+  that omits its date shows a blank cell in the listing. That is deliberate: a
+  `date: today` default would silently stamp an old talk with today's date,
+  which is worse than visibly missing. Blank is honest.
+- **The contributions listing tolerates gaps.** Quarto renders a missing
+  listing field as an empty cell rather than failing, so a deck without
+  `event:` or `location:` still appears in the table. `sort: "date desc"`
+  places undated entries consistently rather than erroring.
+
+The practical effect: `quarto render` never fails because of missing metadata.
+An incomplete contribution looks incomplete, which is the correct feedback.
 
 ## Citations and bibliography
 
@@ -179,8 +224,9 @@ No deck in the repository currently uses `bibliography:` or a single `[@cite]`.
 For conference contributions this is a genuine gap: inline attribution and a
 closing references slide are expected of academic talks.
 
-Contributions carry a `references.bib` beside `index.qmd` and declare it in
-front matter:
+Contributions that cite anything carry a `references.bib` beside `index.qmd`
+and declare it in front matter. A deck that cites nothing needs neither file
+nor key:
 
 ```yaml
 bibliography: references.bib
@@ -326,16 +372,20 @@ class files.
 
 `contributions/AGENTS.md`:
 
-- `date:` is the hard-coded date of the event
-- `event:` and `location:` are required
+- `date:` is the hard-coded date of the event, not `today`
+- `event:` and `location:` are worth setting — they populate the listing — but
+  nothing breaks without them
 - logos on both the title slide and the closing slide
 - event logos are appended to the inherited institutional set
 - slide budget tied to the talk's time slot; conference talks are short, so
   prefer splitting over shrinking
-- `bibliography: references.bib` required, with an explicit `## References`
+- when citing, `bibliography: references.bib` with an explicit `## References`
   slide placed before the closing slide
 - speaker notes in `::: {.notes}` blocks; presenter view and chalkboard
   documented as delivery aids
+
+Both files state their conventions as defaults to follow, not as requirements
+to satisfy. Neither introduces a validation step.
 
 Each file gets a `CLAUDE.md` symlink beside it, matching the root convention.
 Claude Code loads a nested `CLAUDE.md` automatically when working in that
@@ -352,12 +402,13 @@ subtree, so the correct rules apply by location without being requested.
   argument and the two-class layout.
 - `README.md` layout and command sections are updated. Preview URLs gain a path
   segment: `http://localhost:PORT/lectures/<slug>/`.
-- `.gitignore` needs no change. Its patterns are either unanchored or anchored
-  to paths that do not move, and `!templates/*.html` already un-ignores the new
-  title-slide partial.
+- `.gitignore` gains one rule, for the deck PDF exports described under
+  Housekeeping. Its existing patterns need no change: they are either unanchored
+  or anchored to paths that do not move, and `!templates/*.html` already
+  un-ignores the new title-slide partial.
 - The root `AGENTS.md` gains a pointer to the `quarto-authoring` skill for
   citations, cross-references, and conditional content, noting that the skill
-  targets Quarto 1.8.26 — accurate only once the upgrade lands.
+  targets Quarto 1.9.36 — accurate only once the upgrade lands.
 - `contributions/AGENTS.md` should be created with the `skill-creator`
   conventions in mind if the scaffolding later splits into per-class skills;
   that split is deliberately deferred until the two rule sets have settled.
