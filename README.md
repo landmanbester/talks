@@ -5,7 +5,7 @@ One directory per talk, a shared dark theme, and a root-level Quarto **website
 project** that builds everything into a single browsable site.
 
 Agent conventions (porting workflow, theme classes, Mermaid/Manim rules) live in
-[AGENTS.md](AGENTS.md) — `CLAUDE.md` is a symlink to it.
+[AGENTS.md](AGENTS.md) — `CLAUDE.md` and `GEMINI.md` are symlinks to it.
 
 ## Layout
 
@@ -30,18 +30,18 @@ talks/
 ├── scripts/
 │   └── shoot-decks.sh     # Render + screenshot every deck (verification harness)
 ├── reference_pdfs/        # Canva PDF exports to port from (gitignored)
-├── .claude/skills/        # quarto-revealjs + manim skills for Claude Code
+├── .agents/skills/        # quarto-revealjs + manim skills (.claude/skills symlinks here)
 ├── _animations/           # Standalone manim explainer videos (one dir per video:
 │   └── <video-name>/      #   scenes.md plan + script; renders land in media/, gitignored)
 ├── lectures/
-│   ├── AGENTS.md          # Lecture rules (CLAUDE.md symlinks to it)
+│   ├── AGENTS.md          # Lecture rules (CLAUDE.md / GEMINI.md symlink to it)
 │   ├── _metadata.yml      # Shared front matter for every lecture
 │   └── <talk-name>/
 │       ├── index.qmd      # The presentation (always index.qmd)
 │       ├── custom.css     # Scrollbar fix (required — `css:` is hoisted)
 │       └── images/        # Talk-specific images
 ├── contributions/
-│   ├── AGENTS.md          # Contribution rules (CLAUDE.md symlinks to it)
+│   ├── AGENTS.md          # Contribution rules (CLAUDE.md / GEMINI.md symlink to it)
 │   ├── _metadata.yml      # Shared front matter for every contribution
 │   └── <talk-name>/       # Same shape as a lecture
 └── _site/                 # Rendered site (gitignored — never edit by hand)
@@ -80,19 +80,18 @@ quarto preview           # from the repo root
 # or just open _site/index.html in a browser
 ```
 
-To create a new talk, use the `quarto-revealjs` skill in Claude Code
-(`/quarto-revealjs`), or run the scaffold script directly with the required
-class argument:
+To create a new talk, use the `quarto-revealjs` skill in your AI assistant, or
+run the scaffold script directly with the required class argument:
 
 ```bash
-python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py lecture "Interferometry Basics"
-python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KAT-7 Transient Search"
+python3 .agents/skills/quarto-revealjs/scripts/scaffold_talk.py lecture "Interferometry Basics"
+python3 .agents/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KAT-7 Transient Search"
 ```
 
 ## Rendering to PDF
 
 Three options, in order of preference (full details in
-`.claude/skills/quarto-revealjs/references/pdf-export.md`):
+`.agents/skills/quarto-revealjs/references/pdf-export.md`):
 
 **1. decktape — best fidelity to the HTML slides**
 

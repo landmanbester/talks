@@ -22,15 +22,27 @@ format:
         </script>
 ---
 
+# Three MeerKAT UHF-band pointings
+
+## {background-image="images/clean_mosaic.png" background-size="cover" background-color="#0d1117"}
+
+::: {.overlay-caption .fragment}
+Stitched image space mosaic
+:::
+
+
 ## {background-image="images/gc-teaser.png" background-size="cover" background-color="#0d1117"}
 
 ::: {.overlay-caption .fragment}
-MeerKAT UHF. Three pointings. Seven square degrees.
+Jointly imaged
 :::
 
+## {background-image="images/mean_sensitivity_pattern.png" background-size="cover" background-color="#0d1117"}
+
 ::: {.overlay-caption .fragment}
-We'll come back to this.
+Mean sensitivity pattern
 :::
+
 
 
 # The adoption gap

@@ -460,7 +460,7 @@ flowchart LR
 - Use `<-.->` for dashed bidirectional arrows (visually lighter than solid `-->`)
 - `%%|` cell options control sizing: `%%| fig-width: 4.5`
 - Available themes: `default`, `forest`, `dark`, `neutral`, `base`
-- For comprehensive Mermaid reference, see the `quarto-authoring` skill's `references/diagrams.md`
+- For comprehensive Mermaid syntax and diagrams, see Mermaid's official documentation.
 
 ---
 

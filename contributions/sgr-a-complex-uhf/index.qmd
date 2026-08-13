@@ -10,7 +10,7 @@ location: "ICE Kraków, Poland"
 ## {background-image="images/sgra-teaser.png" background-size="cover" background-color="#0d1117"}
 
 ::: {.overlay-caption .fragment}
-544–1087 MHz. Seven square degrees.
+544–1087 MHz. Five square degrees.
 :::
 
 ::: {.overlay-caption .fragment}
@@ -83,7 +83,7 @@ A point-source prior is a poor description of nearly everything in this image.
 ::: {.column width="50%"}
 ### Wide
 
-Three pointings, **interleaved in time**, covering ~7 deg². The primary beam response varies strongly across the mosaic.
+Three pointings, **interleaved in time**, covering ~5 deg². The primary beam response varies strongly across the mosaic.
 :::
 ::: {.column width="50%"}
 ### Wideband
@@ -209,7 +209,7 @@ Difference map and histogram above an SNR cut. The interesting question is not *
 ## {background-image="images/sgra-full.png" background-size="cover" background-color="#0d1117"}
 
 ::: {.overlay-caption .fragment}
-Seven square degrees, imaged jointly.
+Five square degrees, imaged jointly.
 :::
 
 ## Filament spectral indices

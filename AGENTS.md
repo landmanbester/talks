@@ -1,6 +1,6 @@
 # Talks — Agent Context
 
-> Single source of truth for AI coding agents. `CLAUDE.md` is a symlink to this file.
+> Single source of truth for AI coding agents. `CLAUDE.md` and `GEMINI.md` are symlinks to this file.
 
 ## Project overview
 
@@ -19,10 +19,10 @@ formatting and which rules apply** — each class directory carries its own
 
 ```
 talks/
-├── AGENTS.md / CLAUDE.md (symlink)  # Shared conventions (this file)
+├── AGENTS.md / CLAUDE.md / GEMINI.md (symlinks)  # Shared conventions (this file)
 ├── _quarto.yml                     # Website project: renders */*/index.qmd into _site/
 ├── index.qmd                       # Listing page: one table per class
-├── .claude/skills/
+├── .agents/skills/                 # Agent skills (.claude/skills symlinks here)
 │   ├── quarto-revealjs/            # Scaffolding + porting skill (references, examples, scripts)
 │   ├── manim-composer/             # Plan 3b1b-style animations (use BEFORE writing manim code)
 │   └── manimce-best-practices/     # ManimCE implementation reference
@@ -41,7 +41,7 @@ talks/
 │                                   #   one script; media/ output gitignored; the leading
 │                                   #   underscore keeps Quarto's site render away
 ├── lectures/
-│   ├── AGENTS.md / CLAUDE.md       # Lecture-specific rules — read before authoring
+│   ├── AGENTS.md / CLAUDE.md / GEMINI.md  # Lecture-specific rules — read before authoring
 │   ├── _metadata.yml               # Shared front matter for every lecture
 │   └── talk-name/
 │       ├── index.qmd               # The presentation (always index.qmd)
@@ -49,7 +49,7 @@ talks/
 │       ├── images/                 # Images for this talk (copy shared assets here)
 │       └── videos/                 # Manim renders (webm)
 ├── contributions/
-│   ├── AGENTS.md / CLAUDE.md       # Contribution-specific rules
+│   ├── AGENTS.md / CLAUDE.md / GEMINI.md  # Contribution-specific rules
 │   ├── _metadata.yml               # Shared front matter for every contribution
 │   └── talk-name/                  # Same shape as a lecture
 └── ...
@@ -59,22 +59,14 @@ talks/
 
 ### 1. Scaffold and port
 
-Use the `quarto-revealjs` skill to scaffold and port:
-
-```
-/quarto-revealjs
-```
+Follow the [`quarto-revealjs`](.agents/skills/quarto-revealjs/SKILL.md) skill to scaffold and port presentations.
 
 Scaffolding takes a required class argument:
 
 ```bash
-python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py lecture "Interferometry Basics"
-python .claude/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KAT-7 Transient Search"
+python3 .agents/skills/quarto-revealjs/scripts/scaffold_talk.py lecture "Interferometry Basics"
+python3 .agents/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KAT-7 Transient Search"
 ```
-
-For citations, cross-references, and conditional content — anything beyond
-slide layout — use the `quarto-authoring` skill (v1.4, written against Quarto
-1.9.36; this repo runs 1.10.18).
 
 The skill contains:
 - **references/** — theme guide, scaffolding conventions, porting guide, PDF export
@@ -146,7 +138,7 @@ google-chrome --headless=new \
 - Fragment state cannot be controlled via URL — headless screenshots always show the pre-fragment (initial) state
 - **Checking the fully-revealed state**: temporarily add `fragments: false` under `revealjs:` in the YAML, render, screenshot every slide (all fragments visible), then **remove the option and re-render**. This is the only reliable way to catch overflow that only appears after the last fragment click. Verify restoration with `grep -c 'class="fragment"' _site/<talk>/index.html` (should be > 0)
 - Hidden fragments still occupy layout space (reveal.js uses `visibility: hidden`), so vertical positions in a pre-fragment screenshot match the final layout — only the text is invisible
-- Read `/tmp/slide.png` with the Read tool to see the rendered result
+- Inspect `/tmp/slide.png` with your image viewer or file viewing tool to see the rendered result
 
 ### 4. Fix overflow
 

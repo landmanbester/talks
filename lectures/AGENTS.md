@@ -1,6 +1,6 @@
 # Lectures — Agent Context
 
-> Rules for teaching decks. `CLAUDE.md` is a symlink to this file.
+> Rules for teaching decks. `CLAUDE.md` and `GEMINI.md` are symlinks to this file.
 > The repository-wide conventions in `../AGENTS.md` still apply — this file
 > covers only what is specific to lectures.
 

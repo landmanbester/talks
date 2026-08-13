@@ -90,10 +90,10 @@ Talks belong to one of two classes, and the class is a **required** first
 argument. It decides where the directory lands and which rules apply:
 
 ```bash
-python scaffold_talk.py lecture "Interferometry Basics" --institute "NASSP"
+python3 scaffold_talk.py lecture "Interferometry Basics" --institute "NASSP"
 # → lectures/interferometry-basics/
 
-python scaffold_talk.py contribution "KAT-7 Transient Search"
+python3 scaffold_talk.py contribution "KAT-7 Transient Search"
 # → contributions/kat-7-transient-search/
 ```
 

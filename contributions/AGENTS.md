@@ -1,6 +1,6 @@
 # Contributions — Agent Context
 
-> Rules for conference and workshop talks. `CLAUDE.md` is a symlink to this file.
+> Rules for conference and workshop talks. `CLAUDE.md` and `GEMINI.md` are symlinks to this file.
 > The repository-wide conventions in `../AGENTS.md` still apply — this file
 > covers only what is specific to contributions.
 
@@ -108,7 +108,7 @@ explicitly:
 ```
 
 A deck that cites nothing needs neither the file nor the key. For citation
-syntax beyond the above, use the `quarto-authoring` skill.
+syntax beyond the above, consult standard Quarto citations documentation.
 
 ## Delivery
 

@@ -1,6 +1,6 @@
 ---
 name: quarto-revealjs
-description: "Use this skill whenever the user wants to create, edit, build, or port a presentation using Quarto revealjs. This includes: creating slide decks with LaTeX math, code snippets, diagrams, or technical content; porting presentations from Canva, PowerPoint, Google Slides, or PDF to Quarto; scaffolding a new talk project; rendering to HTML or PDF; customizing themes with SCSS; or working with .qmd files for presentations. Trigger whenever the user mentions 'Quarto', 'revealjs', 'qmd slides', 'technical presentation', 'lecture slides', or asks to create a presentation that involves code and/or math. Also trigger when the user asks to convert or port an existing presentation to a markdown-based or code-friendly format. Do NOT use this skill for PowerPoint (.pptx) creation — use the pptx skill instead."
+description: "Use this skill whenever creating, editing, building, or porting a presentation using Quarto revealjs. This includes: creating slide decks with LaTeX math, code snippets, diagrams, or technical content; porting presentations from Canva, PowerPoint, Google Slides, or PDF to Quarto; scaffolding a new talk project; rendering to HTML or PDF; customizing themes with SCSS; or working with .qmd files for presentations. Trigger whenever the user mentions 'Quarto', 'revealjs', 'qmd slides', 'technical presentation', 'lecture slides', or asks to create a presentation that involves code and/or math. Also trigger when converting or porting an existing presentation to a markdown-based format."
 ---
 
 # Quarto Revealjs Presentation Skill
@@ -17,7 +17,7 @@ Create polished, technical presentations using Quarto's revealjs format. Optimiz
 | Customize theme | Edit the SCSS file — see [templates/](templates/) |
 | Render to HTML | `quarto render index.qmd` |
 | Export to PDF | Read [references/pdf-export.md](references/pdf-export.md) |
-| General Quarto authoring | Defer to the `quarto-authoring` skill from posit-dev/skills plugin (cross-references, citations, tables, figures, callouts, shortcodes, layout, extensions, YAML config) |
+| General Quarto authoring | Cross-references, citations, tables, figures, callouts, shortcodes, layout, extensions, YAML config |
 
 ---
 
@@ -237,5 +237,5 @@ See the SCSS file itself for all customizable variables.
 - **Dense slides** — use `{.smaller}` on the `## Heading` (not a wrapping div) to reduce font without breaking fragments
 - **fig-link bug** — `fig-link` is a known Quarto bug for standalone images in revealjs (images that are the only content on a slide). The link gets stripped. Workaround: use markdown linked images `[![alt](img.png)](url)` or ensure there is other text on the slide
 - **No inline HTML for layouts** — never use raw HTML `{=html}` blocks, inline style tags, CSS flexbox, or JavaScript for element positioning. Always use Quarto's native constructs (fenced divs, Mermaid blocks). See the project's AGENTS.md for presentation engineering standards
-- **General Quarto authoring** — for cross-references, citations, tables, figures, callouts, shortcodes, layout, extensions, and YAML config, defer to the `quarto-authoring` skill from posit-dev/skills plugin. This skill focuses specifically on revealjs presentation conventions
+- **General Quarto authoring** — for cross-references, citations, tables, figures, callouts, shortcodes, layout, extensions, and YAML config, follow standard Quarto authoring conventions. This skill focuses specifically on revealjs presentation conventions
 - **AGENTS.md** — the project has an AGENTS.md file that defines presentation engineering standards. This skill should complement (not contradict) those standards
