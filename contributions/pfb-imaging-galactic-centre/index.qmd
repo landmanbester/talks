@@ -24,25 +24,20 @@ format:
 
 # Three MeerKAT UHF-band pointings
 
-## {background-image="images/clean_mosaic.png" background-size="cover" background-color="#0d1117"}
 
-::: {.overlay-caption .fragment}
-Stitched image space mosaic
+## {background-image="images/gc-teaser.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}
+
+::: {.overlay-caption .fragment .small}
+Jointly imaged with SARA prior
 :::
 
-
-## {background-image="images/gc-teaser.png" background-size="cover" background-color="#0d1117"}
-
-::: {.overlay-caption .fragment}
-Jointly imaged
-:::
-
-## {background-image="images/mean_sensitivity_pattern.png" background-size="cover" background-color="#0d1117"}
+<!--
+## {background-image="images/mean_sensitivity_pattern.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}
 
 ::: {.overlay-caption .fragment}
 Mean sensitivity pattern
 :::
-
+-->
 
 
 # The adoption gap
@@ -63,10 +58,10 @@ Half this room ran it this week. Nothing that follows is an argument that it is 
 
 ## The sky is not a collection of points
 
-![](images/clean-vs-complex.png){height="440"}
+![](images/eso137_clean_vs_sara.png){height="440"}
 
 ::: {.muted .small}
-Filaments, diffuse structure, and extended emission at high dynamic range — where a point-source prior stops being a good description of what we are trying to recover.
+ESO137-006: uSARA (left) vs MSClean (right) — simplistic priors don't produce realistic images of complex diffuse structures.
 :::
 
 ## The literature already has answers {.smaller}
@@ -80,12 +75,12 @@ Filaments, diffuse structure, and extended emission at high dynamic range — wh
 
 . . .
 
-Each replaces the point-source prior with something better matched to complex emission.
+Each replaces the point-source prior with something better matched to complex emission (not point sources).
 
 . . .
 
 ::: {.result-box}
-Almost none of them have been run on a survey-scale dataset.
+None of them are routinely deployed on survey-scale data.
 :::
 
 ## Two walls {.smaller}
@@ -112,7 +107,7 @@ The obstacle has not been the mathematics.
 
 # Imaging as inference
 
-## The measurement equation
+## The measurement equation {.smaller}
 
 ::: {.highlight-box}
 $$y = R\,x + \epsilon, \qquad \epsilon \sim \mathcal{N}(0, \Sigma)$$
@@ -126,7 +121,9 @@ $$y = R\,x + \epsilon, \qquad \epsilon \sim \mathcal{N}(0, \Sigma)$$
 
 . . .
 
-$R$ has no inverse. Everything below is a statement about what we assume instead.
+::: {.highlight-box}
+Problem is ill-posed so Bayesian modelling is not optional!
+:::
 
 ## Maximum a posteriori {.smaller}
 
@@ -148,32 +145,39 @@ $$\hat{x} = \underset{x}{\argmin}\;\;
 . . .
 
 ::: {.muted}
-$f(x) = \tfrac{1}{2}\|y - Rx\|^2_{\Sigma^{-1}}$ — known exactly, and not negotiable.
+$f(x) = \tfrac{1}{2}\|y - Rx\|^2_{\Sigma^{-1}}$ — standard Gaussian likelihood (not necessarily known exactly)
 :::
 
-## The prior is the only choice {.smaller}
+## Prior should be a user choice {.smaller}
 
-Every method on the earlier slide is a choice of $r$ — and a non-smooth $r$ is handled through its proximal operator:
+::: {.highlight-box}
+Different fields can require different choices of $r$
+:::
 
+. . .
+
+::: {.highlight-box}
+Non-smooth $r$ is handled through its proximal operator:
 $$\prox_{\gamma r}(v) = \underset{x}{\argmin}\;\; r(x) + \frac{1}{2\gamma}\|x - v\|^2$$
+:::
 
 . . .
 
 ::: {.result-box}
-So the framework does not compete with those methods. It **hosts** them — including priors that are learned rather than written down.
+`pfb-imaging` does not impose a prior, it **hosts** them
 :::
 
 . . .
 
 ::: {.muted .small}
-CLEAN itself is recoverable this way: a sparsity prior with a particular minor-cycle solver.
+CLEAN itself is recoverable: a sparsity prior with a particular minor-cycle solver.
 :::
 
 ## Standing on the PyData stack {.smaller}
 
 ```{mermaid}
-%%| fig-width: 9
-%%| fig-height: 2.1
+%%| fig-width: 10
+%%| fig-height: 3.1
 ---
 config:
   theme: base
@@ -182,13 +186,13 @@ config:
     primaryTextColor: "#e6edf3"
     primaryBorderColor: "#58a6ff"
     lineColor: "#8b949e"
-    fontSize: "15px"
+    fontSize: "25px"
 ---
 flowchart LR
-  A[📡 Measurement<br />set] --> B[📦 xarray<br />+ zarr]
-  B --> C[⚙️ dask<br />scheduler]
-  C --> D[🔭 pfb<br />operators]
-  D --> E[🌌 MAP<br />solver]
+  A[📡 Data] --> B[📦 xarray<br />+ zarr]
+  B --> C[⚙️ Dask/Ray<br />schedulers]
+  C --> D[🔭 pfb<br />operators+solvers]
+  D --> E[🌌 spimple<br /> post-processing]
   classDef data fill:#0d1117,stroke:#d29922,color:#e6edf3
   classDef stage fill:#1f2937,stroke:#58a6ff,color:#e6edf3
   class A,E data
@@ -197,7 +201,7 @@ flowchart LR
 
 . . .
 
-Following the `Africanus` series: the chunking, the scheduler, the storage format and the array semantics are **inherited**, not written.
+`Africanus` philosophy — scheduler, storage format and array semantics are **inherited**, not re-invented.
 
 . . .
 
@@ -227,7 +231,7 @@ Applying $H$ naively means a **degrid and a grid over every visibility**, every 
 . . .
 
 ::: {.muted}
-This — not the prior — is why the methods on slide 4 have stayed in the literature.
+This — not the prior — is the barrier to adopting more sophisticated methods.
 :::
 
 ## CLEAN's approximation {.smaller}
@@ -242,11 +246,8 @@ a **convolution**, evaluated by FFT at image cost rather than data cost.
 
 . . .
 
-The approximation is only good near the phase centre and ignores baseline-dependent effects — which is why CLEAN needs periodic **major cycles** to recompute an exact residual.
-
-. . .
-
 ::: {.result-box}
+Approximation not perfect so **major cycles** are required to compute the exact residual.
 The trick is not tied to the point-source prior. It is a statement about $H$.
 :::
 
@@ -265,44 +266,35 @@ $$d_k = R^\dagger \Sigma^{-1}\left(y - R x_k\right)$$
 
 *approximate, FFT cost, many*
 
-$$x \leftarrow \prox_{\gamma r}\!\bigl(x - \gamma(\tilde{H}x - d_k)\bigr)$$
+$$x \leftarrow \prox^\tilde{H}_{\gamma r}\!\bigl(x + \gamma \tilde{H}^{-1} d_k \bigr)$$
 :::
 ::::
 
 . . .
 
 ::: {.highlight-box}
-$\tilde{H}$ is the fast-convolution approximation, applied as a **preconditioner** — so an arbitrary (or learned) prior iterates at CLEAN-like cost.
+$\tilde{H}$ is the fast, invertible Hessian approximation (the **preconditioner**)
 :::
 
 . . .
 
-::: {.muted .small}
-The approximation lives in the minor cycle only. The major cycle restores an exact residual, so the fixed point is the MAP solution of the *exact* problem.
-:::
-
-## What it buys {.smaller}
-
-![](images/convergence.png){height="420"}
-
-::: {.muted .small}
-Objective against **wall-clock**, preconditioned and not. Iteration count flatters the preconditioner; wall-clock is the honest axis.
+::: {.result-box}
+Arbitrary prior iterates at CLEAN-like cost — generalised forward modelling based minor cycle
 :::
 
 
 # MeerKAT UHF — the Galactic Centre
 
-## The dataset {.smaller}
+## The observation {.smaller}
 
 | | |
 |---|---|
 | Instrument | MeerKAT, UHF band |
 | Pointings | 3, reconstructed **jointly** |
-| Sky area | ~7 deg² |
-| Visibilities | *TBC* |
-| Channels | *TBC* |
-| Data volume | *TBC* TB |
-| Time to solution | *TBC* on *TBC* |
+| Sky area | ~5 deg² |
+| Image Size | 10000 x 10000 x 8 |
+| Data volume (before averaging) | ~1 TB |
+| Time to solution | 50 hours with uSARA algorithm |
 
 . . .
 
@@ -310,30 +302,48 @@ Objective against **wall-clock**, preconditioned and not. Iteration count flatte
 Complex extended emission at high dynamic range — the case the point-source prior handles worst.
 :::
 
-## Three pointings, one reconstruction {.smaller}
+## What forward modelling buys {.smaller}
 
-:::: {.columns}
-::: {.column width="45%"}
-![](images/pointing-layout.png){height="360"}
+![](images/beams.png){height="420"}
+
+::: {.muted}
+Enables incorporating systematics in a statistically robust way
+e.g. inhomogeneous primary beams
 :::
-::: {.column width="55%"}
+
+## Three pointings, one reconstruction
+
 ::: {.incremental}
 - One sky model, one prior, all data
 - Deconvolution is consistent **across** pointing boundaries
 - No stitching artefacts to explain away
+- Improved $uv$-coverage (resolution)
 - The primary beam enters $R$, not a post-hoc correction
 :::
-:::
-::::
 
-## {background-image="images/gc-full.png" background-size="cover" background-color="#0d1117"}
+## {background-image="images/GC_UHF_CLEAN.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}
 
-::: {.overlay-caption .fragment}
-Seven square degrees, reconstructed jointly.
+::: {.overlay-caption .fragment .small}
+Mosaicing with MSClean prior
 :::
 
-## Detail
 
+## {background-image="images/GC_UHF_SARA.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}
+
+::: {.overlay-caption .fragment .small}
+Jointly imaged with SARA prior
+:::
+
+
+## {background-image="images/GC_UHF_SARA_MODEL.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}
+
+::: {.overlay-caption .fragment .small}
+Intrinsic model
+:::
+
+## Caveats
+
+<!--
 ![](images/gc-zooms.png){height="470"}
 
 ::: {.muted .small}
@@ -353,22 +363,32 @@ Structure recovered below the nominal UHF resolution is **corroborated by indepe
 ::: {.muted}
 Suggestive, and bounded to high-SNR features — a non-linear prior can place an edge more precisely than the beam, where the data support it. Not a general resolution claim.
 :::
+-->
+
+::: {.incremental}
+- **Computational cost** — requires more compute than than CLEAN based methods but dominated by image size operations (FFT+DWT)
+- **Runtime sensitive to convergence criteria** — sub-iterative solvers need careful tuning, might be observation dependent
+- **Point source fidelity** — sophisticated priors mostly target enhanced reconstruction of extended emmission (often sub-optimal for point sources)
+:::
 
 
 # Where this leaves us
 
-## Three claims {.smaller}
+## Three claims
 
 ::: {.incremental}
 - **Principled** — imaging posed as MAP estimation, so the prior is an explicit, swappable choice rather than an emergent property of a loop
-- **Maintainable** — built on PyData, so the scaling machinery is someone else's problem
-- **Affordable** — preconditioning gives general and learned priors CLEAN-like iteration cost
+- **Maintainable** — inherited machinery is mature and maintained by the (much larger) PyData community
+- **Affordable** — preconditioning gives general priors CLEAN-like iteration cost and reduces the required number of major cycles
 :::
 
-. . .
+## What's next
 
-::: {.result-box}
-The two walls were engineering, not theory. Seven square degrees of the Galactic Centre is what it looks like when they come down.
+::: {.incremental}
+- **Acceleration** — image space operations (e.g. FFT) can be drastically accelerated on GPUs/TPUs
+- **More efficient/better priors** — learnt priors (e.g. AIRI) can be far more efficient (fewer iterations) and could improve point source reconstruction
+- **Multi-SPW+FIELD** — image all GC data simultaneously to obtain a high fidelity reconstruction over wide bandwidth
+- **Polarisation** — joint polarisation imaging coming soon!
 :::
 
 ## Thanks! {background-color="#0d1117" .closing-slide}
