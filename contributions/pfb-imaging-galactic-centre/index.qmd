@@ -5,6 +5,7 @@ institute: "SARAO / Rhodes University"
 date: "2026-08-19"
 event: "URSI GASS 2026 — Session J09"
 location: "ICE Kraków, Poland"
+author: "Landman Bester, Oleg Smirnov, Jonathan Kenyon, Simon Perkins"
 format:
   revealjs:
     include-in-header:
@@ -94,7 +95,7 @@ Terabytes per observation. Out-of-core and distributed is the default case, not 
 ::: {.column width="50%"}
 ### Implementation burden
 
-Bespoke code, written once for one paper, maintained by one postdoc, inherited by nobody.
+Bespoke code, maintained by a small group that specialises in algorithm development, inherited by nobody.
 :::
 ::::
 
@@ -323,47 +324,25 @@ e.g. inhomogeneous primary beams
 
 ## {background-image="images/GC_UHF_CLEAN.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}
 
-::: {.overlay-caption .fragment .small}
+::: {.overlay-caption .smaller}
 Mosaicing with MSClean prior
 :::
 
 
 ## {background-image="images/GC_UHF_SARA.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}
 
-::: {.overlay-caption .fragment .small}
+::: {.overlay-caption .smaller}
 Jointly imaged with SARA prior
 :::
 
 
 ## {background-image="images/GC_UHF_SARA_MODEL.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}
 
-::: {.overlay-caption .fragment .small}
+::: {.overlay-caption .smaller}
 Intrinsic model
 :::
 
 ## Caveats
-
-<!--
-![](images/gc-zooms.png){height="470"}
-
-::: {.muted .small}
-Filamentary, compact, and diffuse regions at matched stretch.
-:::
-
-## Beyond the nominal resolution {.smaller}
-
-![](images/subnyquist.png){height="380"}
-
-. . .
-
-Structure recovered below the nominal UHF resolution is **corroborated by independent higher-frequency data** of the same region.
-
-. . .
-
-::: {.muted}
-Suggestive, and bounded to high-SNR features — a non-linear prior can place an edge more precisely than the beam, where the data support it. Not a general resolution claim.
-:::
--->
 
 ::: {.incremental}
 - **Computational cost** — requires more compute than than CLEAN based methods but dominated by image size operations (FFT+DWT)
@@ -382,21 +361,26 @@ Suggestive, and bounded to high-SNR features — a non-linear prior can place an
 - **Affordable** — preconditioning gives general priors CLEAN-like iteration cost and reduces the required number of major cycles
 :::
 
-## What's next
+## What's next {.smaller}
 
 ::: {.incremental}
+- **MeerKAT+** — Inhomogeneous beams can be dealt with by splitting data into (MK-MK, MK-MK+, MK+-MK+) baseline groups (very similar to OTF Mosaicing)
 - **Acceleration** — image space operations (e.g. FFT) can be drastically accelerated on GPUs/TPUs
 - **More efficient/better priors** — learnt priors (e.g. AIRI) can be far more efficient (fewer iterations) and could improve point source reconstruction
 - **Multi-SPW+FIELD** — image all GC data simultaneously to obtain a high fidelity reconstruction over wide bandwidth
-- **Polarisation** — joint polarisation imaging coming soon!
+- **Polarisation** — polarisation imaging coming soon!
 :::
 
 ## Thanks! {background-color="#0d1117" .closing-slide}
 
 ::: {.contact}
-landman.bester@gmail.com
+lbester@sarao.ac.za
 :::
 
 ::: {.muted}
 `github.com/ratt-ru/pfb-imaging`
+:::
+
+::: {.muted}
+See `Africanus` [https://arxiv.org/abs/2412.12052](https://arxiv.org/abs/2412.12052) for more.
 :::
