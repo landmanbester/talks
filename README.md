@@ -28,11 +28,16 @@ talks/
 │   └── title-slide.html   # Title-slide partial; renders the logo strip
 ├── assets/logos/          # Shared logos + meerkat-milkyway.jpg title background
 ├── scripts/
-│   └── shoot-decks.sh     # Render + screenshot every deck (verification harness)
+│   ├── shoot-decks.sh     # Render + screenshot every deck's title slide
+│   └── check_slides.py    # Measure every slide for overflow; --shots for
+│                          #   full-deck screenshots with fragments revealed
 ├── reference_pdfs/        # Canva PDF exports to port from (gitignored)
-├── .agents/skills/        # quarto-revealjs + manim skills (.claude/skills symlinks here)
+├── .agents/skills/        # quarto-revealjs, quarto-talk-video, manim skills
+│                          #   (.claude/skills symlinks here)
 ├── _animations/           # Standalone manim explainer videos (one dir per video:
 │   └── <video-name>/      #   scenes.md plan + script; renders land in media/, gitignored)
+├── _video/                # Narrated conference videos (one dir per talk: spec.json +
+│   └── <talk-slug>/       #   narration tracked, frames/audio/mp4 gitignored)
 ├── lectures/
 │   ├── AGENTS.md          # Lecture rules (CLAUDE.md / GEMINI.md symlink to it)
 │   ├── _metadata.yml      # Shared front matter for every lecture

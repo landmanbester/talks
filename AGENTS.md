@@ -8,6 +8,23 @@ This directory contains Quarto revealjs presentations for technical talks at SAR
 
 Prioritize semantic structure, reproducible visualizations, and clean Markdown over pixel-perfect mimicry of the original deck. Never recreate Canva's visual layouts with custom HTML/JS positioning hacks.
 
+## Skills
+
+Task-specific instructions live in `.agents/skills/<name>/SKILL.md`. Claude Code discovers them
+automatically via the `.claude/skills` symlink; **other agents must read the `SKILL.md` themselves**
+before starting the matching task — the file is the instruction set, not background reading.
+
+| Task | Read |
+|---|---|
+| Create, port, render, or debug a deck | `.agents/skills/quarto-revealjs/SKILL.md` |
+| Record / assemble a talk video from a deck | `.agents/skills/quarto-talk-video/SKILL.md` |
+| Plan an explainer animation (before any code) | `.agents/skills/manim-composer/SKILL.md` |
+| Write ManimCE code | `.agents/skills/manimce-best-practices/SKILL.md` |
+
+Paths in a `SKILL.md` are relative to that skill's own directory, not to the repo root — the repo
+also has a top-level `scripts/`, so always invoke a skill's helper by its full path
+(`.agents/skills/quarto-talk-video/scripts/build_video.sh`).
+
 ## Directory structure
 
 Talks are split into two classes. **The class a deck lives in decides its
@@ -24,8 +41,10 @@ talks/
 ├── index.qmd                       # Listing page: one table per class
 ├── .agents/skills/                 # Agent skills (.claude/skills symlinks here)
 │   ├── quarto-revealjs/            # Scaffolding + porting skill (references, examples, scripts)
+│   ├── quarto-talk-video/          # Deck + voice-over → conference-compliant MP4
 │   ├── manim-composer/             # Plan 3b1b-style animations (use BEFORE writing manim code)
-│   └── manimce-best-practices/     # ManimCE implementation reference
+│   ├── manimce-best-practices/     # ManimCE implementation reference
+│   └── manimgl-best-practices/     # ManimGL (3b1b) reference — not used here, kept for parity
 ├── templates/
 │   ├── dark-academic.scss          # Shared dark theme (canonical copy)
 │   ├── lectures.scss               # Lecture layer on top of the shared theme
@@ -40,6 +59,9 @@ talks/
 │   └── video-name/                 # Standalone manim explainer video: scenes.md plan +
 │                                   #   one script; media/ output gitignored; the leading
 │                                   #   underscore keeps Quarto's site render away
+├── _video/
+│   └── talk-slug/                  # Talk-video build dir: spec.json + script/ tracked,
+│                                   #   frames/audio/mp4 gitignored (see quarto-talk-video)
 ├── lectures/
 │   ├── AGENTS.md / CLAUDE.md / GEMINI.md  # Lecture-specific rules — read before authoring
 │   ├── _metadata.yml               # Shared front matter for every lecture
@@ -136,11 +158,33 @@ google-chrome --headless=new \
 - Use the slide heading text as the anchor, lowercased and hyphenated (e.g. `#/the-proximal-operator`)
 - For nested slides (slides under a `#` section): use `#/H/V` where H = horizontal section index (0-indexed), V = vertical slide within that section (0-indexed). Example: `#/2/3` = 4th slide in the 3rd horizontal section
 - Fragment state cannot be controlled via URL — headless screenshots always show the pre-fragment (initial) state
-- **Checking the fully-revealed state**: temporarily add `fragments: false` under `revealjs:` in the YAML, render, screenshot every slide (all fragments visible), then **remove the option and re-render**. This is the only reliable way to catch overflow that only appears after the last fragment click. Verify restoration with `grep -c 'class="fragment"' _site/<talk>/index.html` (should be > 0)
+- **Checking the fully-revealed state**: use `scripts/check_slides.py --shots` (below). Do **not** hand-edit `fragments: false` into the front matter — the tool forces fragments visible in the browser instead, so an interrupted run cannot leave the deck with fragments disabled
 - Hidden fragments still occupy layout space (reveal.js uses `visibility: hidden`), so vertical positions in a pre-fragment screenshot match the final layout — only the text is invisible
 - Inspect `/tmp/slide.png` with your image viewer or file viewing tool to see the rendered result
 
-### 4. Fix overflow
+### 4. Find overflow
+
+Do not eyeball 30 screenshots looking for content falling off the slide — measure it:
+
+```bash
+scripts/check_slides.py                    # render, then check every deck
+scripts/check_slides.py --no-render        # reuse the existing _site build (~40 s, all decks)
+scripts/check_slides.py --no-render deconvolution
+scripts/check_slides.py --no-render --shots /tmp/shots deconvolution   # + every slide, fully revealed
+```
+
+It reports two severities, and exits 1 on the first:
+
+- **CLIPPED** — taller than `~778px`, genuinely cut off on screen. Fix it.
+- **tight** — over the `700px` design height but still visible, because reveal's
+  `margin: 0.1` leaves a 10% frame that content can grow into. Judgement call; it reads as cramped.
+  `--strict` fails on these too.
+
+`--shots` screenshots every slide with all fragments forced visible, which is the state where
+overflow usually appears. Deck sources are never modified — the probe is injected into a throwaway
+copy inside `_site/`.
+
+### 5. Fix overflow
 
 Common causes of content falling off the bottom of the slide:
 
@@ -181,6 +225,18 @@ Translate pipelines, architectures, and systems into Mermaid code blocks. Plain 
 - Use `<br />` for line breaks in labels (not `\n`)
 - Start node labels with a Unicode emoji for semantic meaning (e.g. `📡 Array`, `📦 CABS`, `⚙️ Stimela`)
 - Add `&nbsp;` padding in labels for wider nodes
+
+## Talk videos (pre-recorded conference submissions)
+
+A deck plus per-slide narration becomes an MP4 via the
+[`quarto-talk-video`](.agents/skills/quarto-talk-video/SKILL.md) skill. **Read that SKILL.md before
+touching ffmpeg** — it encodes the compliance checks (hard duration limits, codec/container, the
+submission filename) that ad-hoc invocations miss, and its scripts hard-fail on the silent failure
+modes (decktape truncating at a broken slide, slide/audio count mismatch).
+
+Per-slide audio is the default so a fluffed line costs one re-read, not the whole take. Build dir
+is `_video/<talk-slug>/`; requires `decktape` (npm, present) and `whisper` for captions (not
+installed — see the skill).
 
 ## Manim animations
 

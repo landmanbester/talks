@@ -27,6 +27,15 @@ reference_pdfs/
 # Rendered deck exports (regenerate with decktape — see README)
 *.pdf
 
+# Talk-video build artifacts: slide PNGs, recorded/processed audio, muxed MP4.
+# Scoped to the build areas — clips embedded in a deck (`<talk>/videos/*.webm|mp4`)
+# must stay tracked. The narration scripts and spec.json under _video/<slug>/ are tracked too.
+_video/*/slide-*.png
+_video/*/*.mp4
+_video/*/audio/
+_video/*/out/
+*.srt
+
 /.quarto/
 
 # Website project output
