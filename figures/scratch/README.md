@@ -33,9 +33,18 @@ resolution rather than around a joint-vs-image-space comparison:
 | `beam-bias.png` | The α histogram with and without the beam-area correction. Its slide was cut as too obvious for a J05 audience — the result is still real and still quoted on the homogenisation slide |
 | `uhf-lband-spix.png` | Superseded by `spix-inband-map`, which shows it beside the in-band fit |
 | `uhf-lband-spix-hist.png` | Superseded by `spix-hist-compare`, which overlays the in-band distribution |
+| `mosaic-compare.png` | Its slide (`What that buys you`) was cut because J09 makes the same CLEAN-vs-SARA comparison the same day, across three full-bleed slides and 60 s of narration. Carries the same confound as `mosaic-difference` above: algorithm and mosaicking scheme change together, so it cannot attribute the difference to either. Slide source kept in `contributions/sgr-a-complex-uhf/parked-slides.md` |
 
 Deleted rather than parked, at the same time: seven synthetic placeholders from
 the original scaffold (`psf-compare`, `spix-compare`, `spix-difference`,
 `filament-spix`, `bubble-base`, `uhf-lband-spectrum`, `uv-coverage-compare`).
 They were never real data — they stood in for sub-band PSF and spectral-index
 comparisons that the available products cannot support.
+
+`filament-spix` has since come back as a real figure — three non-thermal
+filament systems on the in-band α map — and lives in the deck's `images/`.
+Nothing here is that file.
+
+Slides are parked separately from figures, in
+`contributions/sgr-a-complex-uhf/parked-slides.md`: the markdown source of every
+cut slide, with the reason and where it sat.

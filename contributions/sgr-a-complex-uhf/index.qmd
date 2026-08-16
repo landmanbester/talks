@@ -40,7 +40,7 @@ This band is the one place several of these effects are simultaneously measurabl
 
 ::: {.incremental}
 - Three **8-hour** pointings, interleaved in time, covering ~5 deg²
-- 544–1087 MHz, imaged jointly with `pfb-imaging` and a SARA prior
+- 544–1087 MHz, imaged jointly with `pfb-imaging` under a **SARA** prior — sparsity in a wavelet dictionary, in place of CLEAN's point sources
 - Restored to **8.55″ × 7.76″**, homogenised across the band
 :::
 
@@ -112,9 +112,9 @@ Deconvolve each pointing **independently**, primary-beam correct, then weighted-
 ::: {.column width="50%"}
 ### Joint / OTF
 
-$$y(t) = R\bigl[A(t)\,x\bigr] + \epsilon$$
+$$y(t) = R_t\bigl[A(t)\,x\bigr] + \epsilon,\quad \epsilon \sim \mathcal{N}(0, \Sigma)$$
 
-The **direction- and time-dependent** beam $A(t)$ sits **inside** the measurement operator. One deconvolution, all data.
+The **direction- and time-dependent** beam $A(t)$ is *part of* the measurement operator, not a correction applied after it. One deconvolution, all data.
 :::
 ::::
 
@@ -122,6 +122,12 @@ The **direction- and time-dependent** beam $A(t)$ sits **inside** the measuremen
 
 ::: {.highlight-box}
 Not a workflow preference — the two are solving different problems.
+:::
+
+. . .
+
+::: {.muted .small}
+CLEAN does not minimise a stated objective, so there is no natural place to put $A(t)$ inside it. Forward modelling is available to an algorithm that solves an optimisation problem — which is **J09**.
 :::
 
 ## $A(t)$ is not just time-dependent {.smaller}
@@ -139,47 +145,18 @@ To deconvolve every pointing together the data must first be **rephased to a com
 
 
 
-## Every pointing that sees a pixel {.smaller}
+## The PSF is where it shows {.smaller}
 
-::: {.incremental}
-- Image-space gets **one pointing's** uv-coverage per sky position
-- Joint gets the coherent **union** of every pointing that sees it, primary-beam weighted
-- Interleaved in time, so that union spans **parallactic angle** as well as position
-:::
-
-. . .
-
-::: {.result-box}
-More samples per sky position — not merely more sky.
-:::
-
-. . .
-
-::: {.muted .small}
-Three times the imaging weight at the field centre, from the same observation.
-:::
-
-## The PSF is where it shows
-
-![](images/psf-sidelobes.png){height="430"}
+![](images/psf-sidelobes.png){height="345"}
 
 ::: {.muted .small}
 MFS PSFs, single pointing vs joint. Main lobes differ by 4%; sidelobe RMS is suppressed **4×** at arcminute scales and **~1.7×** out to 3°.
 :::
 
-
-## What that buys you {.smaller}
-
-![](images/mosaic-compare.png){height="330"}
-
-::: {.muted .small}
-Same sky, same colour scale. Left: each pointing deconvolved independently with **multi-scale CLEAN**, then averaged — the pointing footprints survive. Right: one **SARA** deconvolution over all three.
-:::
-
 . . .
 
-::: {.muted .small}
-CLEAN does not minimise a stated objective, so there is no natural place to put $A(t)$ inside it. Forward modelling is available to an algorithm that solves an optimisation problem.
+::: {.result-box}
+Every pointing that sees a pixel contributes — interleaved in time, so the union spans **parallactic angle** as well as position. Three times the imaging weight at the field centre.
 :::
 
 
@@ -340,11 +317,12 @@ Any weakly-constrained subsample will look like a steep-spectrum population. An 
 
 For a quadratic regulariser the MAP estimate is a **linear filter applied to the truth**:
 
-$$\hat{x} = \underbrace{\left(A^H N^{-1} A + \lambda L\right)^{-1} A^H N^{-1} A}_{R}\, x_{\rm true} + \text{noise}$$
+$$\hat{x} = \underbrace{\left(H + \lambda L\right)^{-1} H}_{K}\, x_{\rm true} + \text{noise},
+\qquad H = R^\dagger \Sigma^{-1} R$$
 
 ::: {.incremental}
-- Row $j$ of $R$ is the **effective PSF at pixel $j$** — what $\hat{x}_j$ actually reports
-- $N^{-1}$ sits *inside* $R$, so resolution is a function of **local SNR**, and for $\ell_1$, TV or learned priors of **source brightness** too
+- Row $j$ of $K$ is the **effective PSF at pixel $j$** — what $\hat{x}_j$ actually reports
+- $\Sigma^{-1}$ sits *inside* $K$, so resolution is a function of **local SNR**, and for $\ell_1$, TV or learned priors of **source brightness** too
 :::
 
 . . .
@@ -353,9 +331,13 @@ $$\hat{x} = \underbrace{\left(A^H N^{-1} A + \lambda L\right)^{-1} A^H N^{-1} A}
 The restoring beam *asserts* a resolution. It does not *measure* one.
 :::
 
+::: {.muted .small}
+$H$ is the Hessian **J09** spends its whole talk making cheap. $K$ is built from machinery we already have.
+:::
+
 ## Four other fields already report theirs {.smaller}
 
-| Field | Name for $R$ | Since |
+| Field | Name for $K$ | Since |
 |---|---|---|
 | Geophysics / normal modes | Averaging kernel | Backus & Gilbert 1968 |
 | Seismic tomography | Model resolution matrix | Menke 1989 |
@@ -371,7 +353,7 @@ Radio interferometry is the outlier. We hid it behind the restoring beam — not
 . . .
 
 ::: {.highlight-box}
-$Rv$ for a chosen probe is **one extra solve**. Affordable today, and we are not doing it.
+$Kv$ for a chosen probe is **one extra solve**. Affordable today, and we are not doing it.
 :::
 
 
