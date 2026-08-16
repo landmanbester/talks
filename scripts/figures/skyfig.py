@@ -349,6 +349,8 @@ class Panel:
     cbar_label: str | None = None
     frame: bool = True
     annotations: list = field(default_factory=list)
+    contours: list | None = None
+    contour_color: str = "#ffffff"
 
     def draw(self, fig, subplot_spec, theme: dict):
         """`subplot_spec` is an (nrows, ncols, index) triple.
@@ -376,6 +378,14 @@ class Panel:
                     fontweight="600",
                     bbox=dict(boxstyle="round,pad=0.35", fc=theme["bg"],
                               ec="none", alpha=0.65))
+
+        if self.contours:
+            # Drawn in data units, not percentiles: on a primary beam the
+            # levels that mean something are 0.5 and 0.1, and a percentile
+            # would silently give a different level in every panel -- which is
+            # exactly the comparison the figure exists to make.
+            ax.contour(img.data, levels=sorted(float(c) for c in self.contours),
+                       colors=self.contour_color, linewidths=0.9, alpha=0.75)
 
         if self.beam and img.beam is not None:
             draw_beam(ax, img, theme)

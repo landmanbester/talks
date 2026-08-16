@@ -47,3 +47,8 @@ _video/*/out/
 /_site/
 
 **/*.quarto_ipynb
+
+# Quarto scratch that lands at the repo root when a single doc is rendered
+# from inside its own directory rather than from the project root.
+/site_libs/
+/index-listing.json

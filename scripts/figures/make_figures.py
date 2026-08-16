@@ -20,8 +20,10 @@ Run it with an interpreter that has astropy, reproject and pyyaml, e.g.
 from __future__ import annotations
 
 import argparse
+import shutil
 import sys
 import time
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -107,8 +109,21 @@ def resolve_panel_image(spec: Spec, p: dict, region: dict,
     """
     op = p.get("op")
     if op is None:
-        img = prepare(spec.image(p["image"]), region, max_pixels)
+        img = smooth_image(prepare(spec.image(p["image"]), region, max_pixels), p)
         return apply_mask_by(spec, img, p, region, max_pixels), {"a": img}
+
+    if op == "mean":
+        # Any number of images on a common grid. Written for the mean
+        # sensitivity pattern -- three primary beams averaged is the mosaic's
+        # actual response, and it is not the same picture as any one of them.
+        first = prepare(spec.image(p["images"][0]), region, max_pixels)
+        stack = [first.data] + [spec.image(k).reproject_onto(first).data
+                                for k in p["images"][1:]]
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)
+            out = np.nanmean(np.stack(stack), axis=0)
+        img = SkyImage(out, first.wcs, first.header, first.path, p.get("title"))
+        return apply_mask_by(spec, smooth_image(img, p), p, region, max_pixels), {"a": first}
 
     if op in ("difference", "ratio", "spix"):
         a = prepare(spec.image(p["images"][0]), region, max_pixels)
@@ -152,6 +167,29 @@ def resolve_panel_image(spec: Spec, p: dict, region: dict,
 
     img = SkyImage(out, a.wcs, a.header, a.path, p.get("title"))
     return apply_mask_by(spec, img, p, region, max_pixels), {"a": a, "b": b}
+
+
+def smooth_image(img: SkyImage, p: dict) -> SkyImage:
+    """Convolve with a Gaussian of `smooth` arcsec FWHM, if asked.
+
+    A sparsity-prior model is close to a set of spikes on a pixel grid.
+    Block-averaging it down for display turns those into single bright pixels
+    scattered on black, which reads as noise rather than as the structure the
+    model actually carries. A light convolution -- stated in the caption --
+    is how a model is normally made legible.
+    """
+    fwhm = p.get("smooth")
+    if not fwhm:
+        return img
+    from astropy.convolution import Gaussian2DKernel, convolve_fft
+
+    sigma_pix = float(fwhm) / (2.0 * np.sqrt(2.0 * np.log(2.0))) / img.pixel_scale
+    if sigma_pix < 0.3:
+        return img
+    out = convolve_fft(img.data, Gaussian2DKernel(sigma_pix),
+                       nan_treatment="interpolate", preserve_nan=True,
+                       allow_huge=True, normalize_kernel=True)
+    return SkyImage(out, img.wcs, img.header, img.path, img.label)
 
 
 def apply_mask_by(spec: Spec, img: SkyImage, p: dict, region: dict,
@@ -370,6 +408,8 @@ def render(spec: Spec, name: str, fig_spec: dict, dpi: int | None) -> Path:
             cbar_label=p.get("cbar_label"),
             frame=p.get("frame", fig_spec.get("frame", True)),
             annotations=p.get("annotations", []),
+            contours=p.get("contours"),
+            contour_color=p.get("contour_color", "#ffffff"),
         )
         ax, _ = panel.draw(fig, (rows, cols, k + 1), spec.theme)
 
@@ -387,9 +427,20 @@ def render(spec: Spec, name: str, fig_spec: dict, dpi: int | None) -> Path:
     fig.subplots_adjust(**fig_spec.get("adjust", {"hspace": 0.03, "wspace": 0.03}))
 
     out = spec.out_root / fig_spec.get("out", f"{name}.png")
-    return skyfig.save(fig, out, dpi=dpi or int(fig_spec.get("dpi", spec.dpi)),
-                       transparent=fig_spec.get("transparent", True),
-                       theme=spec.theme)
+    written = skyfig.save(fig, out, dpi=dpi or int(fig_spec.get("dpi", spec.dpi)),
+                          transparent=fig_spec.get("transparent", True),
+                          theme=spec.theme)
+
+    # Two decks occasionally want the identical figure, and each deck keeps its
+    # own images/ directory. Copying beats duplicating sixty lines of spec into
+    # a second file, where the two would drift apart the first time either is
+    # touched. Paths are repo-relative.
+    for extra in fig_spec.get("copy_to", []) or []:
+        dest = REPO / extra
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(written, dest)
+        print(f"  also wrote {extra}")
+    return written
 
 
 def main() -> int:

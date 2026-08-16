@@ -134,7 +134,7 @@ CLEAN does not minimise a stated objective, so there is no natural place to put 
 
 To deconvolve every pointing together the data must first be **rephased to a common phase centre**. The primary beam does not come along.
 
-![](images/beams.png){height="215"}
+![](images/beams.png){height="255"}
 
 ::: {.incremental}
 - The beam is attached to where the dish **points**, not to the phase centre

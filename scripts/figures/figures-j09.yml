@@ -1,0 +1,279 @@
+# Figures for contributions/pfb-imaging-galactic-centre (URSI GASS J09).
+#
+#   PY=~/software/pfb-imaging/.venv/bin/python
+#   $PY scripts/figures/make_figures.py --spec scripts/figures/figures-j09.yml --list
+#   $PY scripts/figures/make_figures.py --spec scripts/figures/figures-j09.yml gc-uhf-sara
+#
+# Separate from figures.yml because `out_root` is per-spec and these land in a
+# different deck. The image and region definitions duplicate a few entries from
+# figures.yml on purpose: a spec is meant to be readable on its own, and the two
+# decks want different crops of the same FITS.
+#
+# The talk video for this deck is already recorded (66 frames, per-slide audio).
+# Replacing an image is safe -- it changes no slide, no fragment and no frame
+# count, so the frames re-extract and re-mux against the same audio. Adding or
+# removing a slide is not: it renumbers every audio file after it.
+
+data_root: fits_files/GC
+out_root: contributions/pfb-imaging-galactic-centre/images
+theme: dark
+dpi: 160
+max_pixels: 2400
+
+
+images:
+  # SARA, all three pointings deconvolved together with the time-varying
+  # primary beam inside the measurement operator.
+  joint:
+    file: UHF_band_resolution_homogenized_joint_mosaic_sara_mfs.fits
+    label: "Joint mosaic — SARA"
+    blank_zeros: true       # zero-filled outside the PBMIN = 0.025 cutoff
+
+  # The intrinsic model from the same run: the quantity actually inferred,
+  # before any restoring beam. Jy/pixel, so it never shares a scale with the
+  # restored images.
+  #
+  # Deliberately NOT blank_zeros, unlike the restored mosaic. A model is
+  # exactly zero wherever the prior put no flux -- 0.9% of this crop, scattered
+  # through the faint sky. Blanking those leaves transparent speckle across the
+  # corners, which reads as damaged data rather than as "no model here".
+  joint_model:
+    file: UHF_band_resolution_homogenized_joint_mosaic_intrinsic_model_sara_mfs.fits
+    label: "Intrinsic model"
+
+  # MS-CLEAN, each pointing deconvolved on its own and then averaged in image
+  # space. Blank outside the three pointing circles -- that footprint is real
+  # and is left to show as transparent rather than painted over.
+  imspace:
+    file: UHF_band_resolution_homogenised_image_space_mosaic_msclean.fits
+    label: "Image-space mosaic — MS-CLEAN"
+
+  # Primary beams for the three pointings at 986 MHz, already reprojected onto
+  # the common phase centre (all three share CRVAL 266.3946 -29.0506 on an
+  # 8800^2 RA---SIN grid at 1.85"/pix). That is the whole point of the figure
+  # they go into: same frame, three different offsets.
+  beam_gcx17:
+    file: beam_band0006_time0000_part0000_GCX17.fits
+    label: "GCX17"
+  beam_gcx30:
+    file: beam_band0006_time0000_part0001_GCX30.fits
+    label: "GCX30"
+  beam_sgra:
+    file: beam_band0006_time0000_part0002_SGRA.fits
+    label: "SGRA"
+
+
+regions:
+  # 16:9, not the 3:2 of the reveal slide. A `background-image` with
+  # `background-size: cover` fills the *viewport*, not the 1050x700 slide box,
+  # and both the browser and the video frames are 16:9 -- a 3:2 figure gets its
+  # top and bottom cropped away.
+  #
+  # 1.60 x 0.90 deg is a box the image-space mosaic covers *completely*, found
+  # by searching its finite-pixel mask rather than guessed, and among the
+  # fully-covered positions this one puts Sgr A* almost exactly at the centre.
+  # Complete coverage matters more than width: these three are shown back to
+  # back as a blink comparison, and if the CLEAN panel has blank corners the
+  # eye reads the change in outline before the change in image quality, which
+  # is not the claim being made. The Radio Arc and the bubbles are inside it
+  # too.
+  compare:
+    center: [266.3426, -28.9974]
+    width: 1.60
+    height: 0.90
+
+  # Cold open. Tighter, so it reads as the Galactic Centre rather than as a
+  # bright smudge, and still 3:2.
+  teaser:
+    center: [266.4200, -28.9600]
+    width: 1.35
+    height: 0.7594
+
+  # The full common frame the beams live on.
+  beam_frame:
+    center: [266.3946, -29.0506]
+    width: 4.5
+    height: 4.5
+
+
+figures:
+  # ---- the CLEAN -> SARA -> model reveal -------------------------------
+  # Three full-bleed slides shown back to back. They are only a comparison if
+  # the crop and the scale are identical, which is why vmin/vmax are written
+  # out rather than taken from percentiles: `share_norm` works within one
+  # figure, and these are three separate files.
+  #
+  # asinh rather than log because the point of the first panel is the negative
+  # bowls around Sgr A, and a log stretch cannot show anything below zero.
+  # vmin = -0.0015 Jy/beam sits just under CLEAN's 0.1st percentile (-0.0012);
+  # SARA's is -0.0006, so the bowls really are twice as deep and the figure
+  # shows that rather than asserting it.
+  gc-uhf-clean:
+    out: GC_UHF_CLEAN.png
+    region: compare
+    figsize: [12, 6.75]
+    grid: false
+    frame: false
+    panels:
+      - image: imspace
+        cmap: inferno
+        stretch: asinh
+        a: 0.02
+        vmin: -0.0015
+        vmax: 0.05
+        show_ra: false
+        show_dec: false
+        beam: false
+
+  gc-uhf-sara:
+    out: GC_UHF_SARA.png
+    region: compare
+    figsize: [12, 6.75]
+    grid: false
+    frame: false
+    panels:
+      - image: joint
+        cmap: inferno
+        stretch: asinh
+        a: 0.02
+        vmin: -0.0015
+        vmax: 0.05
+        show_ra: false
+        show_dec: false
+        beam: false
+
+  # Jy/pixel, so it cannot share the scale above and does not pretend to.
+  # Smoothed by 4" -- well inside the 8.55" restoring beam -- because a
+  # sparsity model displayed raw is a field of single-pixel spikes and shows
+  # nothing about the structure it actually carries.
+  gc-uhf-sara-model:
+    out: GC_UHF_SARA_MODEL.png
+    region: compare
+    figsize: [12, 6.75]
+    grid: false
+    frame: false
+    panels:
+      - image: joint_model
+        smooth: 4.0
+        cmap: inferno
+        stretch: asinh
+        a: 0.03
+        vmin: 0.0
+        vmax: 0.006
+        show_ra: false
+        show_dec: false
+        beam: false
+
+  # ---- cold open --------------------------------------------------------
+  gc-teaser:
+    out: gc-teaser.png
+    region: teaser
+    figsize: [12, 6.75]
+    max_pixels: 2400
+    grid: false
+    frame: false
+    panels:
+      - image: joint
+        cmap: inferno
+        stretch: log
+        pmin: 40
+        pmax: 99.9
+        show_ra: false
+        show_dec: false
+        beam: false
+
+  # ---- the primary beams ------------------------------------------------
+  # One frame, three pointings. The cross marks the common phase centre every
+  # pointing was rephased to; the beam peak is somewhere else in every panel,
+  # and somewhere different each time. That is the argument in both talks --
+  # J05 uses it for "the beam does not come along when you rephase", J09 for
+  # "inhomogeneous beams belong inside R".
+  #
+  # 3:1 so it can be shown at a useful height in either deck: 1050px of slide
+  # width caps a 4-panel row at ~260px tall, which is too small to read.
+  beams:
+    out: beams.png
+    # J05 makes the same argument from the same picture, and each deck keeps
+    # its own images/. One figure, two destinations, no second copy of the spec.
+    copy_to:
+      - contributions/sgr-a-complex-uhf/images/beams.png
+    region: beam_frame
+    figsize: [16.5, 5.5]
+    max_pixels: 700
+    grid: false
+    frame: false
+    layout: [1, 3]
+    panels:
+      - image: beam_gcx17
+        title: "GCX17"
+        cmap: inferno
+        stretch: linear
+        vmin: 0.0
+        vmax: 1.0
+        contours: [0.1, 0.5]
+        show_ra: false
+        show_dec: false
+        beam: false
+        annotations:
+          - position: [266.3946, -29.0506]
+            text: "phase centre"
+            marker_style: "+"
+            size: 13
+            color: "#58a6ff"
+            fontsize: 13
+            offset: [-104, -30]
+      - image: beam_gcx30
+        title: "GCX30"
+        cmap: inferno
+        stretch: linear
+        vmin: 0.0
+        vmax: 1.0
+        contours: [0.1, 0.5]
+        show_ra: false
+        show_dec: false
+        beam: false
+        annotations:
+          - position: [266.3946, -29.0506]
+            text: ""
+            marker_style: "+"
+            size: 13
+            color: "#58a6ff"
+      - image: beam_sgra
+        title: "SGRA"
+        cmap: inferno
+        stretch: linear
+        vmin: 0.0
+        vmax: 1.0
+        contours: [0.1, 0.5]
+        show_ra: false
+        show_dec: false
+        beam: false
+        annotations:
+          - position: [266.3946, -29.0506]
+            text: ""
+            marker_style: "+"
+            size: 13
+            color: "#58a6ff"
+
+  # What the three add up to. Not on a slide at the moment -- the deck has the
+  # slide commented out, and uncommenting it would add a frame and renumber the
+  # recorded audio -- but it is the picture behind "the beam enters R", so it
+  # is kept current.
+  mean-sensitivity:
+    out: mean_sensitivity_pattern.png
+    region: beam_frame
+    figsize: [9, 9]
+    max_pixels: 900
+    grid: false
+    frame: false
+    panels:
+      - op: mean
+        images: [beam_gcx17, beam_gcx30, beam_sgra]
+        cmap: inferno
+        stretch: linear
+        vmin: 0.0
+        vmax: 0.75
+        contours: [0.1, 0.3]   # the three-beam mean peaks near 0.44; 0.5 never occurs
+        show_ra: false
+        show_dec: false
+        beam: false

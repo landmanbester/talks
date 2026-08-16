@@ -34,10 +34,41 @@ should be derived from those footprints rather than guessed.
 | `compare_regions.py` | Region-file-driven zoom comparison — see below. |
 | `stamp_beam.py` | Write `BMAJ`/`BMIN`/`BPA` back into a header that lost them. |
 | `psf_profile.py` | Azimuthal sidelobe profile of one or more PSFs. |
-| `figures.yml` | The figures for `contributions/sgr-a-complex-uhf`. |
+| `figures.yml` | The figures for `contributions/sgr-a-complex-uhf` (URSI J05). |
+| `figures-j09.yml` | The figures for `contributions/pfb-imaging-galactic-centre` (URSI J09). |
 | `regions/` | ds9 / CRTF region files naming what to zoom on. |
 | `../../figures/scratch/` | Figures generated but not currently on a slide. Regenerable; see its README. |
 | `reference/` | The five Africanus III paper scripts this was factored out of. Kept for provenance — not run. |
+
+## A second spec — `figures-j09.yml`
+
+`out_root` is a property of the spec, so a second deck needs a second file:
+
+```bash
+$PY scripts/figures/make_figures.py --spec scripts/figures/figures-j09.yml --list
+$PY scripts/figures/make_figures.py --spec scripts/figures/figures-j09.yml gc-uhf-sara
+```
+
+Three things worth knowing before touching it, because none are obvious:
+
+- **The J09 video is already recorded**, 66 frames with per-slide audio.
+  Replacing an *image* is free — no slide, fragment or frame count changes, so
+  the frames re-extract and re-mux against the same audio. Adding or removing a
+  *slide* renumbers every audio file after it.
+- **Full-bleed backgrounds want 16:9, not the slide's 3:2.** A
+  `background-image` with `background-size: cover` fills the viewport, and both
+  the browser and the extracted frames are 16:9; a 3:2 figure loses its top and
+  bottom.
+- **`GC_UHF_CLEAN` and `GC_UHF_SARA` are a blink comparison.** Same region, and
+  `vmin`/`vmax` written out by hand rather than taken from percentiles, because
+  `share_norm` only works within one figure and these are separate files. Change
+  one, change the other. The crop is the largest box the image-space mosaic
+  covers *completely*: with blank corners the eye reads the change in outline
+  instead of the change in image quality.
+
+`copy_to:` on a figure writes the same PNG into a second deck. `beams.png` uses
+it — both talks make an argument from that picture, and each deck keeps its own
+`images/`.
 
 ## Region zooms — `compare_regions.py`
 

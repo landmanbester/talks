@@ -305,11 +305,10 @@ Complex extended emission at high dynamic range — the case the point-source pr
 
 ## What forward modelling buys {.smaller}
 
-![](images/beams.png){height="420"}
+![](images/beams.png){height="340"}
 
-::: {.muted}
-Enables incorporating systematics in a statistically robust way
-e.g. inhomogeneous primary beams
+::: {.muted .small}
+Enables incorporating systematics in a statistically robust way, e.g. inhomogeneous primary beams. All three are shown in the **common frame** the data were rephased to (**+**), at 986 MHz, with the 50% and 10% contours drawn — the beam follows the dish, not the phase centre.
 :::
 
 ## Three pointings, one reconstruction
