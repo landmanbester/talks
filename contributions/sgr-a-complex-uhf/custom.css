@@ -7,6 +7,16 @@
 .reveal #title-slide h1.title { font-size: 1.7em; }
 .reveal #title-slide p.subtitle { font-size: 0.8em; }
 
+/* Figures land in their own paragraph, and the theme left-aligns slide text
+   ($presentation-slide-text-align: left), so a wide figure hugs the left edge
+   with all its slack on the right. Centre images specifically, leaving prose
+   alignment alone. */
+.reveal .slides section p img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Documentary-style caption overlaid on a full-bleed image background (the
    cold open and the Galactic Centre reveal). Copied from kremetart-pipeline
    rather than promoted to the shared theme — it stays deck-local until more
@@ -14,14 +24,39 @@
    legible over both a bright sky and a busy field. */
 .reveal .overlay-caption {
   width: fit-content;
-  max-width: 70%;
+  max-width: 80%;
   margin: 0 auto;
   color: #ffffff;
-  font-size: 1.8em;
+  font-size: 0.95em;
   font-weight: 600;
   text-align: center;
-  padding: 0.4em 0.8em;
-  background: rgba(13, 17, 23, 0.6);
+  padding: 0.35em 0.9em;
+  background: rgba(13, 17, 23, 0.7);
   border-radius: 10px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+
+/* No `white-space: nowrap` here. The pfb deck could afford it because its
+   captions are short; these run past the slide edge, and nowrap overrides
+   max-width silently rather than wrapping. */
+
+.reveal .overlay-caption p { margin: 0; }
+
+/* A `##` slide with no heading text still reserves the heading's vertical box,
+   which on a full-bleed background slide shows as a stripe across the top and
+   pushes the captions off centre. Hide the empty heading and pin the captions
+   to the bottom instead. Lifted from pfb-imaging-galactic-centre, where this
+   was worked out. */
+.reveal .slides section.bottom-caption-slide {
+  height: 100% !important;
+  top: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  padding-bottom: 35px !important;
+}
+
+.reveal .slides section.bottom-caption-slide h2 {
+  display: none !important;
 }

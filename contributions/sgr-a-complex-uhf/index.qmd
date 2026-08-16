@@ -1,32 +1,25 @@
 ---
 title: "High-Fidelity MeerKAT UHF Observations of the Sgr A Complex"
-subtitle: "What joint mosaicking buys you, and whether the science can tell"
+subtitle: "What a pixel means, and why spectral index is where it shows"
 institute: "SARAO / Rhodes University"
-# date: ""          # session date not yet known — leave out rather than guess
+date: "2026-08-19"
 event: "URSI GASS 2026 — Session J05"
 location: "ICE Kraków, Poland"
+author: "Landman Bester, Carmen Choza, Ian Heywood, Oleg Smirnov"
 ---
 
-## {background-image="images/sgra-teaser.png" background-size="cover" background-color="#0d1117"}
+## {background-image="images/sgra-teaser.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}
 
-::: {.overlay-caption .fragment}
+::: {.overlay-caption .fragment .smaller}
 544–1087 MHz. Five square degrees.
 :::
 
-::: {.overlay-caption .fragment}
+::: {.overlay-caption .fragment .smaller}
 The least-explored view of the Galactic Centre.
 :::
 
 
-# Why UHF, why the Galactic Centre
-
-## What L-band already showed us
-
-![](images/lband-context.png){height="420"}
-
-::: {.muted .small}
-Giant radio bubbles and a dense population of non-thermal filaments — MeerKAT L-band. *(Heywood et al.; Yusef-Zadeh et al.)*
-:::
+# The band, and the field
 
 ## What UHF adds {.smaller}
 
@@ -43,24 +36,26 @@ Giant radio bubbles and a dense population of non-thermal filaments — MeerKAT 
 This band is the one place several of these effects are simultaneously measurable.
 :::
 
-## The open questions {.smaller}
+## Three pointings, one octave {.smaller}
 
-::: {.highlight-box}
-**1.** Do the non-thermal filaments share a common spectral index, or is the population heterogeneous?
+::: {.incremental}
+- Three **8-hour** pointings, interleaved in time, covering ~5 deg²
+- 544–1087 MHz, imaged jointly with `pfb-imaging` and a SARA prior
+- Restored to **8.55″ × 7.76″**, homogenised across the band
 :::
 
+. . .
+
 ::: {.highlight-box}
-**2.** What is the spectrum at the **base** of the bubbles, where the energetics are set?
+The primary beam varies strongly **across the mosaic**, and changes size by nearly **2× across the band**.
 :::
 
 . . .
 
 ::: {.muted}
-Both are spectral-index questions. Everything that follows is about whether we can measure a spectral index here that we are willing to believe.
+Usually treated as calibration nuisances. They are the whole story for what follows.
 :::
 
-
-# The hardest field on the sky
 
 ## A worst-case field {.smaller}
 
@@ -77,29 +72,28 @@ Both are spectral-index questions. Everything that follows is about whether we c
 A point-source prior is a poor description of nearly everything in this image.
 :::
 
-## Wide, and wideband {.smaller}
+## The open questions {.smaller}
 
-:::: {.columns}
-::: {.column width="50%"}
-### Wide
-
-Three pointings, **interleaved in time**, covering ~5 deg². The primary beam response varies strongly across the mosaic.
+::: {.highlight-box .fragment}
+**1.** Do the non-thermal filaments share a common spectral index, or is the population heterogeneous?
 :::
-::: {.column width="50%"}
-### Wideband
 
-544–1087 MHz. The primary beam changes size by nearly **2×** across the band, and so does the uv-coverage.
+::: {.highlight-box .fragment}
+**2.** What is the spectrum at the **base** of the bubbles, where the energetics are set?
 :::
-::::
+
+::: {.highlight-box .fragment}
+**3.** Is there a distinct population of **compact steep-spectrum** sources — the radio counterpart to the GeV excess?
+:::
 
 . . .
 
 ::: {.muted}
-Both facts are usually treated as calibration nuisances. They are the whole story for what follows.
+All three are spectral-index questions. Everything that follows is about whether we can measure one here that we are willing to believe.
 :::
 
 
-# The mosaic is not post-processing
+# Mosaicking is a modelling choice
 
 ## Two ways to build a mosaic {.smaller}
 
@@ -116,126 +110,258 @@ Deconvolve each pointing **independently**, primary-beam correct, then weighted-
 
 $$y(t) = R\bigl[A(t)\,x\bigr] + \epsilon$$
 
-The time-varying beam $A(t)$ sits **inside** the measurement operator. One deconvolution, all data.
+The **direction- and time-dependent** beam $A(t)$ sits **inside** the measurement operator. One deconvolution, all data.
 :::
 ::::
 
 . . .
 
 ::: {.highlight-box}
-This is a modelling choice, not a workflow preference — the two are solving different problems.
+Not a workflow preference — the two are solving different problems.
 :::
 
-## OTF improves the uv-coverage {.smaller}
+## $A(t)$ is not just time-dependent {.smaller}
 
-![](images/uv-coverage-compare.png){height="300"}
+To deconvolve every pointing together the data must first be **rephased to a common phase centre**. The primary beam does not come along.
 
-. . .
+![](images/beams.png){height="215"}
 
-Image-space gets **one pointing's** uv-coverage per sky position. Joint gets the coherent **union** of every pointing that sees it, primary-beam weighted.
+::: {.incremental}
+- The beam is attached to where the dish **points**, not to the phase centre
+- In the common frame each pointing's beam sits at a **different offset**, and the projection about the new centre **distorts** it
+- So $A$ must be **reprojected** per pointing, not merely translated
+:::
+
+
+
+
+## Every pointing that sees a pixel {.smaller}
+
+::: {.incremental}
+- Image-space gets **one pointing's** uv-coverage per sky position
+- Joint gets the coherent **union** of every pointing that sees it, primary-beam weighted
+- Interleaved in time, so that union spans **parallactic angle** as well as position
+:::
 
 . . .
 
 ::: {.result-box}
-Interleaved pointings make that union span parallactic angle too — more samples per pixel, not merely more sky.
+More samples per sky position — not merely more sky.
 :::
 
-## What better coverage buys {.smaller}
+. . .
+
+::: {.muted .small}
+Four times the imaging weight at the field centre, from the same observation.
+:::
+
+## The PSF is where it shows
+
+![](images/psf-sidelobes.png){height="430"}
+
+::: {.muted .small}
+MFS PSFs, single pointing vs joint. Main lobes differ by 4%; sidelobe RMS is suppressed **4×** at arcminute scales and **~1.7×** out to 3°.
+:::
+
+
+## What that buys you {.smaller}
+
+![](images/mosaic-compare.png){height="330"}
+
+::: {.muted .small}
+Same sky, same colour scale. Left: each pointing deconvolved independently with **multi-scale CLEAN**, then averaged — the pointing footprints survive. Right: one **SARA** deconvolution over all three.
+:::
+
+. . .
+
+::: {.muted .small}
+CLEAN does not minimise a stated objective, so there is no natural place to put $A(t)$ inside it. Forward modelling is available to an algorithm that solves an optimisation problem.
+:::
+
+
+# Resolution is the hidden variable
+
+## Homogenising resolution across the band {.smaller}
+
+A spectral index is a **ratio across the band**, so the two images must be reporting the same thing. They are not, by default: sensitivity and uv-coverage both change with frequency, so each sub-band has its own resolution.
 
 ::: {.incremental}
-- Lower PSF sidelobes, and fewer of them to deconvolve away
-- Fewer artefacts around the bright compact sources that dominate this field
-- **Frequency-consistent** sampling — the coverage gaps are not filled differently in each sub-band
+- Restore every sub-band to a **common beam** — that of the lowest sub-band
+- For a CLEAN model this is a convolution, because the model is $\delta$-functions
+- For a sparsity prior the model has its **own** intrinsic resolution, which has to be estimated first and then corrected for
+:::
+
+. . .
+
+::: {.result-box}
+Get this wrong by a constant factor $r$ and every $\alpha$ shifts by $\log r / \log(\nu_1/\nu_2)$ — for our two bands, a beam-area ratio of 1.63 moves $\alpha$ by **−1.03**.
+:::
+
+## The model has a resolution too {.smaller}
+
+CLEAN models are $\delta$-functions: intrinsic resolution **zero**, by assumption. A sparsity prior's model is not.
+
+::: {.incremental}
+- Its intrinsic resolution is **non-zero**, and set by the data and the prior together
+- It is **not constant across the band** — sensitivity and uv-coverage both change
+- Restore with a single beam and that variation is baked into every $\alpha$
 :::
 
 . . .
 
 ::: {.highlight-box}
-The third one is the point. Total intensity forgives an inconsistent PSF. A spectral index does not.
+So the restore step has to *estimate* the model resolution before homogenising.
 :::
-
-
-# Does it actually matter?
-
-## Spectral index is the sharpest test {.smaller}
-
-$$\alpha = \frac{\log(S_{\nu_1}/S_{\nu_2})}{\log(\nu_1/\nu_2)}$$
 
 . . .
 
-A **ratio across the band** — so any frequency-dependent imaging error propagates directly into the measurement.
+::: {.muted .small}
+And it cannot do so exactly: the model's intrinsic resolution is **SNR-dependent**, so it varies across the image as well as across the band. Homogenisation is an approximation — which is the thread the last section picks up.
+:::
+
+
+## Where we are looking
+
+![](images/superres-overview.png){height="440"}
+
+## Sgr B2 {.smaller}
+
+![](images/superres-sgr-b2.png){height="380"}
+
+::: {.muted .small}
+UHF intrinsic model · UHF restored, 8.55″ · L-band restored, 7.60″ × 5.35″. Discrete clumps in the model, blended in both restored images.
+:::
+
+## Sgr C {.smaller}
+
+![](images/superres-sgr-c.png){height="380"}
+
+::: {.muted .small}
+The same three. The filament crossing the shell stays thin in the model and widens in both restored images — including the one at the *higher* frequency.
+:::
+
+# Does the science hold up?
+
+## Two independent estimates {.smaller}
+
+:::: {.columns}
+::: {.column width="55%"}
+![](images/spix-inband-vs-twoband.png){height="380"}
+:::
+::: {.column width="45%"}
+**In-band**: fit across 544–1087 MHz, intrinsic cube, 11.7″
+
+**Two-band**: 797 MHz → 1.28 GHz ratio, apparent restored images, 8.6″ and 7.6″
 
 . . .
 
 ::: {.result-box}
-An artefact that looks cosmetic in total intensity becomes a spurious spectral index gradient.
+Median offset **+0.01**, scatter 0.29, over 118 085 pixels.
 :::
 
-. . .
+::: {.fragment}
+::: {.muted .small}
+Nothing forces these to agree. That they do says the resolution handling — homogenisation across the band, and the beam correction between bands — is not introducing a systematic at the level we could detect.
+:::
+:::
+:::
+::::
+
+
+## The distribution
+
+![](images/spix-hist-compare.png){height="420"}
 
 ::: {.muted .small}
-So: rather than argue that joint mosaicking is better in principle, measure how far the choice propagates into the science.
+Peaks at $\alpha \approx -0.9$ — ordinary non-thermal emission, from two independent routes.
 :::
 
-## The PSF, sub-band by sub-band
+## The two spectral index maps
 
-![](images/psf-compare.png){height="440"}
+![](images/spix-inband-map.png){height="400"}
 
 ::: {.muted .small}
-Image-space vs OTF, matched sub-bands, same stretch. *TBC*
+Left: in-band fit, 544–1087 MHz. Right: two-band ratio, 797 MHz → 1.28 GHz. Same colour scale.
 :::
 
-## Two spectral index maps
+## What you cannot see in either map {.smaller}
 
-![](images/spix-compare.png){height="440"}
-
-::: {.muted .small}
-Identical colour scale, identical SNR mask. *TBC*
+:::: {.columns}
+::: {.column width="55%"}
+![](images/alpha-vs-alpha-err.png){height="300"}
 :::
+::: {.column width="45%"}
+Median in-band $\alpha$, binned by its own fitted uncertainty:
 
-## Where they disagree {.smaller}
+| $\sigma_\alpha$ | median $\alpha$ |
+|---|---|
+| < 0.02 | **−0.55** |
+| 0.2 – 0.4 | −1.20 |
+| 0.4 – 0.8 | **−1.30** |
 
-![](images/spix-difference.png){height="360"}
-
-. . .
-
-::: {.muted}
-Difference map and histogram above an SNR cut. The interesting question is not *whether* they differ but **where** — bright filaments and diffuse emission need not behave the same way. *TBC*
+::: {.fragment}
+::: {.result-box}
+A 0.75 swing driven by how well each pixel was constrained.
 :::
-
-
-# The science
-
-## {background-image="images/sgra-full.png" background-size="cover" background-color="#0d1117"}
-
-::: {.overlay-caption .fragment}
-Five square degrees, imaged jointly.
 :::
-
-## Filament spectral indices
-
-![](images/filament-spix.png){height="430"}
-
-::: {.muted .small}
-The distribution across the population, not a single example. *TBC*
 :::
-
-## The base of the bubbles
-
-![](images/bubble-base.png){height="430"}
-
-::: {.muted .small}
-Where the energetics are set. *TBC*
-:::
-
-## The long lever arm {.smaller}
-
-![](images/uhf-lband-spectrum.png){height="340"}
+::::
 
 . . .
 
 ::: {.muted}
-UHF combined with existing L-band roughly doubles the frequency baseline — what that constrains about magnetic field strength and outburst history. *TBC*
+Any weakly-constrained subsample will look like a steep-spectrum population. An $\alpha$ map without its error map is not interpretable.
+:::
+
+
+
+# What is the resolution of a MAP image?
+
+## The restoring beam asserts a resolution {.smaller}
+
+For a quadratic regulariser the MAP estimate is a **linear filter applied to the truth**:
+
+$$\hat{x} = \underbrace{\left(A^H N^{-1} A + \lambda L\right)^{-1} A^H N^{-1} A}_{R}\, x_{\rm true} + \text{noise}$$
+
+::: {.incremental}
+- Row $j$ of $R$ is the **effective PSF at pixel $j$** — what $\hat{x}_j$ actually reports
+- $N^{-1}$ sits *inside* $R$, so resolution is a function of **local SNR**
+- For $\ell_1$, TV or learned priors, $R$ depends on **source brightness** as well
+:::
+
+. . .
+
+::: {.result-box}
+The restoring beam *asserts* a resolution. It does not *measure* one.
+:::
+
+## Four other fields already report theirs {.smaller}
+
+| Field | Name for $R$ | Since |
+|---|---|---|
+| Geophysics / normal modes | Averaging kernel | Backus & Gilbert 1968 |
+| Seismic tomography | Model resolution matrix | Menke 1989 |
+| Atmospheric sounding | Averaging kernel matrix | Rodgers 2000 |
+| Emission tomography | Local impulse response | Fessler & Rogers 1996 |
+
+. . .
+
+::: {.muted}
+Radio interferometry is the outlier. We hid it behind the restoring beam — not because CLEAN is linear, it is not, but because a $\delta$-function model lets us *assert* zero intrinsic resolution and never check. That assertion is already doubtful for multi-scale CLEAN.
+:::
+
+## What we could publish instead {.smaller}
+
+::: {.incremental}
+- **A resolution field, not a beam** — $Rv$ for a chosen probe is one JVP through the solver's fixed point; $\mathrm{diag}(R)$ is $\mathcal{O}(10)$ Hutchinson probes
+- **Fix the resolution by construction** where the science is a per-pixel fit — forfeit super-resolution, gain a defined estimand
+- **Move the science model into the forward problem** — fit spectra against visibilities, so the regulariser and the physical model are the same object
+:::
+
+. . .
+
+::: {.highlight-box}
+Cost: one extra solve per probe. This is affordable today and we are not doing it.
 :::
 
 
@@ -244,20 +370,21 @@ UHF combined with existing L-band roughly doubles the frequency baseline — wha
 ## Summary {.smaller}
 
 ::: {.incremental}
-- The GC at UHF is the band that carries the steep-spectrum and absorption diagnostics, and it has been under-observed
-- Mosaicking is a **modelling choice**: done jointly, it improves the effective uv-coverage per sky position rather than merely stitching sky together
-- Interleaved pointings add parallactic-angle diversity on top of that
-- Whether it changes the **science** is an empirical question — and spectral index maps are the place to ask it
+- The GC at UHF carries the steep-spectrum and absorption diagnostics, and has been under-observed
+- Joint mosaicking is a **modelling choice** — the beam is direction- *and* time-dependent, and after rephasing it must be **reprojected**, not merely shifted
+- Measured on the PSF: sidelobes down **4×** at arcminute scales
+- **Resolution is the variable that propagates into $\alpha$**
+- The restoring beam is an assertion, not a measurement. Other fields have reported theirs for fifty years
 :::
 
 . . .
 
 ::: {.muted .small}
-Imaging performed with `pfb-imaging` — the framework itself is the subject of a separate talk in J09.
+Imaging with `pfb-imaging` — the framework itself is the subject of a separate talk in J09.
 :::
 
 ## Thanks! {background-color="#0d1117" .closing-slide}
 
 ::: {.contact}
-landman.bester@gmail.com
+lbester@sarao.ac.za
 :::
