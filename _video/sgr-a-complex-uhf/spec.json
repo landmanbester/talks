@@ -1,0 +1,11 @@
+{
+  "event": "URSI GASS 2026",
+  "session": "J05",
+  "max_duration_s": 900,
+  "target_duration_s": 810,
+  "max_size_bytes": 2147483648,
+  "container": "mp4",
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "filename_pattern": "ID{abstract_id}_{session}_{surname}.mp4"
+}
