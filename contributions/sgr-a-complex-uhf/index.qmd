@@ -224,20 +224,12 @@ It cannot do so exactly: the model's intrinsic resolution is **SNR-dependent**. 
 
 ![](images/superres-overview.png){height="620"}
 
-## Sgr B2 {.smaller}
+## The Radio Arc {.smaller}
 
-![](images/superres-sgr-b2.png){height="380"}
-
-::: {.muted .small}
-UHF intrinsic model · UHF restored, 8.55″ · L-band restored, 7.60″ × 5.35″. Discrete clumps in the model, blended in both restored images.
-:::
-
-## Sgr C {.smaller}
-
-![](images/superres-sgr-c.png){height="380"}
+![](images/superres-radio-arc.png){height="300"}
 
 ::: {.muted .small}
-The same three. The filament crossing the shell stays thin in the model and widens in both restored images — including the one at the *higher* frequency.
+UHF intrinsic model · UHF restored, 8.55″ · L-band restored, 7.60″ × 5.35″. Individual filament strands are separated in the model, blended at the UHF restoring beam — and independently confirmed by the L-band image.
 :::
 
 # Does the science hold up?

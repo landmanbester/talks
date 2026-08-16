@@ -11,7 +11,7 @@ fine on the page often does not survive being spoken.
 
 **This is a first draft for you to edit.** Two things to know before you start:
 
-- 83 frames is a lot for 15 minutes. This draft comes in close to the limit, so the blocks are
+- 82 frames is a lot for 15 minutes. This draft comes in close to the limit, so the blocks are
   tighter than the pfb-imaging ones. If a block feels rushed, that slide is a cut candidate.
 - Nothing here goes near Ian's unpublished compact-source result. Frame 23 motivates the
   compact-source question from the public GeV-excess literature only.
@@ -25,7 +25,7 @@ imaging of the Galactic Centre at UHF band — and about the one number that qui
 whether you can believe a spectral index. I'll start with a disclaimer - I am an algorithm
 developer more than an astronomer. What I'm about to present was born out of a curiosity about
 how better algorithms, imaging algorithms in particular, can improve the science we derive
-from the data we have. 
+from the data we have.
 
 ## slide-02 — Cold open, image only (6s)
 
@@ -75,7 +75,7 @@ degrees.
 
 ## slide-12 — imaged jointly (10s)
 
-We image the full band jointly with `pfb-imaging`, under a sparsity-promoting prior — SARA — with an additional correlation along the frequency axis imposed. Please come see my J09 talk later today for more about the algorithmic details. 
+We image the full band jointly with `pfb-imaging`, under a sparsity-promoting prior — SARA — with an additional correlation along the frequency axis imposed. Please come see my J09 talk later today for more about the algorithmic details.
 
 ## slide-13 — restored resolution (10s)
 
@@ -226,7 +226,7 @@ to be estimated before resolution can be homogenized.
 
 ## slide-45 — the cost of getting it wrong (19s)
 
-Get this wrong and the derived spectral index is not reliable. 
+Get this wrong and the derived spectral index is not reliable.
 
 ## slide-46 — CLEAN assumes zero (12s)
 
@@ -256,160 +256,156 @@ And it cannot do that exactly, because the model's intrinsic resolution is SNR-d
 varies across the image as well as across the band. Homogenisation is an approximation. Hold
 that thought.
 
-## slide-52 — where we are looking (12s)
+## slide-52 — where we are looking (9s)
 
-Is any of this visible? Here is the full mosaic with two regions marked — Sgr B2 and Sgr C.
+Is any of this visible? Here is the full mosaic, with the Radio Arc marked.
 
-## slide-53 — Sgr B2 (16s)
+## slide-53 — the Radio Arc (21s)
 
-Sgr B2. Intrinsic model on the left, our UHF restored image in the middle at eight and a half
-arcseconds, L band on the right at seven point six. The model separates clumps that both
-restored images blend together.
+The Radio Arc. Intrinsic model on the left, our UHF restored image in the middle at eight
+and a half arcseconds, L band on the right at seven point six. The model separates
+individual filament strands that blend together at the UHF restoring beam — and the L-band
+image, which knows nothing about our model, shows the same strands.
 
-## slide-54 — Sgr C (16s)
-
-Sgr C, the same three. The filament crossing the shell stays thin in the model and widens in
-both restored images — including the L-band one, which has the finer nominal resolution.
-
-## slide-55 — Section: does the science hold up (6s)
+## slide-54 — Section: does the science hold up (6s)
 
 So does any of this survive contact with the science?
 
-## slide-56 — two estimates (16s)
+## slide-55 — two estimates (16s)
 
 Here are two independent estimates of the same quantity. An in-band fit across 544 to 1087
 megahertz on the intrinsic cube, against a two-band ratio from 797 megahertz to 1.28 gigahertz
 on the apparent restored images. Different lever arms, different resolutions.
 
-## slide-57 — they agree (11s)
+## slide-56 — they agree (11s)
 
 Pixel by pixel, they agree to a median offset of plus zero point zero one, with 0.29 scatter,
 over a hundred and eighteen thousand pixels.
 
-## slide-58 — what that means (13s)
+## slide-57 — what that means (13s)
 
 Nothing forces that. That they do agree says the resolution handling — homogenisation across the
 band, and the beam correction between bands — is not introducing a systematic at any level we
 can detect.
 
-## slide-59 — the distribution (15s)
+## slide-58 — the distribution (15s)
 
 The distributions land in the same place too: a peak around minus zero point nine. Ordinary
 non-thermal emission, reached by two independent routes.
 
-## slide-60 — the maps (14s)
+## slide-59 — the maps (14s)
 
 And these are the maps themselves. In-band fit on the left, two-band ratio on the right, same
 colour scale. Thermal sources near zero, the filaments and the diffuse medium steeper.
 
-## slide-61 — alpha against its error (15s)
+## slide-60 — alpha against its error (15s)
 
 Now the caution. This is the in-band spectral index plotted against its own fitted uncertainty.
 Binned by that uncertainty, the median alpha runs from minus zero point five five at the
 well-constrained end to minus one point three at the poorly constrained end.
 
-## slide-62 — a 0.75 swing (10s)
+## slide-61 — a 0.75 swing (10s)
 
 That is a swing of three quarters, driven entirely by how well each pixel was constrained.
 
-## slide-63 — no error map, no interpretation (12s)
+## slide-62 — no error map, no interpretation (12s)
 
 Which means any weakly constrained subsample will look like a steep-spectrum population. A
 spectral index map without its error map is not interpretable.
 
-## slide-64 — Section: what is the resolution of a MAP image (7s)
+## slide-63 — Section: what is the resolution of a MAP image (7s)
 
 Which brings me to the thing I actually want to leave you with.
 
-## slide-65 — R (16s)
+## slide-64 — R (16s)
 
 For a quadratic regulariser, the maximum a posteriori estimate is a linear filter applied to the
 truth. Call that filter R.
 
-## slide-66 — rows of R (12s)
+## slide-65 — rows of R (12s)
 
 Row j of R is the effective point spread function at pixel j — the average of the sky that
 pixel actually reports.
 
-## slide-67 — SNR-dependent (12s)
+## slide-66 — SNR-dependent (12s)
 
 The inverse noise covariance sits inside R, which makes resolution a function of local
 signal-to-noise rather than an instrumental constant.
 
-## slide-68 — brightness-dependent (12s)
+## slide-67 — brightness-dependent (12s)
 
 And for an L1, total-variation or learned prior, R depends on source brightness as well. The
 resolution field changes with the object you are imaging.
 
-## slide-69 — assert, not measure (10s)
+## slide-68 — assert, not measure (10s)
 
 So the restoring beam asserts a resolution. It does not measure one.
 
-## slide-70 — four other fields (16s)
+## slide-69 — four other fields (16s)
 
 This is not a new problem, and it is not our problem. Geophysics has called it an averaging
 kernel since 1968. Seismic tomography, the model resolution matrix. Atmospheric sounding,
 emission tomography — all of them report it.
 
-## slide-71 — why we got away with it (19s)
+## slide-70 — why we got away with it (19s)
 
 Radio interferometry is the outlier. We hid it behind the restoring beam — not because CLEAN is
 linear, it is not, but because a delta-function model lets us assert zero intrinsic resolution
 and then never check. That assertion is already doubtful for multi-scale CLEAN.
 
-## slide-72 — publish a resolution field (15s)
+## slide-71 — publish a resolution field (15s)
 
 So what could we publish instead. A resolution field rather than a beam. Probing R is one
 Jacobian-vector product through the solver's fixed point; the diagonal is about ten Hutchinson
 probes.
 
-## slide-73 — fix it by construction (13s)
+## slide-72 — fix it by construction (13s)
 
 Or where the science product is a per-pixel fit, fix the resolution by construction — forfeit
 super-resolution and gain a defined estimand.
 
-## slide-74 — move the model forward (14s)
+## slide-73 — move the model forward (14s)
 
 Or better, move the science model into the forward problem, and fit spectra against the
 visibilities, so the regulariser and the physical model are the same object.
 
-## slide-75 — affordable today (10s)
+## slide-74 — affordable today (10s)
 
 The cost is one extra solve per probe. That is affordable today, and we are not doing it.
 
-## slide-76 — Section: in summary (5s)
+## slide-75 — Section: in summary (5s)
 
 To summarise.
 
-## slide-77 — the band (10s)
+## slide-76 — the band (10s)
 
 The Galactic Centre at UHF carries the steep-spectrum and absorption diagnostics, and it has
 been under-observed.
 
-## slide-78 — mosaicking (13s)
+## slide-77 — mosaicking (13s)
 
 Joint mosaicking is a modelling choice. The beam is direction-dependent as well as
 time-dependent, and after rephasing it has to be reprojected, not merely shifted.
 
-## slide-79 — the PSF (9s)
+## slide-78 — the PSF (9s)
 
 Measured on the point spread function, that is sidelobes down fourfold at arcminute scales.
 
-## slide-80 — resolution propagates (12s)
+## slide-79 — resolution propagates (12s)
 
 Resolution is the variable that propagates into spectral index. A beam-area ratio of one point
 six three is a shift of one point zero three.
 
-## slide-81 — it works (10s)
+## slide-80 — it works (10s)
 
 Handle it explicitly and two independent estimates agree to a hundredth.
 
-## slide-82 — the closing claim (12s)
+## slide-81 — the closing claim (12s)
 
 And the restoring beam is an assertion, not a measurement. Other fields have been reporting
 theirs for fifty years.
 
-## slide-83 — Thanks (14s)
+## slide-82 — Thanks (14s)
 
 Thank you. The imaging was done with `pfb-imaging`, which is on GitHub under ratt-ru, and which
 is the subject of a separate talk in J09. Happy to take questions.

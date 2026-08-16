@@ -395,7 +395,7 @@ figures:
     max_pixels: 2200
     grid: false
     frame: false
-    overlay_regions: scripts/figures/regions/superres-slide.reg
+    overlay_regions: scripts/figures/regions/radio-arc.reg
     panels:
       - image: joint
         cmap: inferno

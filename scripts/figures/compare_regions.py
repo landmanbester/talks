@@ -277,8 +277,11 @@ def render(spec: Spec, boxes: list[Box], images: list[tuple[str, dict]],
                             rotation=90, ha="center", va="center",
                             color=theme["accent"], fontsize=FS["title"], fontweight="600")
 
-        # Room for a set of RA labels under every row.
-        fig.subplots_adjust(hspace=0.28, wspace=0.06)
+        # Room for a set of RA labels under every row. Wide, short panels need
+        # more horizontal gap than square ones: wspace is a fraction of panel
+        # *width*, so the same value that separates square panels lets the RA
+        # labels of adjacent landscape panels run into each other.
+        fig.subplots_adjust(hspace=args.hspace, wspace=args.wspace)
 
         out = Path(args.output)
         if args.per_region:
@@ -339,6 +342,8 @@ def main() -> int:
     ap.add_argument("--figsize", type=float, nargs=2)
     ap.add_argument("--dpi", type=int, default=170)
     ap.add_argument("--no-grid", action="store_true")
+    ap.add_argument("--wspace", type=float, default=0.06)
+    ap.add_argument("--hspace", type=float, default=0.28)
     ap.add_argument("--list", action="store_true", help="print the regions and exit")
     args = ap.parse_args()
 

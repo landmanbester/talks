@@ -1,0 +1,11 @@
+#CRTFv0 CASA Region Text Format version 0
+#
+# The Radio Arc. Chosen because the intrinsic model resolves filament
+# substructure here that is corroborated independently by the L-band image --
+# which makes it evidence rather than an assertion, unlike a zoom where only
+# the model shows the detail.
+#
+# Geometry copied verbatim from fits_files/GC/radio_arc_zoom.reg (gitignored
+# with the rest of the data drop); only a label has been added.
+#
+centerbox [[17:46:10.86494, -028.48.55.3647], [1367.7911arcsec, 802.6975arcsec]], coord=J2000, label='Radio Arc'
