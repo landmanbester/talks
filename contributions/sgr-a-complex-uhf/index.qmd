@@ -79,7 +79,7 @@ A point-source prior is a poor description of nearly everything in this image.
 :::
 
 ::: {.highlight-box .fragment}
-**2.** What is the spectrum at the **base** of the bubbles, where the energetics are set?
+**2.** Does $\alpha$ steepen from the **base** of the bubbles outwards, as synchrotron ageing requires?
 :::
 
 ::: {.highlight-box .fragment}
@@ -152,7 +152,7 @@ More samples per sky position — not merely more sky.
 . . .
 
 ::: {.muted .small}
-Four times the imaging weight at the field centre, from the same observation.
+Three times the imaging weight at the field centre, from the same observation.
 :::
 
 ## The PSF is where it shows
@@ -194,7 +194,7 @@ A spectral index is a **ratio across the band**, so the two images must be repor
 . . .
 
 ::: {.result-box}
-Get this wrong by a constant factor $r$ and every $\alpha$ shifts by $\log r / \log(\nu_1/\nu_2)$ — for our two bands, a beam-area ratio of 1.63 moves $\alpha$ by **−1.03**.
+Get this wrong and the spectral index is not measuring what you think it is.
 :::
 
 ## The model has a resolution too {.smaller}
@@ -215,14 +215,14 @@ So the restore step has to *estimate* the model resolution before homogenising.
 
 . . .
 
-::: {.muted .small}
-And it cannot do so exactly: the model's intrinsic resolution is **SNR-dependent**, so it varies across the image as well as across the band. Homogenisation is an approximation — which is the thread the last section picks up.
+::: {.muted}
+It cannot do so exactly: the model's intrinsic resolution is **SNR-dependent**. Homogenisation is an approximation.
 :::
 
 
-## Where we are looking
+## {.plain-figure}
 
-![](images/superres-overview.png){height="440"}
+![](images/superres-overview.png){height="620"}
 
 ## Sgr B2 {.smaller}
 

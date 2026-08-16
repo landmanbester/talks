@@ -22,7 +22,10 @@ fine on the page often does not survive being spoken.
 
 Hello. I'm Landman Bester, from SARAO and Rhodes University. This talk is about high-fidelity
 imaging of the Galactic Centre at UHF band — and about the one number that quietly decides
-whether you can believe a spectral index.
+whether you can believe a spectral index. I'll start with a disclaimer - I am an algorithm
+developer more than an astronomer. What I'm about to present was born out of a curiosity about
+how better algorithms, imaging algorithms in particular, can improve the science we derive
+from the data we have. 
 
 ## slide-02 — Cold open, image only (6s)
 
@@ -72,12 +75,11 @@ degrees.
 
 ## slide-12 — imaged jointly (10s)
 
-The full band, imaged jointly with `pfb-imaging` under a sparsity-promoting prior — SARA.
+We image the full band jointly with `pfb-imaging`, under a sparsity-promoting prior — SARA — with an additional correlation along the frequency axis imposed. Please come see my J09 talk later today for more about the algorithmic details. 
 
 ## slide-13 — restored resolution (10s)
 
-Restored to eight and a half by seven point eight arcseconds, homogenised across the band. Hold
-on to that word "homogenised" — most of this talk is about it.
+I'll mainly show restored images with resolution homogenised across the band. Hold on to that word "homogenised" — most of this talk is about it.
 
 ## slide-14 — the beam varies (12s)
 
@@ -86,37 +88,37 @@ nearly a factor of two across the band.
 
 ## slide-15 — usually nuisances (8s)
 
-Both are normally treated as calibration nuisances. They are the whole story for what follows.
+Both are normally treated as nuisances that can be corrected for during image post-processing. They are a big part of the story that follows.
 
 ## slide-16 — bright and saturating (9s)
 
-As for the field: Sgr A-star, Sgr A East, the Radio Arc — bright, compact, and saturating.
+This field is one of the toughest there is. It hosts Sgr A-star, Sgr A East, the Radio Arc, among others.
 
 ## slide-17 — filaments (8s)
 
-Filamentary structure on every scale from arcseconds to degrees.
+It contains filamentary structure on every scale from arcseconds to degrees.
 
 ## slide-18 — diffuse emission (8s)
 
 Genuinely diffuse emission underneath all of it.
+Which quietly drops below the noise at the top end of the band.
 
 ## slide-19 — dynamic range (9s)
 
-And dynamic range spanning several orders of magnitude across a single field.
+Add dynamic range spanning several orders of magnitude across a single field...
 
 ## slide-20 — point-source prior (10s)
 
-Which is to say a point-source prior is a poor description of very nearly everything in this
-image.
+And you have a field for which a point-source prior is a very poor description of nearly everything in it.
 
 ## slide-21 — question 1, filaments (12s)
 
-Three open questions. First: do the non-thermal filaments share a common spectral index, or is
+I know of at least three open questions. First: do the non-thermal filaments share a common spectral index, or is
 that population heterogeneous?
 
 ## slide-22 — question 2, bubble base (11s)
 
-Second: what is the spectrum at the base of the bubbles, where the energetics are actually set?
+Second: Does $\alpha$ steepen from the base of the bubbles outwards, as synchrotron ageing requires? Spoiler alert, the data are not yet conclusive about this.
 
 ## slide-23 — question 3, compact sources (14s)
 
@@ -127,26 +129,26 @@ population of millisecond pulsars.
 ## slide-24 — all spectral index questions (10s)
 
 All three are spectral-index questions. So everything that follows is about whether we can
-measure a spectral index here that we are willing to believe.
+measure a spectral index here that we are willing to believe. (Another spoiler alert).
 
 ## slide-25 — Section: mosaicking is a modelling choice (5s)
 
-Start with how the mosaic gets made.
+Let's start with how the mosaic gets made.
 
 ## slide-26 — two ways (18s)
 
-There are two ways. In image space you deconvolve each pointing independently, primary-beam
-correct, and take a weighted average. Jointly — or on the fly — the beam sits inside the
-measurement operator, and you do one deconvolution over all the data.
+There are two ways to build a mosaic.
+The usual way is to deconvolve each pointing independently, primary-beam
+correct, and use a weighted average to stitch the images together. Or you can do it jointly, in visibilty space, by incorporating the beam into the
+measurement operator. That way it's one deconvolution over all the data simultaneously.
 
 ## slide-27 — different problems (9s)
 
-That is not a workflow preference. The two are solving genuinely different problems.
+That is not a workflow preference. The two are solving genuinely different problems. The latter is harder in many ways, but I'm going to try and convince you that it is worth it.
 
 ## slide-28 — rephasing (14s)
 
-And there is a detail here that is easy to miss. To deconvolve every pointing together, the data
-first have to be rephased to a common phase centre. The primary beam does not come along.
+There is a detail worth pointing out here. To jointly deconvolve all pointings, we need to rephase to a common phase centre. The primary beam does not come along.
 
 ## slide-29 — beam follows the dish (9s)
 
@@ -182,26 +184,23 @@ More samples per sky position — not merely more sky.
 
 ## slide-36 — four times the weight (10s)
 
-At the field centre that is about four times the imaging weight, out of the same observation.
+At the field centre that is roughly three times the imaging weight, out of the same observation.
 
 ## slide-37 — PSF sidelobes (22s)
 
 Here is what it does to the point spread function. Single pointing in green, joint in blue; RMS
-sidelobe level solid, worst case dotted. The main lobes differ by four per cent, so on an image
-they look identical. The sidelobes do not. Sidelobe RMS is down by a factor of four at
-arcminute scales, and about one point seven out to three degrees.
+sidelobe level as a function of radius drawn with the solid lines. The main lobes only differ by about four per cent, the sidelobes by a lot more than that. Sidelobe RMS reduces by up to a factor of four at
+arcminute scales, dropping to just below two out to three degrees. This makes the problem much better conditioned.
 
 ## slide-38 — mosaic comparison (16s)
 
-And in the image. Same sky, same colour scale. On the left, each pointing deconvolved
-independently with multi-scale CLEAN and then averaged — you can still see the individual
-pointing footprints in the product. On the right, one SARA deconvolution over all three.
+What does that do for imaging? Here's the same data images in two different ways. It's the same sky and colour scale. On the left, each pointing deconvolved
+independently with multi-scale CLEAN and then stitched in image space. On the right, one SARA deconvolution over all three. I hope we can agree that the latter is the more faithful of the two.
 
 ## slide-39 — CLEAN can't forward model (18s)
 
-One honest note on that comparison: it changes the deconvolution algorithm as well as the
-mosaicking scheme. That is not entirely accidental. CLEAN does not minimise a stated objective,
-so there is no natural place to put a beam model inside it.
+One honest note on that comparison: both the deconvolution algorithm and the
+mosaicking scheme is different in this comparison. That is not entirely accidental. CLEAN does not minimise a stated objective function, and that makes it harder to incorporate the beam model.
 
 ## slide-40 — Section: resolution is the hidden variable (6s)
 
@@ -209,13 +208,12 @@ Now the part that actually decides the science.
 
 ## slide-41 — alpha is a ratio (14s)
 
-A spectral index is a ratio across the band. Which means the two images going into it have to be
-reporting the same thing — and by default they are not.
+A spectral index is a ratio across the band. Which means the images going into it have to report the same thing — and by default they are not.
 
 ## slide-42 — common beam (10s)
 
 Sensitivity and uv-coverage both change with frequency, so every sub-band has its own
-resolution. You have to restore them all to a common beam.
+resolution. You have to homogenize the resolution across frequency before comparing bands and physics forces us to degrade the resolution to that of the lowest sub-band.
 
 ## slide-43 — CLEAN's easy case (10s)
 
@@ -224,18 +222,16 @@ For a CLEAN model that is just a convolution, because the model is a set of delt
 ## slide-44 — sparsity is harder (13s)
 
 For a sparsity prior it is not, because that model has its own intrinsic resolution — which has
-to be estimated first, and then corrected for.
+to be estimated before resolution can be homogenized.
 
 ## slide-45 — the cost of getting it wrong (19s)
 
-And get this wrong by a constant factor and every spectral index shifts. For our two bands, a
-beam-area ratio of one point six three moves alpha by one point zero three. That is the
-difference between an impossible number and an ordinary one.
+Get this wrong and the derived spectral index is not reliable. 
 
 ## slide-46 — CLEAN assumes zero (12s)
 
 Let me be precise about the model resolution, because this is the methodological point. A CLEAN
-model is delta functions: intrinsic resolution zero, by assumption. A sparsity prior's model is
+model consisting of delta functions has zero intrinsic resolution by assumption. A sparsity prior's model does
 not.
 
 ## slide-47 — non-zero (10s)

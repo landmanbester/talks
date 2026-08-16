@@ -60,3 +60,11 @@
 .reveal .slides section.bottom-caption-slide h2 {
   display: none !important;
 }
+
+/* A figure that needs the whole slide. An empty `##` still reserves the
+   heading's box and its rule, which costs ~90px of height and shows as a
+   stripe above the figure. Hiding the heading reclaims both, without the
+   flex/full-bleed treatment `.bottom-caption-slide` applies. */
+.reveal .slides section.plain-figure h2 {
+  display: none;
+}

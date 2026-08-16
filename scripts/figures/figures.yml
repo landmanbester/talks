@@ -84,6 +84,14 @@ regions:
     width: 3.7
     height: 2.4
 
+  # The joint mosaic's data footprint rather than its pixel grid: 5.14 x 4.38
+  # deg measured with --inspect. Using the square `full` region instead leaves
+  # empty bands top and bottom, which shrink the figure on a slide.
+  overview:
+    center: [266.3949, -29.0817]
+    width: 5.05
+    height: 4.45
+
   # Narrower still: also inside the L-band mosaic (RA 264.503-268.182,
   # Dec -30.838..-27.580), for anything that differences the two bands.
   overlap_lband:
@@ -382,8 +390,8 @@ figures:
   # guess where in five square degrees it was taken from.
   superres-overview:
     out: superres-overview.png
-    region: full
-    figsize: [11, 11]
+    region: overview
+    figsize: [11.5, 10.1]
     max_pixels: 2200
     grid: false
     frame: false
