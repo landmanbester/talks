@@ -1,0 +1,399 @@
+# Figures for contributions/sgr-a-complex-uhf.
+#
+# Render with an interpreter that has astropy + reproject + pyyaml:
+#   ~/software/pfb-imaging/.venv/bin/python scripts/figures/make_figures.py --list
+#   ~/software/pfb-imaging/.venv/bin/python scripts/figures/make_figures.py sgra-full
+#
+# The FITS live under fits_files/ and are gitignored; this file and the scripts
+# beside it are the tracked record of how each PNG in the deck was made.
+
+data_root: fits_files/GC
+out_root: contributions/sgr-a-complex-uhf/images
+theme: dark
+dpi: 160
+max_pixels: 2000
+
+
+images:
+  # Joint / on-the-fly mosaic: the time-varying primary beam sits inside the
+  # measurement operator, so all three pointings are deconvolved together.
+  joint:
+    file: UHF_band_resolution_homogenized_joint_mosaic_sara_mfs.fits
+    label: "Joint mosaic — SARA"
+    blank_zeros: true       # zero-filled outside the PBMIN = 0.025 cutoff
+    freq_hz: 797427121.5
+
+  # The intrinsic (primary-beam corrected) sky model from the same run.
+  joint_model:
+    file: UHF_band_resolution_homogenized_joint_mosaic_intrinsic_model_sara_mfs.fits
+    label: "Intrinsic model — SARA"
+    blank_zeros: true
+    freq_hz: 797427121.5
+
+  # Image-space mosaic: each pointing deconvolved independently, then weighted
+  # average. NOTE this one is MS-CLEAN, so a joint-vs-image-space comparison
+  # against `joint` also swaps the deconvolution algorithm. See README.
+  imspace:
+    file: UHF_band_resolution_homogenised_image_space_mosaic_msclean.fits
+    label: "Image-space mosaic — MS-CLEAN"
+    freq_hz: 815933593.75
+
+  # In-band spectral fit over 544-1087 MHz, from spimple/spifit on the
+  # *intrinsic* (primary-beam corrected) UHF cube. Same 7840^2 RA---SIN grid as
+  # `joint`, pixel for pixel, so nothing here needs reprojecting. spifit
+  # already blanks unfitted pixels -- only 5.5% of the field survives.
+  #
+  # Beam 11.74" x 10.77", coarser than the joint mosaic's 8.55" x 7.76",
+  # because an in-band fit has to work at the resolution of the lowest
+  # sub-band. Reference frequency 797.427 MHz, matching the MFS image.
+  alpha:
+    file: spifit_datatree_intrinsic_bkp_time0.alpha.fits
+    label: "In-band α (spifit)"
+    freq_hz: 797427121.5
+  alpha_err:
+    file: spifit_datatree_intrinsic_bkp_time0.alpha_err.fits
+    label: "In-band α error"
+    freq_hz: 797427121.5
+  i0:
+    file: spifit_datatree_intrinsic_bkp_time0.I0.fits
+    label: "I₀ at 797 MHz (spifit)"
+    freq_hz: 797427121.5
+
+  lband:
+    file: L_band_resolution_homogenized_image_space_mosaic_sara.fits
+    label: "L band — SARA"
+    # Beam restored to the header with stamp_beam.py: montage drops BMAJ/BMIN/
+    # BPA through a mosaic, and the values came from the images that went in.
+    # 7.60" x 5.35" against the joint mosaic's 8.55" x 7.76".
+    freq_hz: 1.284e9        # TODO confirm: not recorded in the header
+
+
+regions:
+  # The joint mosaic's own footprint, five square degrees.
+  full:
+    center: [266.3946, -29.0506]
+    width: 4.9
+    height: 4.9
+
+  # Common to the joint and the UHF image-space mosaic, so a comparison panel
+  # is not half blank. Measured with `make_figures.py --inspect`:
+  #   imspace  RA 264.130-268.636  Dec -30.332..-27.775
+  #   joint    RA 263.455-269.335  Dec -31.242..-26.860
+  overlap:
+    center: [266.3834, -29.0550]
+    width: 3.7
+    height: 2.4
+
+  # Narrower still: also inside the L-band mosaic (RA 264.503-268.182,
+  # Dec -30.838..-27.580), for anything that differences the two bands.
+  overlap_lband:
+    center: [266.3400, -29.0500]
+    width: 3.0
+    height: 2.3
+
+  # The L-band mosaic's own footprint.
+  lband_full:
+    center: [266.3480, -29.2209]
+    width: 3.1
+    height: 3.15
+
+  # Sgr A* — 17h45m40.04s -29d00m28.1s
+  sgra:
+    center: [266.41681, -29.00781]
+    width: 0.55
+    height: 0.55
+
+  # Cold open: wide enough to read as the Galactic Centre rather than as an
+  # unidentifiable bright blob, tight enough to keep the filaments resolved.
+  teaser:
+    center: [266.4400, -28.9400]
+    width: 2.0
+    height: 2.0
+
+  # The Radio Arc, north-east of the centre.
+  arc:
+    center: [266.5200, -28.8300]
+    width: 0.45
+    height: 0.45
+
+
+figures:
+  # ---- full-bleed background slides ------------------------------------
+  sgra-full:
+    out: sgra-full.png
+    region: full
+    figsize: [12, 12]
+    max_pixels: 2400
+    grid: false
+    frame: false
+    panels:
+      - image: joint
+        cmap: inferno
+        stretch: log
+        pmin: 40
+        pmax: 99.85
+        show_ra: false
+        show_dec: false
+        beam: false
+
+  sgra-teaser:
+    out: sgra-teaser.png
+    region: teaser
+    figsize: [12, 12]
+    max_pixels: 2000
+    grid: false
+    frame: false
+    panels:
+      - image: joint
+        cmap: inferno
+        stretch: log
+        pmin: 40
+        pmax: 99.9
+        show_ra: false
+        show_dec: false
+        beam: false
+
+  # ---- the comparison the talk turns on --------------------------------
+  mosaic-compare:
+    out: mosaic-compare.png
+    region: overlap
+    figsize: [14, 6.4]
+    share_norm: true        # identical scale, or it is not a comparison
+    norm_from: 0
+    panels:
+      - image: imspace
+        title: "Image-space mosaic"
+        cmap: inferno
+        stretch: log
+        pmin: 30
+        pmax: 99.8
+      - image: joint
+        title: "Joint / OTF mosaic"
+        cmap: inferno
+
+  mosaic-difference:
+    out: mosaic-difference.png
+    region: overlap
+    figsize: [8, 7]
+    panels:
+      - op: difference
+        images: [imspace, joint]   # reprojected onto the first one's grid
+        title: "Image-space − joint"
+        cmap: RdBu_r
+        stretch: linear
+        symmetric: true
+        pmax: 99.5
+        colorbar: true
+        cbar_label: "Jy/beam"
+
+  # ---- science-facing --------------------------------------------------
+  joint-model:
+    out: joint-model.png
+    region: full
+    figsize: [10, 10]
+    max_pixels: 2200
+    panels:
+      - image: joint_model
+        title: "Intrinsic sky model"
+        cmap: inferno
+        stretch: log
+        pmin: 50
+        pmax: 99.9
+        colorbar: true
+
+  # Two-point spectral index between the UHF and L-band MFS images. This is a
+  # placeholder for the real per-sub-band map: with only MFS images available
+  # it is one colour per pixel from two numbers, and it inherits every
+  # difference between the two runs. Treat as indicative until the cubes exist.
+  #
+  # The beam-area correction is applied automatically now that both images
+  # declare a beam -- without it the whole map sits about 1.03 too steep.
+  uhf-lband-spix:
+    out: uhf-lband-spix.png
+    region: overlap_lband
+    figsize: [8, 7]
+    panels:
+      - op: spix
+        images: [joint, lband]
+        mask_below: 0.0015     # Jy/beam, well above the residual noise
+        title: "α (UHF → L band)"
+        cmap: Spectral_r
+        stretch: linear
+        vmin: -2.0
+        vmax: 0.5
+        colorbar: true
+        cbar_label: "spectral index"
+
+  # The distribution behind the map above, over exactly the same pixels. Split
+  # by UHF brightness: a spectral index carries no SNR of its own, so the faint
+  # end is a ratio of two small numbers and broadens the peak if left in with
+  # everything else.
+  uhf-lband-spix-hist:
+    out: uhf-lband-spix-hist.png
+    region: overlap_lband
+    figsize: [9.5, 5.6]
+    panels:
+      - op: spix
+        images: [joint, lband]
+        mask_below: 0.0015
+        plot: histogram
+        bins: 140
+        range: [-2.5, 1.0]
+        cuts: [0.0015, 0.01, 0.05]
+        highlight: [-1.0, -0.7]     # where non-thermal emission is expected
+        xlabel: "spectral index  α  (UHF → L band)"
+        title: "α distribution, beam-area corrected"
+
+  # ---- in-band vs two-band spectral index -------------------------------
+  # Two independent estimates of the same quantity over the same sky. They are
+  # not measuring quite the same thing and the differences are the interesting
+  # part: the in-band fit spans 544-1087 MHz on the intrinsic cube at 11.74",
+  # the two-band ratio spans 797 MHz to 1.28 GHz on apparent restored images at
+  # 8.55" and 7.60". Curvature, primary-beam residuals and resolution all enter
+  # differently.
+  spix-inband-map:
+    out: spix-inband-map.png
+    region: overlap_lband
+    figsize: [14, 6.2]
+    panels:
+      - image: alpha
+        mask_by: {image: alpha_err, below: 0.2}
+        title: "In-band fit, 544–1087 MHz"
+        cmap: Spectral_r
+        stretch: linear
+        vmin: -2.0
+        vmax: 0.5
+        beam: true
+      - op: spix
+        images: [joint, lband]
+        mask_below: 0.0015
+        title: "Two-band ratio, 797 MHz → 1.28 GHz"
+        cmap: Spectral_r
+        stretch: linear
+        vmin: -2.0
+        vmax: 0.5
+        colorbar: true
+        cbar_label: "spectral index"
+
+  spix-hist-compare:
+    out: spix-hist-compare.png
+    region: overlap_lband
+    figsize: [9.5, 5.6]
+    panels:
+      - plot: histogram
+        bins: 140
+        range: [-2.5, 1.0]
+        highlight: [-1.0, -0.7]
+        xlabel: "spectral index  α"
+        title: "In-band fit vs two-band ratio"
+        series:
+          - image: alpha
+            mask_by: {image: alpha_err, below: 0.2}
+            label: "in-band, α_err < 0.2"
+          - image: alpha
+            label: "in-band, all fitted"
+          - op: spix
+            images: [joint, lband]
+            mask_below: 0.0015
+            label: "two-band (UHF → L)"
+
+  # The plot that actually answers "do they agree". Two maps can have identical
+  # histograms and still disagree at every pixel.
+  spix-inband-vs-twoband:
+    out: spix-inband-vs-twoband.png
+    region: overlap_lband
+    figsize: [7.5, 6.8]
+    panels:
+      - plot: density
+        range: [-2.5, 0.75]
+        gridsize: 95
+        xlabel: "in-band α  (544–1087 MHz)"
+        ylabel: "two-band α  (797 MHz → 1.28 GHz)"
+        title: "Per-pixel agreement"
+        x:
+          image: alpha
+          mask_by: {image: alpha_err, below: 0.2}
+        y:
+          op: spix
+          images: [joint, lband]
+          mask_below: 0.0015
+
+  # ---- deck figures for the resolution argument -------------------------
+  # The worked example: the same two images, differenced with and without the
+  # beam-area correction. The gap between the two curves IS the bias, and it is
+  # the most concrete statement of the talk's thesis available from this data.
+  beam-bias:
+    out: beam-bias.png
+    region: overlap_lband
+    figsize: [8.5, 5.2]
+    panels:
+      - plot: histogram
+        bins: 130
+        range: [-3.0, 0.75]
+        highlight: [-1.0, -0.7]
+        xlabel: "spectral index  α  (UHF → L band)"
+        title: "One dropped keyword"
+        series:
+          - op: spix
+            images: [joint, lband]
+            mask_below: 0.0015
+            beam_area_correct: false
+            label: "beams ignored"
+          - op: spix
+            images: [joint, lband]
+            mask_below: 0.0015
+            label: "beams accounted for"
+
+  # Why an alpha map is not interpretable on its own.
+  alpha-vs-alpha-err:
+    out: alpha-vs-alpha-err.png
+    region: overlap_lband
+    figsize: [7.5, 6.4]
+    panels:
+      - plot: density
+        range: [-2.5, 0.5]
+        yrange: [0.0, 1.0]        # different quantity: no 1:1 line, no offset
+        running_median: true
+        gridsize: 85
+        xlabel: "in-band α"
+        ylabel: "fitted uncertainty  σ(α)"
+        title: "Steep values are the poorly constrained ones"
+        x: {image: alpha}
+        y: {image: alpha_err}
+
+  # L-band context for the opening: the field at 1.28 GHz, from our own mosaic
+  # rather than a screenshot of someone else's figure.
+  lband-context:
+    out: lband-context.png
+    region: lband_full
+    figsize: [11, 11]
+    max_pixels: 2200
+    grid: false
+    frame: false
+    panels:
+      - image: lband
+        cmap: inferno
+        stretch: log
+        pmin: 40
+        pmax: 99.85
+        beam: false
+
+  # Where the zooms come from. A zoom panel on its own leaves the audience to
+  # guess where in five square degrees it was taken from.
+  superres-overview:
+    out: superres-overview.png
+    region: full
+    figsize: [11, 11]
+    max_pixels: 2200
+    grid: false
+    frame: false
+    overlay_regions: scripts/figures/regions/superres-slide.reg
+    panels:
+      - image: joint
+        cmap: inferno
+        stretch: log
+        pmin: 40
+        pmax: 99.85
+        show_ra: false
+        show_dec: false
+        beam: false

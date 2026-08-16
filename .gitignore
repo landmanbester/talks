@@ -24,6 +24,11 @@ __pycache__/
 # Source PDFs from Canva (large binaries, not version-controlled)
 reference_pdfs/
 
+# Local FITS drop feeding the figure scripts (GB-scale binaries). The scripts
+# that consume it are tracked, under scripts/figures/ — deleting this directory
+# to reclaim the space must never take the tooling with it.
+fits_files/
+
 # Rendered deck exports (regenerate with decktape — see README)
 *.pdf
 

@@ -1,0 +1,13 @@
+# Region file format: DS9 version 4.1
+#
+# The two most convincing super-resolution targets, for the deck slide. Sgr B2
+# is discrete compact clumps that both restored images blend into blobs. Sgr C
+# has a thin filament crossing an extended shell, so it shows the effect on
+# compact and extended structure in one panel.
+#
+# The full five-target version is superres.reg. Two rows fit a slide.
+#
+global color=green width=1
+fk5
+box(266.83330,-28.38330,5',5',0) # text={Sgr B2}
+box(266.16670,-29.46670,6',6',0) # text={Sgr C}

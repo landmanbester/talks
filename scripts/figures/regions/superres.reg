@@ -1,0 +1,24 @@
+# Region file format: DS9 version 4.1
+#
+# High-SNR structures for the super-resolution comparison: UHF intrinsic model
+# against the L-band restored image. Each was checked to carry data in the
+# joint mosaic, the intrinsic model and the L-band mosaic. Peak brightness in
+# a 2 arcmin box runs from 40 mJy/beam at Sgr C to 1.3 Jy/beam at Sgr A.
+#
+# Edit this file in ds9 or CARTA rather than editing the coordinates by hand.
+# The point of driving the figure from a region file is that the choice of what
+# to zoom on stays a decision made while looking at the image.
+#
+# Avoid semicolons in these comments. The ds9 reader treats one as a statement
+# separator even inside a comment, and tries to parse whatever follows it as a
+# region.
+#
+#   compare_regions.py scripts/figures/regions/superres.reg --list
+#
+global color=green dashlist=8 3 width=1 font="helvetica 10 normal roman"
+fk5
+box(266.41681,-29.00781,6',6',0) # text={Sgr A}
+box(266.56250,-28.83333,9',9',0) # text={Radio Arc}
+box(266.83330,-28.38330,5',5',0) # text={Sgr B2}
+box(266.81630,-29.96690,4',4',0) # text={The Mouse}
+box(266.16670,-29.46670,6',6',0) # text={Sgr C}

@@ -1,0 +1,13 @@
+#CRTFv0 CASA Region Text Format version 0
+#
+# The three brightest targets in CASA region format, kept so the CRTF branch of
+# the reader stays exercised. compare_regions.py auto-detects the format from
+# the extension. Pass --format crtf for a file named otherwise.
+#
+# Note CRTF boxes are corner-to-corner, not centre-plus-size like ds9, and the
+# RA half-width is divided by cos(dec). Getting that wrong silently shifts the
+# box off the target instead of failing.
+#
+box[[266.35965deg, -29.05781deg], [266.47397deg, -28.95781deg]], coord=J2000, label='Sgr A'
+box[[266.78596deg, -28.42497deg], [266.88064deg, -28.34163deg]], coord=J2000, label='Sgr B2'
+box[[266.77782deg, -30.00023deg], [266.85478deg, -29.93357deg]], coord=J2000, label='The Mouse'
