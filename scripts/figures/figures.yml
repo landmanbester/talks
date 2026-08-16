@@ -124,6 +124,24 @@ regions:
     width: 0.45
     height: 0.45
 
+  # Three non-thermal filament systems, for the question the talk opens with:
+  # do the filaments share a spectral index? Same angular size for all three so
+  # the panels of one figure are directly comparable, and so a difference
+  # between them cannot be a difference in how much sky each box averages.
+  # Positions are the catalogue galactic coordinates converted to ICRS.
+  fil_arc:                       # G0.2-0.0, the Radio Arc bundle
+    center: [266.5300, -28.8100]
+    width: 0.28
+    height: 0.28
+  fil_snake:                     # G359.1-0.2, the Snake
+    center: [266.0613, -29.8081]
+    width: 0.28
+    height: 0.28
+  fil_cane:                      # G359.79+0.17, the Cane
+    center: [266.1139, -29.0265]
+    width: 0.28
+    height: 0.28
+
 
 figures:
   # ---- full-bleed background slides ------------------------------------
@@ -214,8 +232,17 @@ figures:
   # it is one colour per pixel from two numbers, and it inherits every
   # difference between the two runs. Treat as indicative until the cubes exist.
   #
+  # Both inputs are primary-beam corrected (intrinsic): `joint` carries pfb's
+  # PBMIN = 0.025 keyword and its noise rises 5.7x from r = 1.3 deg to the edge
+  # of the field, which is what dividing by a shrinking beam looks like; the
+  # L-band image is an image-space mosaic, which is a weighted average over
+  # pointings that were each pb-corrected first. An apparent pair would put a
+  # steep radial gradient on alpha and there is none.
+  #
   # The beam-area correction is applied automatically now that both images
-  # declare a beam -- without it the whole map sits about 1.03 too steep.
+  # declare a beam -- without it the whole map sits about 1.03 too steep. Note
+  # `mask_below` is applied *after* that correction, as a surface brightness
+  # expressed in Jy per beam of the first image.
   uhf-lband-spix:
     out: uhf-lband-spix.png
     region: overlap_lband
@@ -253,12 +280,17 @@ figures:
         title: "α distribution, beam-area corrected"
 
   # ---- in-band vs two-band spectral index -------------------------------
-  # Two independent estimates of the same quantity over the same sky. They are
-  # not measuring quite the same thing and the differences are the interesting
-  # part: the in-band fit spans 544-1087 MHz on the intrinsic cube at 11.74",
-  # the two-band ratio spans 797 MHz to 1.28 GHz on apparent restored images at
-  # 8.55" and 7.60". Curvature, primary-beam residuals and resolution all enter
-  # differently.
+  # Two independent estimates of the same quantity over the same sky. Both are
+  # intrinsic (primary-beam corrected) and both are restored rather than model
+  # images; the differences that remain are the interesting part. The in-band
+  # fit spans 544-1087 MHz over eight sub-bands homogenised to 11.74", the
+  # two-band ratio spans 797 MHz to 1.28 GHz at 8.55" and 7.60". Curvature,
+  # residual primary-beam error and resolution all enter differently.
+  #
+  # Both panels carry the *same* mask, so a colour difference between them is a
+  # disagreement and not a difference in which pixels survived. The in-band
+  # mask is the natural one (a fitted per-pixel uncertainty); the two-band
+  # ratio has no uncertainty of its own, so it inherits it.
   spix-inband-map:
     out: spix-inband-map.png
     region: overlap_lband
@@ -266,7 +298,7 @@ figures:
     panels:
       - image: alpha
         mask_by: {image: alpha_err, below: 0.2}
-        title: "In-band fit, 544–1087 MHz"
+        title: "In-band fit"
         cmap: Spectral_r
         stretch: linear
         vmin: -2.0
@@ -275,7 +307,8 @@ figures:
       - op: spix
         images: [joint, lband]
         mask_below: 0.0015
-        title: "Two-band ratio, 797 MHz → 1.28 GHz"
+        mask_by: {image: alpha_err, below: 0.2}
+        title: "Two-band ratio"
         cmap: Spectral_r
         stretch: linear
         vmin: -2.0
@@ -283,6 +316,11 @@ figures:
         colorbar: true
         cbar_label: "spectral index"
 
+  # Unlike the map above, the series here keep their own masks: the question a
+  # histogram answers is what each estimate says over the sky it is valid on,
+  # and forcing one mask would hide the fact that they disagree about which
+  # pixels are usable at all. Legend top-right and without pixel counts -- from
+  # the back of a room the counts are unreadable and the peak is the point.
   spix-hist-compare:
     out: spix-hist-compare.png
     region: overlap_lband
@@ -294,16 +332,19 @@ figures:
         highlight: [-1.0, -0.7]
         xlabel: "spectral index  α"
         title: "In-band fit vs two-band ratio"
+        legend_loc: upper right
+        legend_counts: false
+        legend_fontsize: 14
         series:
           - image: alpha
             mask_by: {image: alpha_err, below: 0.2}
-            label: "in-band, α_err < 0.2"
+            label: "in-band, well constrained"
           - image: alpha
             label: "in-band, all fitted"
           - op: spix
             images: [joint, lband]
             mask_below: 0.0015
-            label: "two-band (UHF → L)"
+            label: "two-band, UHF → L"
 
   # The plot that actually answers "do they agree". Two maps can have identical
   # histograms and still disagree at every pixel.
@@ -351,6 +392,54 @@ figures:
             images: [joint, lband]
             mask_below: 0.0015
             label: "beams accounted for"
+
+  # Open question 1, answered on the in-band map: three non-thermal filament
+  # systems, one colour scale, one fit, one mask. The panel medians differ by
+  # far more than the per-pixel scatter -- but see the deck slide: most of that
+  # spread is the estimator's own brightness dependence, and only the Cane
+  # survives a brightness-matched comparison as genuinely steeper. The figure
+  # is the picture; the control is the table beside it.
+  filament-spix:
+    out: filament-spix.png
+    region: fil_arc              # panels override this
+    figsize: [15, 5.4]
+    max_pixels: 900
+    grid: false
+    frame: false
+    beam: false
+    panels:
+      - image: alpha
+        region: fil_arc
+        mask_by: {image: alpha_err, below: 0.2}
+        title: "Radio Arc"
+        cmap: Spectral_r
+        stretch: linear
+        vmin: -2.0
+        vmax: 0.5
+        show_ra: false
+        show_dec: false
+      - image: alpha
+        region: fil_snake
+        mask_by: {image: alpha_err, below: 0.2}
+        title: "The Snake"
+        cmap: Spectral_r
+        stretch: linear
+        vmin: -2.0
+        vmax: 0.5
+        show_ra: false
+        show_dec: false
+      - image: alpha
+        region: fil_cane
+        mask_by: {image: alpha_err, below: 0.2}
+        title: "The Cane"
+        cmap: Spectral_r
+        stretch: linear
+        vmin: -2.0
+        vmax: 0.5
+        show_ra: false
+        show_dec: false
+        colorbar: true
+        cbar_label: "in-band α"
 
   # Why an alpha map is not interpretable on its own.
   alpha-vs-alpha-err:

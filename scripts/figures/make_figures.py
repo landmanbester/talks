@@ -134,10 +134,20 @@ def resolve_panel_image(spec: Spec, p: dict, region: dict,
             lo = p.get("mask_below")
             da = np.where(a.data > 0, a.data, np.nan)
             db = np.where(b.data > 0, b.data, np.nan)
+            # Beam-correct *before* masking. `mask_below` is a brightness in Jy
+            # per beam of the first image; applying that same number to both in
+            # Jy/beam is a different surface-brightness cut in each whenever the
+            # beams differ, and here the L-band beam is 1.63x smaller in area,
+            # so the cut is 1.63x stricter at the high frequency. That
+            # preferentially throws away pixels that are faint at L band --
+            # which is to say the steep-spectrum ones -- so the mask selects on
+            # the quantity being measured. Measured on this field it biases the
+            # surviving median alpha by +0.08.
+            da, db, scale_a = beam_correct(a, b, da, db, p, fa, fb)
             if lo is not None:
-                da = np.where(da > float(lo), da, np.nan)
-                db = np.where(db > float(lo), db, np.nan)
-            da, db = beam_correct(a, b, da, db, p, fa, fb)
+                cut = float(lo) / scale_a
+                da = np.where(da > cut, da, np.nan)
+                db = np.where(db > cut, db, np.nan)
             out = np.log(da / db) / np.log(fa / fb)
 
     img = SkyImage(out, a.wcs, a.header, a.path, p.get("title"))
@@ -170,10 +180,14 @@ def apply_mask_by(spec: Spec, img: SkyImage, p: dict, region: dict,
             keep &= m.data < float(cond["below"])
         if "above" in cond:
             keep &= m.data > float(cond["above"])
-        kept = keep.sum()
-        print(f"  mask_by {cond['image']}: {kept:,} of {np.isfinite(data).sum():,} "
-              f"finite pixels kept ({100 * kept / max(np.isfinite(data).sum(), 1):.1f}%)")
+        # Count what survives, not what the condition passes. The two differ
+        # whenever the map already carries a mask of its own, and reporting the
+        # condition's own count there gives percentages over 100.
+        before = int(np.isfinite(data).sum())
         data = np.where(keep, data, np.nan)
+        after = int(np.isfinite(data).sum())
+        print(f"  mask_by {cond['image']}: {after:,} of {before:,} "
+              f"finite pixels kept ({100 * after / max(before, 1):.1f}%)")
     return SkyImage(data, img.wcs, img.header, img.path, img.label)
 
 
@@ -193,29 +207,32 @@ def beam_correct(a: SkyImage, b: SkyImage, da, db, p: dict, fa: float, fb: float
     unresolved. The rigorous alternative is to convolve the sharper image to
     the broader beam before dividing; this is the cheap correction, and the
     figure should say which it used.
+
+    Returns the two arrays and the scale applied to the first, so a caller can
+    convert a Jy/beam threshold into the same units the arrays are now in.
     """
     want = p.get("beam_area_correct")
     ba, bb = a.beam, b.beam
     if want is False:
-        return da, db
+        return da, db, 1.0
     if ba is None or bb is None:
         if want:
             die("beam_area_correct needs a beam on both images; "
                 "stamp one with scripts/figures/stamp_beam.py")
         print("  note: no beam on one or both images -- NO beam-area correction "
               "applied. Any beam mismatch appears as a spectral index offset.")
-        return da, db
+        return da, db, 1.0
 
     # Gaussian solid angle is proportional to bmaj*bmin; the constant cancels.
     area_a, area_b = ba[0] * ba[1], bb[0] * bb[1]
     ratio = area_a / area_b
     if abs(np.log(ratio)) < 1e-3:
-        return da, db
+        return da, db, 1.0
     offset = np.log(ratio) / np.log(fa / fb)
     print(f"  beam-area correction: {ba[0]:.2f}\"x{ba[1]:.2f}\" vs "
           f"{bb[0]:.2f}\"x{bb[1]:.2f}\", ratio {ratio:.3f} "
           f"-> removes an alpha offset of {offset:+.2f}")
-    return da / area_a, db / area_b
+    return da / area_a, db / area_b, area_a
 
 
 def prepare(img: SkyImage, region: dict, max_pixels: int) -> SkyImage:
@@ -289,8 +306,14 @@ def render(spec: Spec, name: str, fig_spec: dict, dpi: int | None) -> Path:
     # own, so there is nothing to resolve up front for them.
     defers = [d or (h and bool(p.get("series")))
               for p, h, d in zip(panels_spec, is_hist, is_dens)]
-    resolved = [(None, {}) if skip else resolve_panel_image(spec, p, region, max_pixels)
-                for p, skip in zip(panels_spec, defers)]
+    # A panel may override the figure's region. That turns one figure into a
+    # row of zooms on unrelated sky positions -- several filaments on the same
+    # colour scale, say -- which is the only honest way to ask whether a
+    # population shares a property.
+    regions = [spec.region(p["region"]) if p.get("region") else region
+               for p in panels_spec]
+    resolved = [(None, {}) if skip else resolve_panel_image(spec, p, rg, max_pixels)
+                for p, rg, skip in zip(panels_spec, regions, defers)]
     images = [r[0] for r in resolved]
     operands = [r[1] for r in resolved]
 
@@ -317,7 +340,7 @@ def render(spec: Spec, name: str, fig_spec: dict, dpi: int | None) -> Path:
         r, c = divmod(k, cols)
 
         if is_hist[k]:
-            series = histogram_series(spec, p, img, operands[k], region, max_pixels)
+            series = histogram_series(spec, p, img, operands[k], regions[k], max_pixels)
             _, stats = skyfig.draw_histogram(fig, (rows, cols, k + 1), p,
                                              spec.theme, series)
             for label, n, med, mode in stats:
@@ -325,8 +348,8 @@ def render(spec: Spec, name: str, fig_spec: dict, dpi: int | None) -> Path:
             continue
 
         if p.get("plot") == "density":
-            xs, _ = resolve_panel_image(spec, p["x"], region, max_pixels)
-            ys, _ = resolve_panel_image(spec, p["y"], region, max_pixels)
+            xs, _ = resolve_panel_image(spec, p["x"], regions[k], max_pixels)
+            ys, _ = resolve_panel_image(spec, p["y"], regions[k], max_pixels)
             _, (n, med, scat) = skyfig.draw_density(
                 fig, (rows, cols, k + 1), xs.data, ys.data, p, spec.theme)
             print(f"  density: n={n:,}  median offset {med:+.2f}  scatter {scat:.2f}")

@@ -552,8 +552,12 @@ def draw_histogram(fig, subplot_spec, opts: dict, theme: dict, series: list):
             continue
         colour = colours[i % len(colours)]
         counts, _ = np.histogram(v, bins=bins, density=True)
-        ax.step(centres, counts, where="mid", color=colour, lw=1.8,
-                label=f"{label}   n={v.size:,}")
+        # Pixel counts belong in the legend when the question is "over how much
+        # sky", and are noise when the point is the shape of the distribution.
+        # On a slide they roughly double the legend's width for a number nobody
+        # reads from the back of the room, so they are opt-out.
+        text = f"{label}   n={v.size:,}" if opts.get("legend_counts", True) else label
+        ax.step(centres, counts, where="mid", color=colour, lw=1.8, label=text)
         ax.fill_between(centres, counts, step="mid", color=colour, alpha=0.13, lw=0)
 
         med = float(np.median(v))
@@ -575,7 +579,8 @@ def draw_histogram(fig, subplot_spec, opts: dict, theme: dict, series: list):
     ax.grid(color=theme["grid"], alpha=0.12, lw=0.6)
 
     leg = ax.legend(loc=opts.get("legend_loc", "upper left"), frameon=False,
-                    fontsize=FS["legend"])
+                    fontsize=opts.get("legend_fontsize", FS["legend"]),
+                    labelspacing=0.35, handlelength=1.4, borderpad=0.2)
     for text in leg.get_texts():
         text.set_color(theme["fg"])
 

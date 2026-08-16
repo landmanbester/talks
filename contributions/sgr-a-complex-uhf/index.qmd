@@ -56,6 +56,10 @@ The primary beam varies strongly **across the mosaic**, and changes size by near
 Usually treated as calibration nuisances. They are the whole story for what follows.
 :::
 
+::: {.muted .small}
+The imaging framework itself is **J09, this afternoon** — this talk takes it as given.
+:::
+
 
 ## A worst-case field {.smaller}
 
@@ -226,7 +230,7 @@ It cannot do so exactly: the model's intrinsic resolution is **SNR-dependent**. 
 
 ## The Radio Arc {.smaller}
 
-![](images/superres-radio-arc.png){height="300"}
+![](images/superres-radio-arc.png){height="250"}
 
 ::: {.muted .small}
 UHF intrinsic model · UHF restored, 8.55″ · L-band restored, 7.60″ × 5.35″. Individual filament strands are separated in the model, blended at the UHF restoring beam — and independently confirmed by the L-band image.
@@ -238,34 +242,35 @@ UHF intrinsic model · UHF restored, 8.55″ · L-band restored, 7.60″ × 5.35
 
 :::: {.columns}
 ::: {.column width="55%"}
-![](images/spix-inband-vs-twoband.png){height="380"}
+![](images/spix-inband-vs-twoband.png){height="340"}
 :::
 ::: {.column width="45%"}
-**In-band**: fit across 544–1087 MHz, intrinsic cube, 11.7″
+**In-band** — 544–1087 MHz, eight sub-bands homogenised to 11.7″
 
-**Two-band**: 797 MHz → 1.28 GHz ratio, apparent restored images, 8.6″ and 7.6″
+**Two-band** — 797 MHz → 1.28 GHz, restored images at 8.6″ and 7.6″
 
-. . .
-
-::: {.result-box}
-Median offset **+0.01**, scatter 0.29, over 118 085 pixels.
-:::
+Both **intrinsic**; both carry the same mask.
 
 ::: {.fragment}
-::: {.muted .small}
-Nothing forces these to agree. That they do says the resolution handling — homogenisation across the band, and the beam correction between bands — is not introducing a systematic at the level we could detect.
+::: {.result-box}
+Median offset **−0.03**, scatter 0.35, over 158 675 pixels.
 :::
 :::
 :::
 ::::
 
+::: {.fragment}
+::: {.muted .small}
+Nothing forces these to agree. That they do says the resolution handling — homogenisation across the band, and the beam-area correction between them — is not introducing a systematic at the level we could detect.
+:::
+:::
 
 ## The distribution
 
 ![](images/spix-hist-compare.png){height="420"}
 
 ::: {.muted .small}
-Peaks at $\alpha \approx -0.9$ — ordinary non-thermal emission, from two independent routes.
+Both routes peak within 0.1 of each other, near $\alpha \approx -0.9$ — ordinary non-thermal emission.
 :::
 
 ## The two spectral index maps
@@ -273,8 +278,32 @@ Peaks at $\alpha \approx -0.9$ — ordinary non-thermal emission, from two indep
 ![](images/spix-inband-map.png){height="400"}
 
 ::: {.muted .small}
-Left: in-band fit, 544–1087 MHz. Right: two-band ratio, 797 MHz → 1.28 GHz. Same colour scale.
+Left: in-band fit, 544–1087 MHz. Right: two-band ratio, 797 MHz → 1.28 GHz. Same colour scale **and the same mask**, so a colour difference is a disagreement and not a difference in which pixels survived.
 :::
+
+## Back to question 1 {.smaller}
+
+![](images/filament-spix.png){height="290"}
+
+:::: {.columns}
+::: {.column width="46%"}
+| System | all fitted | at 10–30 mJy |
+|---|:--:|:--:|
+| Radio Arc | −0.58 | **−0.92** |
+| The Snake | −0.87 | **−0.68** |
+| The Cane | −1.22 | **−1.20** |
+:::
+::: {.column width="54%"}
+::: {.fragment}
+Raw, the spread is **0.64** and the population looks heterogeneous.
+:::
+
+::: {.fragment}
+Matched in surface brightness the ordering **reverses**, and only the Cane survives as genuinely steep.
+:::
+:::
+::::
+
 
 ## What you cannot see in either map {.smaller}
 
@@ -290,22 +319,20 @@ Median in-band $\alpha$, binned by its own fitted uncertainty:
 | < 0.02 | **−0.55** |
 | 0.2 – 0.4 | −1.20 |
 | 0.4 – 0.8 | **−1.30** |
+:::
+::::
 
-::: {.fragment}
+. . .
+
 ::: {.result-box}
 A 0.75 swing driven by how well each pixel was constrained.
 :::
-:::
-:::
-::::
 
 . . .
 
 ::: {.muted}
 Any weakly-constrained subsample will look like a steep-spectrum population. An $\alpha$ map without its error map is not interpretable.
 :::
-
-
 
 # What is the resolution of a MAP image?
 
@@ -317,8 +344,7 @@ $$\hat{x} = \underbrace{\left(A^H N^{-1} A + \lambda L\right)^{-1} A^H N^{-1} A}
 
 ::: {.incremental}
 - Row $j$ of $R$ is the **effective PSF at pixel $j$** — what $\hat{x}_j$ actually reports
-- $N^{-1}$ sits *inside* $R$, so resolution is a function of **local SNR**
-- For $\ell_1$, TV or learned priors, $R$ depends on **source brightness** as well
+- $N^{-1}$ sits *inside* $R$, so resolution is a function of **local SNR**, and for $\ell_1$, TV or learned priors of **source brightness** too
 :::
 
 . . .
@@ -338,22 +364,14 @@ The restoring beam *asserts* a resolution. It does not *measure* one.
 
 . . .
 
-::: {.muted}
-Radio interferometry is the outlier. We hid it behind the restoring beam — not because CLEAN is linear, it is not, but because a $\delta$-function model lets us *assert* zero intrinsic resolution and never check. That assertion is already doubtful for multi-scale CLEAN.
-:::
-
-## What we could publish instead {.smaller}
-
-::: {.incremental}
-- **A resolution field, not a beam** — $Rv$ for a chosen probe is one JVP through the solver's fixed point; $\mathrm{diag}(R)$ is $\mathcal{O}(10)$ Hutchinson probes
-- **Fix the resolution by construction** where the science is a per-pixel fit — forfeit super-resolution, gain a defined estimand
-- **Move the science model into the forward problem** — fit spectra against visibilities, so the regulariser and the physical model are the same object
+::: {.muted .small}
+Radio interferometry is the outlier. We hid it behind the restoring beam — not because CLEAN is linear, it is not, but because a $\delta$-function model lets us *assert* zero intrinsic resolution and never check.
 :::
 
 . . .
 
 ::: {.highlight-box}
-Cost: one extra solve per probe. This is affordable today and we are not doing it.
+$Rv$ for a chosen probe is **one extra solve**. Affordable today, and we are not doing it.
 :::
 
 
@@ -365,18 +383,22 @@ Cost: one extra solve per probe. This is affordable today and we are not doing i
 - The GC at UHF carries the steep-spectrum and absorption diagnostics, and has been under-observed
 - Joint mosaicking is a **modelling choice** — the beam is direction- *and* time-dependent, and after rephasing it must be **reprojected**, not merely shifted
 - Measured on the PSF: sidelobes down **4×** at arcminute scales
-- **Resolution is the variable that propagates into $\alpha$**
+- **Resolution is the variable that propagates into $\alpha$** — control for it and a heterogeneous filament population mostly collapses
 - The restoring beam is an assertion, not a measurement. Other fields have reported theirs for fifty years
 :::
 
 . . .
 
-::: {.muted .small}
-Imaging with `pfb-imaging` — the framework itself is the subject of a separate talk in J09.
+::: {.highlight-box}
+**J09, this afternoon** — how `pfb-imaging` makes an arbitrary prior affordable, and what it would take to report $R$ instead of a beam.
 :::
 
 ## Thanks! {background-color="#0d1117" .closing-slide}
 
 ::: {.contact}
 lbester@sarao.ac.za
+:::
+
+::: {.muted}
+Sequel this afternoon in **J09** — `pfb-imaging`, and the machinery behind these images
 :::

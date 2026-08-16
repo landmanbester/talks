@@ -261,9 +261,10 @@ def render(spec: Spec, boxes: list[Box], images: list[tuple[str, dict]],
                     # bottom-row-only labels would read as applying to the whole
                     # column and be wrong for every row above it. Dec is per-row
                     # already, and only the left panel needs it.
-                    show_ra=True,
-                    show_dec=(ci == 0),
-                    grid=not args.no_grid,
+                    show_ra=not args.bare,
+                    show_dec=(ci == 0) and not args.bare,
+                    grid=not (args.no_grid or args.bare),
+                    frame=not args.bare,
                     beam=True,
                 )
                 ax, _ = panel.draw(fig, (nrows, ncols, ri * ncols + ci + 1), theme)
@@ -280,8 +281,13 @@ def render(spec: Spec, boxes: list[Box], images: list[tuple[str, dict]],
         # Room for a set of RA labels under every row. Wide, short panels need
         # more horizontal gap than square ones: wspace is a fraction of panel
         # *width*, so the same value that separates square panels lets the RA
-        # labels of adjacent landscape panels run into each other.
-        fig.subplots_adjust(hspace=args.hspace, wspace=args.wspace)
+        # labels of adjacent landscape panels run into each other. With --bare
+        # there are no labels to clear, so the gap is only a visual separator
+        # and the panels can sit nearly edge to edge.
+        default_w, default_h = (0.015, 0.03) if args.bare else (0.06, 0.28)
+        fig.subplots_adjust(
+            hspace=default_h if args.hspace is None else args.hspace,
+            wspace=default_w if args.wspace is None else args.wspace)
 
         out = Path(args.output)
         if args.per_region:
@@ -342,8 +348,15 @@ def main() -> int:
     ap.add_argument("--figsize", type=float, nargs=2)
     ap.add_argument("--dpi", type=int, default=170)
     ap.add_argument("--no-grid", action="store_true")
-    ap.add_argument("--wspace", type=float, default=0.06)
-    ap.add_argument("--hspace", type=float, default=0.28)
+    ap.add_argument("--bare", action="store_true",
+                    help="sky only: no frame, ticks, coordinate labels or grid. "
+                         "For a zoom shown straight after the wide view that "
+                         "already carries the coordinates -- on a slide the "
+                         "axis furniture costs height the image should have.")
+    ap.add_argument("--wspace", type=float,
+                    help="gap between columns (default 0.06, or 0.015 with --bare)")
+    ap.add_argument("--hspace", type=float,
+                    help="gap between rows (default 0.28, or 0.03 with --bare)")
     ap.add_argument("--list", action="store_true", help="print the regions and exit")
     args = ap.parse_args()
 
