@@ -126,6 +126,219 @@ Animations, videos, and progressive reveal survive; a PDF kills them. Add
 `embed-resources: true` under `format: revealjs:` and the rendered
 `index.html` becomes a single file you can email.
 
+## Narrated talk videos
+
+Turning a deck into a pre-recorded conference submission: render the slides to
+PNG frames, record one audio take per frame, mux. Everything lives in
+`_video/<talk-slug>/`, mirroring the deck's own directory name.
+
+Audio is recorded **per frame**, not as one continuous take. That is the whole
+design: fluffing a line at minute eleven then costs one re-read rather than the
+entire recording, and swapping a figure later costs no re-recording at all.
+
+```
+_video/<talk-slug>/
+├── spec.json            # submission spec — tracked
+├── script/narration.md  # one block per frame — tracked
+├── frames.json          # frame → slide + fragment map — tracked
+├── slide-01.png …       # extracted frames        — gitignored
+├── audio/{raw,declicked,declicked-trimmed,declicked-normalized}/
+├── talk.mp4             # muxed output            — gitignored
+└── out/                 # submission-named mp4 + captions
+```
+
+Only the three small files are tracked, so the video is regenerable from source
+while the multi-gigabyte artefacts stay out of git.
+
+Full reference, including the failure modes each script guards against:
+[`.agents/skills/quarto-talk-video/SKILL.md`](.agents/skills/quarto-talk-video/SKILL.md).
+
+Every command below runs from the repo root. Set these two once per shell:
+
+```bash
+SKILL=.agents/skills/quarto-talk-video/scripts
+D=_video/<talk-slug>            # e.g. _video/sgr-a-complex-uhf
+```
+
+### 1. Deck → PNG frames
+
+Render the site first — the extractor reads the built HTML, not the `.qmd`:
+
+```bash
+quarto render                                  # → _site/
+$SKILL/extract_slides.py \
+    _site/contributions/<talk-slug>/index.html $D 1920x1080
+```
+
+You get **one frame per fragment step**, matching the live talk: arriving at a
+slide is one frame and each reveal is another, so a slide with three fragments
+yields four frames. Pass `--per-slide` for one fully-revealed frame per slide
+instead — far less recording, at the cost of the progressive reveal.
+
+It also writes `frames.json`, which maps every frame to its slide heading and
+fragment step. That file is the running order for the narration.
+
+Two things worth knowing:
+
+- **Decks with full-bleed background images need a longer timeout.** The
+  default is not enough to load several 1920×1080 PNGs, and Chrome gives up
+  with `error: chrome timed out`. Add `--timeout 120000`.
+- **Check the frame count against the deck** before going further. The script
+  hard-fails on byte-identical consecutive frames and off-size PNGs, but it
+  cannot tell you that you meant to have one fewer slide.
+
+### 2. Narration, before any recording
+
+`record_narration.py` reads `script/narration.md` and shows you one block at a
+time, so the script has to exist and has to line up with the frames. One block
+per frame, in `frames.json` order:
+
+```markdown
+## slide-07 — CLEAN: cheap iterations (11s)
+
+Its iterations are cheap, because the minor cycle never touches the data.
+```
+
+Check it rather than counting by eye:
+
+```bash
+$SKILL/check_script.py $D/script/narration.md $D/spec.json --frames $D/frames.json
+```
+
+It reports spoken time at 140 wpm, flags blocks whose text overruns their own
+budget, and — the one that matters — verifies **every frame has a block**. A
+missing block means every take after it lands on the wrong picture.
+
+On duration: the 140 wpm estimate covers the words only. Inter-frame gaps add
+roughly **0.7 s per frame** on top, measured on a finished talk here (66 frames,
+estimated 12:06.9, delivered 12:52.8). Budget the real number:
+
+```
+real ≈ spoken@140wpm + 0.7 s × frames
+```
+
+### 3. Record
+
+```bash
+$SKILL/record_narration.py $D --level     # check the mic first
+$SKILL/record_narration.py $D             # record / resume at the first gap
+$SKILL/record_narration.py $D --status    # what is done
+```
+
+Takes are written to `audio/raw/slide-NN.wav` under the frame number they
+belong to, recorded via a temp file so a bad take never destroys a good one.
+The recorder resumes at the first unrecorded frame, so it is safe to stop and
+come back — use `--from N` to restart somewhere specific.
+
+Across a multi-session recording, two things actually matter:
+
+- **Never clip.** Aim for peaks around −6 to −12 dBFS. Loudness differences
+  between sessions are fixed in step 4; a clipped take is not fixable.
+- **Keep mic distance and room constant.** Loudness gets normalized, timbre and
+  room tone do not, and one slide recorded closer to the mic stands out.
+
+Leave a beat of silence at each end and don't clip your own first word — the
+trim in step 4 removes it.
+
+### 4. Clean up the takes
+
+Three passes, each writing a new directory so the originals survive:
+
+```bash
+$SKILL/declick_takes.py   $D/audio/raw       $D/audio/declicked --dry-run   # report first
+$SKILL/declick_takes.py   $D/audio/raw       $D/audio/declicked
+$SKILL/trim_silence.sh    $D/audio/declicked $D/audio/declicked-trimmed
+$SKILL/normalize_audio.sh $D/audio/declicked-trimmed $D/audio/declicked-normalized
+```
+
+**Declick before trimming.** Starting and stopping with a keypress puts the key
+click *inside* the take, and silence trimming will not remove it — a click is
+loud, so it is the trim's stopping point rather than something the trim cuts,
+and normalization then lifts it toward full scale. Measured on a real recording
+here it reached −3 dBFS in the finished mux, louder than the narration.
+
+Skip the declick pass if you recorded hands-free; then trim `audio/raw` into
+`audio/trimmed` and normalize into `audio/normalized`, which is what
+`build_video.sh` defaults to.
+
+### 5. Build and validate
+
+```bash
+$SKILL/build_video.sh   $D $D/talk.mp4 audio/declicked-normalized
+$SKILL/validate_video.sh $D/talk.mp4 $D/spec.json
+```
+
+The third argument is the audio directory relative to the build dir; it
+defaults to `audio/normalized`, so pass it whenever you used the declick chain.
+Slide count and audio count must match exactly — the script hard-fails rather
+than silently zipping the shorter list.
+
+Rename to the submission filename **only after** validation passes, so a
+non-compliant file can never be mistaken for a finished one:
+
+```bash
+mkdir -p $D/out
+cp $D/talk.mp4 "$D/out/ID2664_J09_Bester.mp4"
+```
+
+Confirm the abstract ID and the exact session identifier with the organisers —
+do not infer them from the deck title. A wrong ID is a rejected submission.
+
+### 6. Captions
+
+```bash
+$SKILL/captions_from_script.py $D
+```
+
+Built from the narration and the per-slide audio durations, not from ASR: when
+the talk was read per-slide the script *is* the transcript, so this needs no
+model and cannot mangle a domain term. Output is `out/talk.srt`; submit it as a
+sidecar rather than burning it in.
+
+### Re-recording one slide
+
+The point of the per-slide layout. Nothing else has to be touched:
+
+```bash
+$SKILL/record_narration.py $D --only 37          # or --only 37 38 39
+
+$SKILL/declick_takes.py   $D/audio/raw       $D/audio/declicked
+$SKILL/trim_silence.sh    $D/audio/declicked $D/audio/declicked-trimmed
+$SKILL/normalize_audio.sh $D/audio/declicked-trimmed $D/audio/declicked-normalized
+
+$SKILL/build_video.sh $D $D/talk.mp4 audio/declicked-normalized
+$SKILL/validate_video.sh $D/talk.mp4 $D/spec.json
+$SKILL/captions_from_script.py $D
+```
+
+The cleanup passes are cheap and rerunning them over the whole directory keeps
+normalization consistent across the set — which is the point of the two-pass
+loudness measurement. Do **not** normalize one file on its own.
+
+**The one rule: this is only safe while the frame count is unchanged.** Frames
+are numbered, and audio is matched to them by number alone. So:
+
+| What changed | What to do |
+|---|---|
+| Wording of a take | `--only N`, then the block above. Nothing else moves. |
+| A figure, colour scale, or caption on a slide | Re-render, re-extract frames, rebuild. **No re-recording** — the frame count is identical, so every take still lines up. |
+| Text that adds or removes a fragment | Every later frame shifts by one. Re-extract, renumber `narration.md` to match, and re-record only the frames whose *content* changed — but rename the existing `audio/raw/slide-NN.wav` files to their new numbers first. |
+| A slide added, removed, or reordered | Same as above, and there is no shortcut. Re-extract, fix the narration numbering, shift the audio filenames, re-record the genuinely new blocks. |
+
+After any of the last three, re-run `check_script.py --frames` before rebuilding
+— it is the only thing that will tell you the script and the frames disagree.
+
+### If it comes out too long
+
+In this order, stopping as soon as it fits:
+
+1. Re-trim with a tighter pad: `trim_silence.sh $D/audio/declicked $D/audio/declicked-trimmed 0.10`.
+2. Cut whole slides, and thin the narration to match.
+3. Re-record the two or three longest blocks against a tightened script.
+
+Do **not** speed up the video. It is audible, it reads as panic, and it wrecks
+equation-heavy slides where the audience needs dwell time.
+
 ## Manim animations
 
 Manim (Community Edition) lives in a uv-managed venv at `~/software/manim/.venv`.
