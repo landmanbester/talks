@@ -162,42 +162,20 @@ Every pointing that sees a pixel contributes — interleaved in time, so the uni
 
 # Resolution is the hidden variable
 
-## Homogenising resolution across the band {.smaller}
+## Homogenising resolution {.smaller}
 
-A spectral index is a **ratio across the band**, so the two images must be reporting the same thing. They are not, by default: sensitivity and uv-coverage both change with frequency, so each sub-band has its own resolution.
+A spectral index is a **ratio across the band**, so every sub-band must report the same thing. They do not: sensitivity and uv-coverage change with frequency, so each has its own resolution.
 
 ::: {.incremental}
 - Restore every sub-band to a **common beam** — that of the lowest sub-band
-- For a CLEAN model this is a convolution, because the model is $\delta$-functions
-- For a sparsity prior the model has its **own** intrinsic resolution, which has to be estimated first and then corrected for
+- For CLEAN that is just a convolution: a set of $\delta$-functions has intrinsic resolution **zero**, by assumption
+- A sparsity prior's model does not: its resolution is **non-zero** and **varies across the band**, so the restore step has to *estimate* it first
 :::
 
-. . .
-
+::: {.fragment}
 ::: {.result-box}
-Get this wrong and the spectral index is not measuring what you think it is.
+Get this wrong and the spectral index is not measuring what you think it is — and it cannot be done exactly, because that resolution is itself **SNR-dependent**.
 :::
-
-## The model has a resolution too {.smaller}
-
-CLEAN models are $\delta$-functions: intrinsic resolution **zero**, by assumption. A sparsity prior's model is not.
-
-::: {.incremental}
-- Its intrinsic resolution is **non-zero**, and set by the data and the prior together
-- It is **not constant across the band** — sensitivity and uv-coverage both change
-- Restore with a single beam and that variation is baked into every $\alpha$
-:::
-
-. . .
-
-::: {.highlight-box}
-So the restore step has to *estimate* the model resolution before homogenising.
-:::
-
-. . .
-
-::: {.muted}
-It cannot do so exactly: the model's intrinsic resolution is **SNR-dependent**. Homogenisation is an approximation.
 :::
 
 

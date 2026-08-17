@@ -392,7 +392,7 @@
     "anchor": "4/1",
     "step": 1,
     "steps": 5,
-    "title": "Homogenising resolution across the band",
+    "title": "Homogenising resolution",
     "probe_index": 35
   },
   {
@@ -403,7 +403,7 @@
     "anchor": "4/1",
     "step": 2,
     "steps": 5,
-    "title": "Homogenising resolution across the band",
+    "title": "Homogenising resolution",
     "probe_index": 36
   },
   {
@@ -414,7 +414,7 @@
     "anchor": "4/1",
     "step": 3,
     "steps": 5,
-    "title": "Homogenising resolution across the band",
+    "title": "Homogenising resolution",
     "probe_index": 37
   },
   {
@@ -425,7 +425,7 @@
     "anchor": "4/1",
     "step": 4,
     "steps": 5,
-    "title": "Homogenising resolution across the band",
+    "title": "Homogenising resolution",
     "probe_index": 38
   },
   {
@@ -436,7 +436,7 @@
     "anchor": "4/1",
     "step": 5,
     "steps": 5,
-    "title": "Homogenising resolution across the band",
+    "title": "Homogenising resolution",
     "probe_index": 39
   },
   {
@@ -446,89 +446,23 @@
     "f": -1,
     "anchor": "4/2",
     "step": 1,
-    "steps": 6,
-    "title": "The model has a resolution too",
+    "steps": 1,
+    "title": "#section-1",
     "probe_index": 40
   },
   {
     "frame": "slide-42.png",
-    "h": 4,
-    "v": 2,
-    "f": 0,
-    "anchor": "4/2",
-    "step": 2,
-    "steps": 6,
-    "title": "The model has a resolution too",
-    "probe_index": 41
-  },
-  {
-    "frame": "slide-43.png",
-    "h": 4,
-    "v": 2,
-    "f": 1,
-    "anchor": "4/2",
-    "step": 3,
-    "steps": 6,
-    "title": "The model has a resolution too",
-    "probe_index": 42
-  },
-  {
-    "frame": "slide-44.png",
-    "h": 4,
-    "v": 2,
-    "f": 2,
-    "anchor": "4/2",
-    "step": 4,
-    "steps": 6,
-    "title": "The model has a resolution too",
-    "probe_index": 43
-  },
-  {
-    "frame": "slide-45.png",
-    "h": 4,
-    "v": 2,
-    "f": 3,
-    "anchor": "4/2",
-    "step": 5,
-    "steps": 6,
-    "title": "The model has a resolution too",
-    "probe_index": 44
-  },
-  {
-    "frame": "slide-46.png",
-    "h": 4,
-    "v": 2,
-    "f": 4,
-    "anchor": "4/2",
-    "step": 6,
-    "steps": 6,
-    "title": "The model has a resolution too",
-    "probe_index": 45
-  },
-  {
-    "frame": "slide-47.png",
     "h": 4,
     "v": 3,
     "f": -1,
     "anchor": "4/3",
     "step": 1,
     "steps": 1,
-    "title": "#section-1",
-    "probe_index": 46
-  },
-  {
-    "frame": "slide-48.png",
-    "h": 4,
-    "v": 4,
-    "f": -1,
-    "anchor": "4/4",
-    "step": 1,
-    "steps": 1,
     "title": "The Radio Arc",
-    "probe_index": 47
+    "probe_index": 41
   },
   {
-    "frame": "slide-49.png",
+    "frame": "slide-43.png",
     "h": 5,
     "v": 0,
     "f": -1,
@@ -536,10 +470,10 @@
     "step": 1,
     "steps": 1,
     "title": "Does the science hold up?",
-    "probe_index": 48
+    "probe_index": 42
   },
   {
-    "frame": "slide-50.png",
+    "frame": "slide-44.png",
     "h": 5,
     "v": 1,
     "f": -1,
@@ -547,10 +481,10 @@
     "step": 1,
     "steps": 3,
     "title": "Two independent estimates",
-    "probe_index": 49
+    "probe_index": 43
   },
   {
-    "frame": "slide-51.png",
+    "frame": "slide-45.png",
     "h": 5,
     "v": 1,
     "f": 0,
@@ -558,10 +492,10 @@
     "step": 2,
     "steps": 3,
     "title": "Two independent estimates",
-    "probe_index": 50
+    "probe_index": 44
   },
   {
-    "frame": "slide-52.png",
+    "frame": "slide-46.png",
     "h": 5,
     "v": 1,
     "f": 1,
@@ -569,10 +503,10 @@
     "step": 3,
     "steps": 3,
     "title": "Two independent estimates",
-    "probe_index": 51
+    "probe_index": 45
   },
   {
-    "frame": "slide-53.png",
+    "frame": "slide-47.png",
     "h": 5,
     "v": 2,
     "f": -1,
@@ -580,10 +514,10 @@
     "step": 1,
     "steps": 1,
     "title": "The distribution",
-    "probe_index": 52
+    "probe_index": 46
   },
   {
-    "frame": "slide-54.png",
+    "frame": "slide-48.png",
     "h": 5,
     "v": 3,
     "f": -1,
@@ -591,10 +525,10 @@
     "step": 1,
     "steps": 1,
     "title": "The two spectral index maps",
-    "probe_index": 53
+    "probe_index": 47
   },
   {
-    "frame": "slide-55.png",
+    "frame": "slide-49.png",
     "h": 5,
     "v": 4,
     "f": -1,
@@ -602,10 +536,10 @@
     "step": 1,
     "steps": 4,
     "title": "Back to question 1",
-    "probe_index": 54
+    "probe_index": 48
   },
   {
-    "frame": "slide-56.png",
+    "frame": "slide-50.png",
     "h": 5,
     "v": 4,
     "f": 0,
@@ -613,10 +547,10 @@
     "step": 2,
     "steps": 4,
     "title": "Back to question 1",
-    "probe_index": 55
+    "probe_index": 49
   },
   {
-    "frame": "slide-57.png",
+    "frame": "slide-51.png",
     "h": 5,
     "v": 4,
     "f": 1,
@@ -624,10 +558,10 @@
     "step": 3,
     "steps": 4,
     "title": "Back to question 1",
-    "probe_index": 56
+    "probe_index": 50
   },
   {
-    "frame": "slide-58.png",
+    "frame": "slide-52.png",
     "h": 5,
     "v": 4,
     "f": 2,
@@ -635,10 +569,10 @@
     "step": 4,
     "steps": 4,
     "title": "Back to question 1",
-    "probe_index": 57
+    "probe_index": 51
   },
   {
-    "frame": "slide-59.png",
+    "frame": "slide-53.png",
     "h": 5,
     "v": 5,
     "f": -1,
@@ -646,10 +580,10 @@
     "step": 1,
     "steps": 3,
     "title": "What you cannot see in either map",
-    "probe_index": 58
+    "probe_index": 52
   },
   {
-    "frame": "slide-60.png",
+    "frame": "slide-54.png",
     "h": 5,
     "v": 5,
     "f": 0,
@@ -657,10 +591,10 @@
     "step": 2,
     "steps": 3,
     "title": "What you cannot see in either map",
-    "probe_index": 59
+    "probe_index": 53
   },
   {
-    "frame": "slide-61.png",
+    "frame": "slide-55.png",
     "h": 5,
     "v": 5,
     "f": 1,
@@ -668,10 +602,10 @@
     "step": 3,
     "steps": 3,
     "title": "What you cannot see in either map",
-    "probe_index": 60
+    "probe_index": 54
   },
   {
-    "frame": "slide-62.png",
+    "frame": "slide-56.png",
     "h": 6,
     "v": 0,
     "f": -1,
@@ -679,10 +613,10 @@
     "step": 1,
     "steps": 1,
     "title": "What is the resolution of a MAP image?",
-    "probe_index": 61
+    "probe_index": 55
   },
   {
-    "frame": "slide-63.png",
+    "frame": "slide-57.png",
     "h": 6,
     "v": 1,
     "f": -1,
@@ -690,10 +624,10 @@
     "step": 1,
     "steps": 4,
     "title": "The restoring beam asserts a resolution",
-    "probe_index": 62
+    "probe_index": 56
   },
   {
-    "frame": "slide-64.png",
+    "frame": "slide-58.png",
     "h": 6,
     "v": 1,
     "f": 0,
@@ -701,10 +635,10 @@
     "step": 2,
     "steps": 4,
     "title": "The restoring beam asserts a resolution",
-    "probe_index": 63
+    "probe_index": 57
   },
   {
-    "frame": "slide-65.png",
+    "frame": "slide-59.png",
     "h": 6,
     "v": 1,
     "f": 1,
@@ -712,10 +646,10 @@
     "step": 3,
     "steps": 4,
     "title": "The restoring beam asserts a resolution",
-    "probe_index": 64
+    "probe_index": 58
   },
   {
-    "frame": "slide-66.png",
+    "frame": "slide-60.png",
     "h": 6,
     "v": 1,
     "f": 2,
@@ -723,10 +657,10 @@
     "step": 4,
     "steps": 4,
     "title": "The restoring beam asserts a resolution",
-    "probe_index": 65
+    "probe_index": 59
   },
   {
-    "frame": "slide-67.png",
+    "frame": "slide-61.png",
     "h": 6,
     "v": 2,
     "f": -1,
@@ -734,10 +668,10 @@
     "step": 1,
     "steps": 3,
     "title": "Four other fields already report theirs",
-    "probe_index": 66
+    "probe_index": 60
   },
   {
-    "frame": "slide-68.png",
+    "frame": "slide-62.png",
     "h": 6,
     "v": 2,
     "f": 0,
@@ -745,10 +679,10 @@
     "step": 2,
     "steps": 3,
     "title": "Four other fields already report theirs",
-    "probe_index": 67
+    "probe_index": 61
   },
   {
-    "frame": "slide-69.png",
+    "frame": "slide-63.png",
     "h": 6,
     "v": 2,
     "f": 1,
@@ -756,10 +690,10 @@
     "step": 3,
     "steps": 3,
     "title": "Four other fields already report theirs",
-    "probe_index": 68
+    "probe_index": 62
   },
   {
-    "frame": "slide-70.png",
+    "frame": "slide-64.png",
     "h": 7,
     "v": 0,
     "f": -1,
@@ -767,10 +701,10 @@
     "step": 1,
     "steps": 1,
     "title": "In summary",
-    "probe_index": 69
+    "probe_index": 63
   },
   {
-    "frame": "slide-71.png",
+    "frame": "slide-65.png",
     "h": 7,
     "v": 1,
     "f": 0,
@@ -778,10 +712,10 @@
     "step": 1,
     "steps": 6,
     "title": "Summary",
-    "probe_index": 70
+    "probe_index": 64
   },
   {
-    "frame": "slide-72.png",
+    "frame": "slide-66.png",
     "h": 7,
     "v": 1,
     "f": 1,
@@ -789,10 +723,10 @@
     "step": 2,
     "steps": 6,
     "title": "Summary",
-    "probe_index": 71
+    "probe_index": 65
   },
   {
-    "frame": "slide-73.png",
+    "frame": "slide-67.png",
     "h": 7,
     "v": 1,
     "f": 2,
@@ -800,10 +734,10 @@
     "step": 3,
     "steps": 6,
     "title": "Summary",
-    "probe_index": 72
+    "probe_index": 66
   },
   {
-    "frame": "slide-74.png",
+    "frame": "slide-68.png",
     "h": 7,
     "v": 1,
     "f": 3,
@@ -811,10 +745,10 @@
     "step": 4,
     "steps": 6,
     "title": "Summary",
-    "probe_index": 73
+    "probe_index": 67
   },
   {
-    "frame": "slide-75.png",
+    "frame": "slide-69.png",
     "h": 7,
     "v": 1,
     "f": 4,
@@ -822,10 +756,10 @@
     "step": 5,
     "steps": 6,
     "title": "Summary",
-    "probe_index": 74
+    "probe_index": 68
   },
   {
-    "frame": "slide-76.png",
+    "frame": "slide-70.png",
     "h": 7,
     "v": 1,
     "f": 5,
@@ -833,10 +767,10 @@
     "step": 6,
     "steps": 6,
     "title": "Summary",
-    "probe_index": 75
+    "probe_index": 69
   },
   {
-    "frame": "slide-77.png",
+    "frame": "slide-71.png",
     "h": 7,
     "v": 2,
     "f": -1,
@@ -844,6 +778,6 @@
     "step": 1,
     "steps": 1,
     "title": "Thanks!",
-    "probe_index": 76
+    "probe_index": 70
   }
 ]
