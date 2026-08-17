@@ -260,26 +260,32 @@ Left: in-band fit, 544–1087 MHz. Right: two-band ratio, 797 MHz → 1.28 GHz. 
 
 ## Back to question 1 {.smaller}
 
-![](images/filament-spix.png){height="290"}
-
 :::: {.columns}
-::: {.column width="46%"}
-| System | all fitted | at 10–30 mJy |
-|---|:--:|:--:|
-| Radio Arc | −0.58 | **−0.92** |
-| The Snake | −0.87 | **−0.68** |
-| The Cane | −1.22 | **−1.20** |
+::: {.column width="59%"}
+![](images/filament-spix.png){height="400"}
 :::
-::: {.column width="54%"}
+::: {.column width="41%"}
+Measured on the **filaments**, not the boxes — a box around a filament is mostly background.
+
 ::: {.fragment}
-Raw, the spread is **0.64** and the population looks heterogeneous.
+Raw, the medians span **0.86** — three different populations.
 :::
 
 ::: {.fragment}
-Matched in surface brightness the ordering **reverses**, and only the Cane survives as genuinely steep.
+Matched in surface brightness, the **Arc and the Snake agree to 0.06**.
+:::
+
+::: {.fragment}
+::: {.result-box}
+Only the Cane stays steeper — by **0.3**, in every bin, at $>5\sigma$.
+:::
 :::
 :::
 ::::
+
+::: {.muted .small}
+$\alpha$ flattens with brightness inside *every* system. Errors are per **beam**, not per pixel.
+:::
 
 
 ## What you cannot see in either map {.smaller}
@@ -365,7 +371,7 @@ $Kv$ for a chosen probe is **one extra solve**. Affordable today, and we are not
 - The GC at UHF carries the steep-spectrum and absorption diagnostics, and has been under-observed
 - Joint mosaicking is a **modelling choice** — the beam is direction- *and* time-dependent, and after rephasing it must be **reprojected**, not merely shifted
 - Measured on the PSF: sidelobes down **4×** at arcminute scales
-- **Resolution is the variable that propagates into $\alpha$** — control for it and a heterogeneous filament population mostly collapses
+- **Resolution is the variable that propagates into $\alpha$** — control for it and two of the three filament systems turn out to agree
 - The restoring beam is an assertion, not a measurement. Other fields have reported theirs for fifty years
 :::
 
