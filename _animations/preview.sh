@@ -58,7 +58,7 @@ else
     TIMES=("$@")
 fi
 
-OUT="/tmp/manim-frames/$SCENE"
+OUT="/data/tmp/manim-frames/$SCENE"   # /tmp is RAM on this machine
 rm -rf "$OUT"
 mkdir -p "$OUT"
 

@@ -7,8 +7,10 @@
 .quarto/
 _freeze/
 
-# Manim render intermediates (final movies live under media/ too)
-media/
+# Manim render intermediates (final movies live under media/ too). No trailing
+# slash: on this machine media/ is a symlink into /data/talks/, and `dir/` only
+# matches real directories.
+media
 __pycache__/
 
 # OS files
@@ -24,10 +26,11 @@ __pycache__/
 # Source PDFs from Canva (large binaries, not version-controlled)
 reference_pdfs/
 
-# Local FITS drop feeding the figure scripts (GB-scale binaries). The scripts
+# Local FITS drop feeding the figure scripts (GB-scale binaries). A symlink into
+# /data/talks/ on this machine — hence no trailing slash. The scripts
 # that consume it are tracked, under scripts/figures/ — deleting this directory
 # to reclaim the space must never take the tooling with it.
-fits_files/
+fits_files
 
 # Rendered deck exports (regenerate with decktape — see README)
 *.pdf
@@ -37,7 +40,7 @@ fits_files/
 # must stay tracked. The narration scripts and spec.json under _video/<slug>/ are tracked too.
 _video/*/slide-*.png
 _video/*/*.mp4
-_video/*/audio/
+_video/*/audio
 _video/*/out/
 *.srt
 
@@ -52,3 +55,6 @@ _video/*/out/
 # from inside its own directory rather than from the project root.
 /site_libs/
 /index-listing.json
+
+# uv environment (pyproject.toml); uv.lock is tracked
+.venv/

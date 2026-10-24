@@ -23,7 +23,7 @@ Usage:
     scripts/check_slides.py                        # render, then check every deck
     scripts/check_slides.py --no-render            # reuse the existing _site build
     scripts/check_slides.py --no-render deconvolution
-    scripts/check_slides.py --no-render --shots /tmp/shots stimela-fundamentals
+    scripts/check_slides.py --no-render --shots /data/tmp/shots stimela-fundamentals
 
 Exits 1 if any slide overflows, so it can gate a commit or a CI job.
 """
