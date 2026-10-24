@@ -25,18 +25,10 @@ Create polished, technical presentations using Quarto's revealjs format. Optimiz
 
 ### 1. Project Setup
 
-Every talk lives in its own directory with this structure:
-
-```
-talk-directory/
-├── index.qmd           # Slide source
-├── custom.css           # Code block scrollbar fix (auto-created by scaffold)
-├── _quarto.yml          # Project config (optional, for multi-file projects)
-├── images/              # Talk-specific images
-└── custom.scss          # Theme overrides (optional, or use a shared theme)
-```
-
-For a collection of talks sharing a theme, use the scaffold script (see references/scaffolding.md).
+In this repo every talk is `lectures/<slug>/index.qmd` or
+`contributions/<slug>/index.qmd`, with an `images/` directory beside it. Create
+one with the scaffold script (see references/scaffolding.md). Shared front
+matter comes from the class `_metadata.yml`, so a deck's YAML stays thin.
 
 ### 2. Writing Slides
 
@@ -229,8 +221,7 @@ See the SCSS file itself for all customizable variables.
 ## Key Conventions
 
 - **No footer** — omit `footer:` from YAML; it takes up too much space on dense slides
-- **Standard title background** — copy `meerkat-milkyway.jpg` to `images/` and use `data-background-image: images/meerkat-milkyway.jpg` with `data-background-opacity: "0.5"` in `title-slide-attributes`
-- **Code block scrollbar fix** — every talk needs a `custom.css` with `.reveal div.sourceCode { overflow-x: hidden !important; }`, referenced via `css: custom.css` in the YAML. The scaffold script creates this automatically
+- **Title background and code-block scrollbar fix** — both inherited (class `_metadata.yml` and the theme); a deck does nothing for either
 - **Fragment pauses** — `. . .` only works at **top level**; inside `:::` divs it renders as literal dots. Use `{.incremental}` for lists or `{.fragment}` divs for other content inside columns/divs
 - **MathJax macros** — use MathJax 2 syntax: `TeX: { Macros: {} }` (uppercase), not `tex: { macros: {} }`
 - **Mermaid diagrams** — use `mermaid-format: svg` in the YAML front matter (under `revealjs:`) to ensure custom theming works (the default `js` format overrides custom themes). Use YAML config blocks inside Mermaid cells (not the older `%%{init:...}%%` syntax) for theming — set `theme: base` with custom `themeVariables` for full control over colors. Use `%%|` cell options for sizing (e.g. `%%| fig-width: 4.5`). Use Unicode emoji prefixes in labels for semantic meaning (e.g. `📦 CABS`, `⚙️ Stimela`). Use `<br />` for line breaks in labels (not `\n`). Do NOT use quotation marks or parentheses inside node labels — they break the Mermaid parser. Use dashed arrows `<-.->` for bidirectional connections. Never use Mermaid's default harsh black lines — always apply a curated palette via `themeVariables`

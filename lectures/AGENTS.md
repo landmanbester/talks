@@ -31,22 +31,18 @@ inherits the full class theme.
 
 Lectures are dense by design and are read from a seat, not the back of a hall.
 
-- `{.smaller}` on the heading rather than a wrapping `{style=...}` div, which
-  breaks `. . .` fragments
+- `{.smaller}` on the heading is the normal tool here
 - `{.incremental}` lists to pace a derivation; build long derivations across
   several slides rather than shrinking one
 - Full working is expected — a lecture that skips the algebra is a talk
-- Directory names are topic slugs with no date: `deconvolution/`, not
-  `2025-03-deconvolution/`
 
 ## Logos
 
 The institutional strip is inherited from `_metadata.yml` and appears on the
 title slide. Lectures do not add event logos. The strip is deliberately quiet
-here — see `../templates/lectures.scss`.
-
-Note `assets/logos/sarao_logo.jpg` is already a combined NRF + SARAO lockup, so
-the inherited pair covers NRF, SARAO, and Rhodes.
+here — see `../templates/lectures.scss`. `assets/logos/sarao_logo.jpg` is
+already a combined NRF + SARAO lockup, so the inherited pair covers NRF, SARAO,
+and Rhodes.
 
 ## Citations
 
@@ -54,10 +50,3 @@ Optional. If a lecture cites sources, follow the pattern in
 `../contributions/AGENTS.md`: a `references.bib` beside `index.qmd`, and an
 explicit `## References` slide holding `::: {#refs}` placed *before* the
 closing slide.
-
-## Gotchas
-
-- **Every deck needs a `custom.css`.** `css: custom.css` is hoisted into
-  `_metadata.yml`, so a deck without that file fails to render.
-- **Do not prefix a talk directory with `_`.** Quarto skips underscore-prefixed
-  directories entirely — the deck will silently not render.

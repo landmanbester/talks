@@ -52,7 +52,7 @@ format:
 format:
   revealjs:
     logo: images/logo.png         # Logo image (bottom-right by default)
-    footer: "SARAO | AI4RI 2025"  # Footer text
+    footer: "SARAO | AI4RI 2025"  # Footer text (not used in this repo)
     css: custom.css               # Additional CSS
     title-slide-attributes:
       data-background-image: images/bg.jpg

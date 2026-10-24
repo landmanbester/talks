@@ -466,23 +466,10 @@ flowchart LR
 
 ## Code Block Scrollbar Fix
 
-Quarto injects `.reveal div.sourceCode { overflow: auto; }` from its own internal stylesheet, which adds a cosmetic horizontal scrollbar to code blocks even when the code fits. This override must be in a separately-loaded CSS file — `include-in-header` does NOT work because Quarto's injected stylesheet wins.
-
-Create `custom.css` in the talk directory:
-
-```css
-/* Quarto injects `.reveal div.sourceCode { overflow: auto; }` which adds
-   a cosmetic horizontal scrollbar even when code fits. Override it. */
-.reveal div.sourceCode { overflow-x: hidden !important; }
-```
-
-Reference it in YAML:
-
-```yaml
-format:
-  revealjs:
-    css: custom.css
-```
+Quarto injects `div.sourceCode { overflow: auto; }` inline, which draws a
+cosmetic horizontal scrollbar under code that fits. The shared theme overrides
+it with `.reveal div.sourceCode { overflow-x: hidden !important; }` — no
+per-deck file is needed.
 
 ---
 

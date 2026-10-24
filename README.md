@@ -17,39 +17,19 @@ formatting and the agent rules that apply to it:
 - **`contributions/`** — conference and workshop talks, each given once.
   Carries the event date, and event logos alongside the institutional ones.
 
-```
-talks/
-├── _quarto.yml            # Website project config — renders index.qmd + */*/index.qmd
-├── index.qmd              # Listing page: one table per class
-├── templates/
-│   ├── dark-academic.scss # Shared theme (canonical copy; the skill symlinks to it)
-│   ├── lectures.scss      # Lecture-specific layer on top of the shared theme
-│   ├── contributions.scss # Contribution-specific layer
-│   └── title-slide.html   # Title-slide partial; renders the logo strip
-├── assets/logos/          # Shared logos + meerkat-milkyway.jpg title background
-├── scripts/
-│   ├── shoot-decks.sh     # Render + screenshot every deck's title slide
-│   └── check_slides.py    # Measure every slide for overflow; --shots for
-│                          #   full-deck screenshots with fragments revealed
-├── reference_pdfs/        # Canva PDF exports to port from (gitignored)
-├── .agents/skills/        # quarto-revealjs, quarto-talk-video, manim skills
-│                          #   (.claude/skills symlinks here)
-├── _animations/           # Standalone manim explainer videos (one dir per video:
-│   └── <video-name>/      #   scenes.md plan + script; renders land in media/, gitignored)
-├── _video/                # Narrated conference videos (one dir per talk: spec.json +
-│   └── <talk-slug>/       #   narration tracked, frames/audio/mp4 gitignored)
-├── lectures/
-│   ├── AGENTS.md          # Lecture rules (CLAUDE.md / GEMINI.md symlink to it)
-│   ├── _metadata.yml      # Shared front matter for every lecture
-│   └── <talk-name>/
-│       ├── index.qmd      # The presentation (always index.qmd)
-│       ├── custom.css     # Scrollbar fix (required — `css:` is hoisted)
-│       └── images/        # Talk-specific images
-├── contributions/
-│   ├── AGENTS.md          # Contribution rules (CLAUDE.md / GEMINI.md symlink to it)
-│   ├── _metadata.yml      # Shared front matter for every contribution
-│   └── <talk-name>/       # Same shape as a lecture
-└── _site/                 # Rendered site (gitignored — never edit by hand)
+Each talk is `<class>/<talk-slug>/index.qmd` with its `images/` beside it. The
+full directory map, and where large data lives (`/data/talks/`, symlinked in),
+is in [AGENTS.md](AGENTS.md#directory-structure).
+
+Python tooling (the FITS figure pipeline) runs from a uv environment:
+`uv sync`, then `uv run scripts/figures/make_figures.py --list`.
+
+**Back up narration after every recording session** — the raw takes are the
+one thing in this repo that cannot be regenerated:
+
+```bash
+scripts/backup-takes.sh                 # → ~/backups/talks-takes (other disk)
+scripts/backup-takes.sh /media/usb/talks-takes
 ```
 
 ## How the website project works
@@ -64,7 +44,7 @@ command run anywhere inside it operates in project context:
   title. Add a new talk directory under either class → it appears on the next
   render. No manual index editing.
 - **Shared front matter is hoisted.** Theme, revealjs options, title
-  background, and `css:` come from the class `_metadata.yml`, so a deck's own
+  background, and logos come from the class `_metadata.yml`, so a deck's own
   front matter carries only what is specific to it.
 - Referenced resources (images, webm animations) are copied into `_site/`
   automatically.
@@ -341,9 +321,11 @@ equation-heavy slides where the audience needs dwell time.
 
 ## Manim animations
 
-Manim (Community Edition) lives in a uv-managed venv at `~/software/manim/.venv`.
-Either activate it (`source ~/software/manim/.venv/bin/activate`) or call the
-binary directly — all examples below use the direct path.
+Manim (Community Edition) currently lives in a uv-managed venv at
+`~/software/manim/.venv`; all examples below call that binary directly. Once
+the cairo headers are installed (`sudo apt install libcairo2-dev
+libpango1.0-dev`), `uv sync --group manim` puts it in the repo's own
+environment and `uv run manim …` replaces the long path.
 
 There are two distinct workflows:
 
@@ -371,8 +353,9 @@ the final render above produces
 _animations/uvw-and-lmn/media/videos/uvw_lmn/1080p60/UVWAndLMN.mp4
 ```
 
-`media/` is gitignored — only scripts and `scenes.md` plans are committed, so
-re-running the render command above regenerates any video from scratch.
+`media/` is gitignored (and on this machine a symlink into `/data/talks/`) —
+only scripts and `scenes.md` plans are committed, so re-running the render
+command above regenerates any video from scratch.
 Quality flags: `-ql` 480p15 · `-qm` 720p30 · `-qh` 1080p60 · `-qk` 4K60.
 
 Three helper scripts in `_animations/` wrap the repeatable parts:
@@ -381,7 +364,7 @@ Three helper scripts in `_animations/` wrap the repeatable parts:
 # new episode: directory + scenes.md skeleton + series-boilerplate script
 python _animations/scaffold_video.py deconvolution Deconvolution "Deconvolution"
 
-# dev render + spot-check frames extracted to /tmp/manim-frames/<Scene>/
+# dev render + spot-check frames extracted to /data/tmp/manim-frames/<Scene>/
 _animations/preview.sh uvw_lmn.py UVWAndLMN
 
 # final render with stale-partials cleanup and a duration sanity check
@@ -404,6 +387,8 @@ the duration should match what the dev render reported.
 
 ### 2. Transparent clips embedded in talk slides
 
+The script lives beside the deck's `index.qmd`; the clip goes in its `videos/`.
+
 ```bash
 # 1. Render scene with transparent background to .mov
 ~/software/manim/.venv/bin/manim -t -qm script.py SceneName
@@ -411,14 +396,14 @@ the duration should match what the dev render reported.
 # 2. Convert to WebM with working VP9 alpha (direct webm export is buggy)
 ffmpeg -y -i media/videos/script/720p30/SceneName.mov \
   -c:v libvpx-vp9 -pix_fmt yuva420p -auto-alt-ref 0 \
-  -b:v 2M images/animation.webm
+  -b:v 2M videos/clip.webm
 ```
 
-Embed in the `.qmd` with `{{< video images/animation.webm >}}`.
+Embed in the `.qmd` with `{{< video videos/clip.webm >}}`.
 
-## Publishing (when ready)
+## Publishing
 
-Once the repo has a GitHub remote:
+The repo's GitHub remote is set up; to publish the built site:
 
 ```bash
 quarto publish gh-pages

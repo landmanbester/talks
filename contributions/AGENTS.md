@@ -121,10 +121,3 @@ These matter for a live talk and are worth setting up before the room fills:
   against the slot before presenting
 - **Chalkboard** (`C`) and **pointer** (`B`) are available for questions, when
   someone asks about a detail no slide covers
-
-## Gotchas
-
-- **Every deck needs a `custom.css`.** `css: custom.css` is hoisted into
-  `_metadata.yml`, so a deck without that file fails to render.
-- **Do not prefix a talk directory with `_`.** Quarto skips underscore-prefixed
-  directories entirely — the deck will silently not render.

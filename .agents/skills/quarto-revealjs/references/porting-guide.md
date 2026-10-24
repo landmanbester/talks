@@ -107,7 +107,7 @@ Can even use the evidence to adapt the prior to the problem!
 
 **Background images**: Canva slides with full-bleed background photos become:
 ```markdown
-## {background-image="images/meerkat-milkyway.jpg" background-opacity="0.4"}
+## {background-image="images/photo.jpg" background-opacity="0.4"}
 ```
 
 ### Step 5: Recreate Layout
@@ -117,7 +117,7 @@ Can even use the evidence to adapt the prior to the problem!
 | Side-by-side elements | `:::: {.columns}` with `width` |
 | Centered single element | Default behavior (with `center: true`) |
 | Logos in corners | `logo:` in YAML or `::: {.absolute}` |
-| Footer text | `footer:` in YAML |
+| Footer text | Drop it — the repo omits footers |
 | Full-screen image | `{background-image=...}` |
 | Overlapping elements | `::: {.absolute top=X left=Y}` |
 
