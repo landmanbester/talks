@@ -1,0 +1,32 @@
+# Python environment for the repo's tooling. Not a package — nothing here is
+# installed or imported from elsewhere; it only pins what the scripts need.
+#
+#   uv sync                                           # create .venv/
+#   uv run scripts/figures/make_figures.py --list     # figure pipeline
+#
+# The talk-video and overflow scripts are stdlib-only and run under any python3.
+[project]
+name = "talks"
+version = "0"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    # scripts/figures/: FITS → slide-ready PNGs
+    "numpy>=2",
+    "matplotlib>=3.10",
+    "astropy>=7",
+    "reproject>=0.14",
+    "pyyaml>=6",
+]
+
+[dependency-groups]
+# _animations/ and deck clips. Opt-in because pycairo ships no Linux wheel and
+# compiles against system headers:
+#   sudo apt install libcairo2-dev libpango1.0-dev && uv sync --group manim
+# Until then manim runs from ~/software/manim/.venv (see AGENTS.md).
+# The series was rendered on 0.20 — bump deliberately, and re-check a scene.
+manim = ["manim~=0.20.1"]
+# Only scripts/figures/reference/ (copied from the papers) reads Measurement Sets
+casa = ["python-casacore"]
+
+[tool.uv]
+package = false
