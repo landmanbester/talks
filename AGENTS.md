@@ -114,7 +114,8 @@ disk).
 ### Python environment
 
 `uv sync` builds `.venv/` from `pyproject.toml` with what `scripts/figures/` needs; run tools with
-`uv run scripts/figures/make_figures.py …`. The talk-video and overflow scripts are stdlib-only.
+`uv run scripts/figures/make_figures.py …`. `check_slides.py` is stdlib-only;
+the talk-video scripts need only numpy (so `uv run` them, or any python3 with numpy).
 
 manim is the opt-in `manim` dependency group, because pycairo needs system headers this machine
 does not have yet (`sudo apt install libcairo2-dev libpango1.0-dev && uv sync --group manim`).
@@ -131,13 +132,20 @@ them per deck.
 **Nothing in front matter is enforced** — a deck with only a `title:` must render and the site must
 build. Never add schema checks or validation.
 
+Create a deck with the scaffold script; the class argument is required:
+
+```bash
+python3 .agents/skills/quarto-revealjs/scripts/scaffold_talk.py lecture "Interferometry Basics"
+python3 .agents/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KAT-7 Transient Search"
+```
+
 - **Directory naming** — descriptive slugs without dates (`stimela-fundamentals/`)
 - **No footer** — omit `footer:`; it takes up too much space on dense slides
 - **Deck-local CSS** — put it in `custom.css` beside `index.qmd` and declare it in the deck's own
   front matter (`format: revealjs: css: custom.css`). Nothing is hoisted, so a deck without
   extra styling needs no file. Classes several decks want belong in the theme — ask first
-- **MathJax macros** use MathJax 2 syntax: `TeX: { Macros: {} }` (uppercase), injected via
-  `include-in-header`
+- **MathJax macros** use MathJax 2 syntax: `TeX: { Macros: {} }` (uppercase — not
+  `tex: { macros: }`), injected via `include-in-header`
 - **Unsupported LaTeX**: the bundled MathJax cannot load `\cancel` (renders red or
   `[Math Processing Error]`) and has no mathtools commands like `\xleftrightarrow`. Substitutes:
   `\underbrace{w_{pq}(n-1)}_{\approx\, 0}` for striking out a term,
@@ -159,7 +167,8 @@ build. Never add schema checks or validation.
 - **Executable code**: when demonstrating software, prefer Python blocks with `#| echo: true`,
   `#| eval: false` over static text
 - **Fragments**: `. . .` pauses work only at **top level** — inside `:::` divs they render as three
-  literal dots. Inside divs use `{.incremental}` lists or `{.fragment}` divs
+  literal dots. Inside divs use `{.incremental}` lists or `{.fragment}` divs. Use these built-in
+  mechanisms; no custom CSS animations
 - **Syncing fragments across columns**: fragments fire in DOM order, so the left column always goes
   first. Set `fragment-index` explicitly, e.g. `::: {.fragment fragment-index=2}` — works on images
   too: `![](img.png){.fragment fragment-index=1}`
@@ -170,9 +179,10 @@ build. Never add schema checks or validation.
 - **Closing slide**: `## Thanks! {background-color="#0d1117" .closing-slide}` with a `::: {.contact}`
   div. Do NOT nest a `## Thanks!` heading inside a `.closing-slide` div on an empty `##` slide —
   pandoc splits it into its own slide, leaving a stray empty one before it
-- **Embedded video**: `{{< video videos/clip.webm >}}`, not a raw `<video>` tag. The one exception is
-  a full-bleed muted autoplay background (`contributions/kremetart-pipeline`): browsers only honour
-  `muted`/`autoplay` reliably as parse-time attributes, which the shortcode cannot emit
+- **Embedded video**: `{{< video videos/clip.webm >}}`, not a raw `<video>` tag. The exception is a
+  clip that must autoplay muted — browsers only honour `muted`/`autoplay` reliably as parse-time
+  attributes, which the shortcode cannot emit. `contributions/kremetart-pipeline` does this twice:
+  a full-bleed background (`.bg-fill`) and an inline looping manim clip
 
 ### Theme classes (`dark-academic.scss`)
 
@@ -214,7 +224,11 @@ The repo root is a Quarto website project. All output, including single-deck ren
 ```bash
 cd lectures/<talk-slug> && quarto preview index.qmd   # edit loop; serves /lectures/<talk-slug>/
 quarto render                                         # from the root: listing + every deck
+quarto publish gh-pages                               # publish _site/ to GitHub Pages
 ```
+
+PDF export (decktape, print-to-PDF, self-contained HTML):
+`.agents/skills/quarto-revealjs/references/pdf-export.md`.
 
 ### Screenshot a slide
 
@@ -263,7 +277,8 @@ Deck sources are never modified — the probe runs on a throwaway copy inside `_
 A deck plus per-slide narration becomes a conference-compliant MP4 via the
 [`quarto-talk-video`](.agents/skills/quarto-talk-video/SKILL.md) skill. **Read it before touching
 ffmpeg** — its scripts encode the compliance checks (duration limits, codec, submission filename)
-and hard-fail on the silent failure modes. Build dir is `_video/<talk-slug>/`. Captions are built
+and hard-fail on the silent failure modes. Audio is recorded per slide, so a fluffed line costs one
+re-read, not the whole take. Build dir is `_video/<talk-slug>/`. Captions are built
 from the narration script; whisper (not installed) is only needed if the delivery departed from it.
 
 ## Manim animations
@@ -308,13 +323,18 @@ captions at the top edge (font 27), a title card, and a closing card teasing the
 - Prefer computing real data in updaters over staging effects — the aperture-synthesis
   reconstruction is a genuine masked-FFT inverse (`ImageMobject` from a uint8 array)
 
-Render with the helpers rather than hand-rolled commands:
+Render opaque (no `-t`): `-ql` (480p15) for the dev loop, `-qh` (1080p60) for the final. Output
+lands in `media/videos/<script-stem>/<quality>/<Scene>.mp4`. Use the helpers rather than
+hand-rolled commands:
 
 ```bash
 _animations/preview.sh <script.py> <Scene>              # -ql render + 10 frames to Read
 _animations/preview.sh --no-render <script.py> <Scene> 35 60   # frames at given times
 _animations/final.sh <script.py> <Scene>                # -qh, clears partials, checks duration
 ```
+
+`final.sh` warns if the duration drifts more than 5 s from the dev render; run it in the
+background for 3D or long scenes.
 
 Check every scene's key beat at `-ql` before the final run. If rendering by hand:
 
@@ -340,7 +360,8 @@ Check every scene's key beat at `-ql` before the final run. If rendering by hand
     to `move_camera` for that shot, restore after
   - Depth sorting draws a translucent `Surface`'s fill over floor-level VMobjects — brighten the
     floor mobject and re-`add` it
-  - To look down `(sin φ, 0, cos φ)` use `phi=φ, theta=0` — and verify with a screenshot
+  - `theta` is the camera's azimuth: to look down `(sin φ, 0, cos φ)` use `phi=φ, theta=0` — and
+    verify the alignment with a screenshot rather than trusting the convention
 
 ## Boundaries
 

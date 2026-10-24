@@ -288,11 +288,6 @@ Side notes / annotations
 :::
 ```
 
-### Footer override per slide
-```markdown
-## Special Slide {footer="Custom footer for this slide only"}
-```
-
 ### Smaller text on a dense slide
 ```markdown
 ## Dense Content {.smaller}
@@ -319,7 +314,7 @@ Side notes / annotations
 
 ### Background image (full slide)
 ```markdown
-## {background-image="images/meerkat-milkyway.jpg" background-opacity=0.3}
+## {background-image="images/photo.jpg" background-opacity=0.3}
 
 ### Title over background
 ```
