@@ -24,13 +24,19 @@ is in [AGENTS.md](AGENTS.md#directory-structure).
 Python tooling (the FITS figure pipeline) runs from a uv environment:
 `uv sync`, then `uv run scripts/figures/make_figures.py --list`.
 
-**Back up narration after every recording session** — the raw takes are the
-one thing in this repo that cannot be regenerated:
+The large data has a copy on Google Drive, synced by hand (rclone remote
+`talks-drive:`, set up once with `rclone config create talks-drive drive
+scope=drive root_folder_id=<folder-id>`):
 
 ```bash
-scripts/backup-takes.sh                 # → ~/backups/talks-takes (other disk)
-scripts/backup-takes.sh /media/usb/talks-takes
+scripts/sync-data.sh status             # what differs
+scripts/sync-data.sh push -n            # dry run; drop -n to upload changes
+scripts/sync-data.sh pull               # on a fresh clone: fetch + symlink
 ```
+
+**Push after every recording session** — the raw takes are the one thing in
+this repo that cannot be regenerated. `scripts/backup-takes.sh` adds a second
+local copy on the other disk.
 
 ## How the website project works
 

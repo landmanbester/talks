@@ -62,7 +62,8 @@ talks/
 ├── scripts/
 │   ├── check_slides.py      # Measure every slide for overflow (verification harness)
 │   ├── shoot-decks.sh       # Render + screenshot every deck's title slide
-│   ├── backup-takes.sh      # Mirror raw narration takes (see Large data)
+│   ├── sync-data.sh         # /data/talks/ ⇄ Google Drive (see Large data)
+│   ├── backup-takes.sh      # Mirror raw narration takes to the other disk
 │   └── figures/             # FITS → slide-ready PNGs from a YAML spec (own README)
 ├── figures/scratch/         # Generated figures not currently on a slide
 ├── fits_files → /data/…     # FITS feeding scripts/figures/ (gitignored)
@@ -92,10 +93,23 @@ RAM on this machine — scratch output bigger than a few screenshots goes in `/d
 `.gitignore` patterns for these have **no trailing slash** on purpose — `dir/` only matches real
 directories, not symlinks.
 
+`/data/talks/` has a Google Drive copy, kept in step by hand with `scripts/sync-data.sh` (rclone
+remote `talks-drive:`; the folder ID lives in the rclone config, not here). Transfers are by MD5,
+so an unchanged file never moves:
+
+```bash
+scripts/sync-data.sh status       # what differs
+scripts/sync-data.sh push -n      # dry run, then without -n: local → Drive
+scripts/sync-data.sh pull         # fresh clone / other machine: fetch, then symlink into the repo
+```
+
+Push mirrors, but anything it would delete or overwrite on Drive is moved to `_deleted/<time>/`
+there instead. Pull only fetches files missing locally. manim `media/` is not synced.
+
 **`_video/<slug>/audio/raw/` is the only irreplaceable thing in the repo** — every other stage and
-artifact is rebuilt from tracked source. After any recording session run `scripts/backup-takes.sh`
-(default destination `~/backups/talks-takes`, on the other disk; pass a path or rsync remote to
-send it elsewhere).
+artifact is rebuilt from tracked source. After any recording session run `scripts/sync-data.sh
+push` and `scripts/backup-takes.sh` (a second local copy in `~/backups/talks-takes`, on the other
+disk).
 
 ### Python environment
 
