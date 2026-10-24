@@ -25,13 +25,15 @@ set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 DATA="${TALKS_DATA:-/data/talks}"
 REMOTE="${TALKS_REMOTE:-talks-drive:}"
+# Paths are built as ${REMOTE}<sub>, so a remote with a subpath needs a slash
+case "$REMOTE" in *: | */) ;; *) REMOTE="$REMOTE/" ;; esac
 
 # manim media/ is regenerable and its caches churn on every render; _deleted/
 # is push's own safety net and must never be mirrored back into itself.
 FILTERS=(--exclude "_deleted/**" --exclude "media/**")
 COMMON=(--checksum --fast-list --transfers 8 --stats-one-line --stats 30s -v)
 
-usage() { sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
+usage() { sed -n '2,6p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
 
 # Recreate the repo's symlinks into $DATA for whatever the store holds, so a
 # fresh clone is usable after one pull. Existing links and real directories
@@ -57,14 +59,24 @@ link_into_repo() {
 
 cmd="${1:-}"; shift || true
 dry=()
-case "${1:-}" in -n|--dry-run) dry=(--dry-run) ;; "") ;; *) usage ;; esac
+case "${1:-}" in -n|--dry-run) dry=(--dry-run); shift ;; "") ;; *) usage ;; esac
+[ $# -eq 0 ] || usage
 
 case "$cmd" in
     status)
-        # Exit status 1 just means "something differs"; report, don't fail
-        rclone check "$DATA" "$REMOTE" "${FILTERS[@]}" --checksum --fast-list \
-            --combined - 2>/dev/null | grep -v '^= ' || true
-        echo "(+ local only, * differs, - Drive only; '=' identical lines hidden)"
+        # rclone check exits 1 both for "files differ" and for an unreachable
+        # remote, so rule out the failures first — a silent "no differences"
+        # must never be the result of not having looked.
+        [ -d "$DATA" ] || { echo "error: $DATA does not exist" >&2; exit 1; }
+        rclone lsf --max-depth 1 "$REMOTE" >/dev/null \
+            || { echo "error: cannot list $REMOTE (rclone config?)" >&2; exit 1; }
+        report="$(mktemp)"; trap 'rm -f "$report"' EXIT
+        rc=0
+        rclone check "$DATA" "$REMOTE" "${FILTERS[@]}" --checksum --fast-list -q \
+            --combined "$report" || rc=$?
+        grep -v '^= ' "$report" || true
+        echo "(+ local only, - Drive only, * differs, ! error; identical files hidden)"
+        [ "$rc" -le 1 ] || exit "$rc"
         ;;
     push)
         rclone sync "$DATA" "$REMOTE" "${FILTERS[@]}" "${COMMON[@]}" "${dry[@]}" \

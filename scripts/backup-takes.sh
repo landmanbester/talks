@@ -28,10 +28,7 @@ fi
 
 for raw in "${raws[@]}"; do
     slug="$(basename "$(dirname "$(dirname "$raw")")")"
-    case "$DEST" in
-        *:*) ;;                              # rsync remote: let rsync create it
-        *)   mkdir -p "$DEST/$slug" ;;
-    esac
     echo "== $slug"
-    rsync -a --info=stats1 "$raw/" "$DEST/$slug/raw/"
+    # --mkpath creates the missing parents, locally or on a remote
+    rsync -a --mkpath --info=stats1 "$raw/" "$DEST/$slug/raw/"
 done
