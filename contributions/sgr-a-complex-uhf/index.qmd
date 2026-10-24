@@ -6,6 +6,9 @@ date: "2026-08-19"
 event: "URSI GASS 2026 — Session J05"
 location: "ICE Kraków, Poland"
 author: "Landman Bester, Carmen Choza, Ian Heywood, Oleg Smirnov"
+format:
+  revealjs:
+    css: custom.css
 ---
 
 ## {background-image="images/sgra-teaser.png" background-size="cover" background-color="#0d1117" .bottom-caption-slide}

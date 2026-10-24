@@ -18,9 +18,10 @@ format:
     center: true
     transition: slide
     mermaid-format: svg
-    css: custom.css
+    # Project-root path, like the logos: Quarto rewrites it relative to each
+    # deck, so no deck needs its own copy of the image.
     title-slide-attributes:
-      data-background-image: images/meerkat-milkyway.jpg
+      data-background-image: /assets/logos/meerkat-milkyway.jpg
       data-background-opacity: "0.5"
 
 # Institutional logos, rendered as a strip on the title slide by

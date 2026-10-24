@@ -1,3 +1,0 @@
-/* Quarto injects `.reveal div.sourceCode { overflow: auto; }` which adds
-   a cosmetic horizontal scrollbar even when code fits. Override it. */
-.reveal div.sourceCode { overflow-x: hidden !important; }

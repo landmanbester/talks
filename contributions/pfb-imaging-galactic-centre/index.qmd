@@ -8,6 +8,7 @@ location: "ICE Kraków, Poland"
 author: "Landman Bester, Oleg Smirnov, Jonathan Kenyon, Simon Perkins"
 format:
   revealjs:
+    css: custom.css
     include-in-header:
       text: |
         <script>

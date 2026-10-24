@@ -1,6 +1,9 @@
 ---
 title: "Stimela Fundamentals"
 institute: "NASSP Radio Astronomy Course"
+format:
+  revealjs:
+    css: custom.css
 ---
 
 ## Stimela - What it is

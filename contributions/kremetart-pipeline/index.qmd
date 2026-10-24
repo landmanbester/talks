@@ -3,6 +3,9 @@ title: "KREMETART"
 subtitle: "Streaming calibration, imaging & transient detection for TART"
 institute: "SARAO / Rhodes"
 date: "2026-08-11"
+format:
+  revealjs:
+    css: custom.css
 ---
 
 ## {background-image="images/baobab.jpg" background-size="cover" background-color="#0d1117"}

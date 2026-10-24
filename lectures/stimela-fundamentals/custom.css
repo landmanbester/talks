@@ -1,6 +1,2 @@
-/* Quarto injects `.reveal div.sourceCode { overflow: auto; }` which adds
-   a cosmetic horizontal scrollbar even when code fits. Override it. */
-.reveal div.sourceCode { overflow-x: hidden !important; }
-
 /* Prevent horizontal scrollbar on Mermaid SVG diagrams */
 .reveal .mermaid-figure, .reveal .quarto-figure { overflow: hidden !important; }

@@ -7,14 +7,13 @@ lands and which rules apply to it:
     lecture      -> lectures/<slug>/       (undated, re-given)
     contribution -> contributions/<slug>/  (dated, given once at an event)
 
-Shared front matter (theme, revealjs options, title background, logos, css)
+Shared front matter (theme, revealjs options, title background, logos)
 lives in each class's `_metadata.yml`, so a scaffolded deck is deliberately
 thin — it carries only what is specific to it.
 """
 
 import argparse
 from pathlib import Path
-from textwrap import dedent
 
 CLASS_DIRS = {"lecture": "lectures", "contribution": "contributions"}
 
@@ -88,24 +87,14 @@ landman.bester@gmail.com
 
     (out_path / "index.qmd").write_text(qmd_content)
 
-    # custom.css is load-bearing: `css: custom.css` is hoisted into the class
-    # _metadata.yml, so a deck without this file fails to render.
-    custom_css = dedent("""\
-    /* Quarto injects `.reveal div.sourceCode { overflow: auto; }` which adds
-       a cosmetic horizontal scrollbar even when code fits. Override it. */
-    .reveal div.sourceCode { overflow-x: hidden !important; }
-    """)
-    (out_path / "custom.css").write_text(custom_css)
-
     print(f"Created {talk_class} scaffold at: {out_path}/")
     print(f"  index.qmd   — edit this file")
-    print(f"  custom.css  — required; fixes Quarto's code block scrollbar bug")
     print(f"  images/     — put images here")
     print(f"\nTheme, logos, and revealjs options come from "
           f"{CLASS_DIRS[talk_class]}/_metadata.yml — see "
           f"{CLASS_DIRS[talk_class]}/AGENTS.md for the class rules.")
-    print(f"\nCopy the title background into images/:")
-    print(f"  cp assets/logos/meerkat-milkyway.jpg {out_path}/images/")
+    print(f"\nFor deck-local CSS, add custom.css and declare it under "
+          f"format: revealjs: css: custom.css")
     print(f"\nTo render: quarto render {out_path}/index.qmd")
     print(f"To preview: cd {out_path} && quarto preview index.qmd")
 
