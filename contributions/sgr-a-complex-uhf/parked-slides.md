@@ -124,3 +124,49 @@ Arc zoom taken from a ds9 region file. The figures were deleted rather than
 parked — they regenerate from `scripts/figures/compare_regions.py` in seconds,
 given a region file. The Radio Arc region is tracked at
 `scripts/figures/regions/radio-arc.reg`.
+
+
+# What is the resolution of a MAP image?
+
+## The restoring beam asserts a resolution {.smaller}
+
+For a quadratic regulariser the MAP estimate is a **linear filter applied to the truth**:
+
+$$\hat{x} = \underbrace{\left(H + \lambda L\right)^{-1} H}_{K}\, x_{\rm true} + \text{noise},
+\qquad H = R^\dagger \Sigma^{-1} R$$
+
+::: {.incremental}
+- Row $j$ of $K$ is the **effective PSF at pixel $j$** — what $\hat{x}_j$ actually reports
+- $\Sigma^{-1}$ sits *inside* $K$, so resolution is a function of **local SNR**, and for $\ell_1$, TV or learned priors of **source brightness** too
+:::
+
+. . .
+
+::: {.result-box}
+The restoring beam *asserts* a resolution. It does not *measure* one.
+:::
+
+::: {.muted .small}
+$H$ is the Hessian **J09** spends its whole talk making cheap. $K$ is built from machinery we already have.
+:::
+
+## Four other fields already report theirs {.smaller}
+
+| Field | Name for $K$ | Since |
+|---|---|---|
+| Geophysics / normal modes | Averaging kernel | Backus & Gilbert 1968 |
+| Seismic tomography | Model resolution matrix | Menke 1989 |
+| Atmospheric sounding | Averaging kernel matrix | Rodgers 2000 |
+| Emission tomography | Local impulse response | Fessler & Rogers 1996 |
+
+. . .
+
+::: {.muted .small}
+Radio interferometry is the outlier. We hid it behind the restoring beam — not because CLEAN is linear, it is not, but because a $\delta$-function model lets us *assert* zero intrinsic resolution and never check.
+:::
+
+. . .
+
+::: {.highlight-box}
+$Kv$ for a chosen probe is **one extra solve**. Affordable today, and we are not doing it.
+:::

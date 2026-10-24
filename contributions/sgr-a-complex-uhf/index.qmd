@@ -1,6 +1,6 @@
 ---
 title: "High-Fidelity MeerKAT UHF Observations of the Sgr A Complex"
-subtitle: "What a pixel means, and why spectral index is where it shows"
+subtitle: "What can we tell from spectral index maps alone?"
 institute: "SARAO / Rhodes University"
 date: "2026-08-19"
 event: "URSI GASS 2026 — Session J05"
@@ -26,7 +26,7 @@ The least-explored view of the Galactic Centre.
 ::: {.incremental}
 - **Steep-spectrum sensitivity** — emission that fades out of reach by 1.28 GHz
 - **Diffuse plasma** that higher frequencies resolve out or never detect
-- **Free-free absorption** becomes a usable diagnostic: thermal gas turns optically thick against the GC in this band
+- **Free-free absorption** becomes a usable diagnostic in this band
 - **An octave of lever arm** — 544 to 1087 MHz — and roughly double that when tied to existing L-band
 :::
 
@@ -160,7 +160,7 @@ Every pointing that sees a pixel contributes — interleaved in time, so the uni
 :::
 
 
-# Resolution is the hidden variable
+# Science is predicated on knowing the resolution
 
 ## Homogenising resolution {.smaller}
 
@@ -191,7 +191,7 @@ Get this wrong and the spectral index is not measuring what you think it is — 
 UHF intrinsic model · UHF restored, 8.55″ · L-band restored, 7.60″ × 5.35″. Individual filament strands are separated in the model, blended at the UHF restoring beam — and independently confirmed by the L-band image.
 :::
 
-# Does the science hold up?
+# Does this enable better science?
 
 ## Two independent estimates {.smaller}
 
@@ -200,19 +200,20 @@ UHF intrinsic model · UHF restored, 8.55″ · L-band restored, 7.60″ × 5.35
 ![](images/spix-inband-vs-twoband.png){height="340"}
 :::
 ::: {.column width="45%"}
-**In-band** — 544–1087 MHz, eight sub-bands homogenised to 11.7″
+**In-band** — 544–1087 MHz, spectral index fit across 8 sub-bands″
 
-**Two-band** — 797 MHz → 1.28 GHz, restored images at 8.6″ and 7.6″
+**Two-band** — 797 MHz → 1.28 GHz, spectral index from band ratios
 
 Both **intrinsic**; both carry the same mask.
+
+:::
+::::
 
 ::: {.fragment}
 ::: {.result-box}
 Median offset **−0.03**, scatter 0.35, over 158 675 pixels.
 :::
 :::
-:::
-::::
 
 ::: {.fragment}
 ::: {.muted .small}
@@ -233,38 +234,8 @@ Both routes peak within 0.1 of each other, near $\alpha \approx -0.9$ — ordina
 ![](images/spix-inband-map.png){height="400"}
 
 ::: {.muted .small}
-Left: in-band fit, 544–1087 MHz. Right: two-band ratio, 797 MHz → 1.28 GHz. Same colour scale **and the same mask**, so a colour difference is a disagreement and not a difference in which pixels survived.
+Left: in-band fit, 544–1087 MHz. Right: two-band ratio, 797 MHz → 1.28 GHz. Same colour scale **and the SNR cut of 5-$\sigma$**.
 :::
-
-## Back to question 1 {.smaller}
-
-:::: {.columns}
-::: {.column width="59%"}
-![](images/filament-spix.png){height="400"}
-:::
-::: {.column width="41%"}
-Measured on the **filaments**, not the boxes — a box around a filament is mostly background.
-
-::: {.fragment}
-Raw, the medians span **0.86** — three different populations.
-:::
-
-::: {.fragment}
-Matched in surface brightness, the **Arc and the Snake agree to 0.06**.
-:::
-
-::: {.fragment}
-::: {.result-box}
-Only the Cane stays steeper — by **0.3**, in every bin, at $>5\sigma$.
-:::
-:::
-:::
-::::
-
-::: {.muted .small}
-$\alpha$ flattens with brightness inside *every* system. Errors are per **beam**, not per pixel.
-:::
-
 
 ## What you cannot see in either map {.smaller}
 
@@ -295,68 +266,45 @@ A 0.75 swing driven by how well each pixel was constrained.
 Any weakly-constrained subsample will look like a steep-spectrum population. An $\alpha$ map without its error map is not interpretable.
 :::
 
-# What is the resolution of a MAP image?
+# Does this answer any of the opening questions?
 
-## The restoring beam asserts a resolution {.smaller}
+## Do filaments have homogeneous spectra?  {.smaller}
 
-For a quadratic regulariser the MAP estimate is a **linear filter applied to the truth**:
+![](images/filament-spix.png){height="400"}
 
-$$\hat{x} = \underbrace{\left(H + \lambda L\right)^{-1} H}_{K}\, x_{\rm true} + \text{noise},
-\qquad H = R^\dagger \Sigma^{-1} R$$
-
-::: {.incremental}
-- Row $j$ of $K$ is the **effective PSF at pixel $j$** — what $\hat{x}_j$ actually reports
-- $\Sigma^{-1}$ sits *inside* $K$, so resolution is a function of **local SNR**, and for $\ell_1$, TV or learned priors of **source brightness** too
-:::
-
-. . .
-
+::: {.fragment}
 ::: {.result-box}
-The restoring beam *asserts* a resolution. It does not *measure* one.
+Matched in surface brightness, the **Arc and the Snake agree to 0.06**.
+The Cane stays steeper — by **0.3**, in every bin, at $>5\sigma$.
+:::
 :::
 
-::: {.muted .small}
-$H$ is the Hessian **J09** spends its whole talk making cheap. $K$ is built from machinery we already have.
-:::
-
-## Four other fields already report theirs {.smaller}
-
-| Field | Name for $K$ | Since |
-|---|---|---|
-| Geophysics / normal modes | Averaging kernel | Backus & Gilbert 1968 |
-| Seismic tomography | Model resolution matrix | Menke 1989 |
-| Atmospheric sounding | Averaging kernel matrix | Rodgers 2000 |
-| Emission tomography | Local impulse response | Fessler & Rogers 1996 |
+## Inconclusive
 
 . . .
 
-::: {.muted .small}
-Radio interferometry is the outlier. We hid it behind the restoring beam — not because CLEAN is linear, it is not, but because a $\delta$-function model lets us *assert* zero intrinsic resolution and never check.
+::: {.highlight-box}
+Q2 — $\alpha$ steepening at the base of the bubbles?
 :::
 
 . . .
 
 ::: {.highlight-box}
-$Kv$ for a chosen probe is **one extra solve**. Affordable today, and we are not doing it.
+Q3 — Distinct population of compact steep spectrum sources? 
 :::
-
-
-# In summary
 
 ## Summary {.smaller}
 
 ::: {.incremental}
 - The GC at UHF carries the steep-spectrum and absorption diagnostics, and has been under-observed
-- Joint mosaicking is a **modelling choice** — the beam is direction- *and* time-dependent, and after rephasing it must be **reprojected**, not merely shifted
-- Measured on the PSF: sidelobes down **4×** at arcminute scales
-- **Resolution is the variable that propagates into $\alpha$** — control for it and two of the three filament systems turn out to agree
-- The restoring beam is an assertion, not a measurement. Other fields have reported theirs for fifty years
+- `pfb-imaging` facilitates joint mosaicking to help extract more science close to the noise
+- But imaging all the data jointly is hard! Ongoing project
 :::
 
 . . .
 
 ::: {.highlight-box}
-**J09, this afternoon** — how `pfb-imaging` makes an arbitrary prior affordable, and what it would take to report $R$ instead of a beam.
+**J09, this afternoon** — how `pfb-imaging` makes an arbitrary prior affordable.
 :::
 
 ## Thanks! {background-color="#0d1117" .closing-slide}
