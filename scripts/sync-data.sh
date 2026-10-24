@@ -68,7 +68,7 @@ case "$cmd" in
         ;;
     push)
         rclone sync "$DATA" "$REMOTE" "${FILTERS[@]}" "${COMMON[@]}" "${dry[@]}" \
-            --backup-dir "${REMOTE}_deleted/$(date +%Y-%m-%dT%H%M)"
+            --backup-dir "${REMOTE}_deleted/$(date +%Y-%m-%dT%H%M%S)"
         ;;
     pull)
         mkdir -p "$DATA"
