@@ -12,9 +12,9 @@ on -- is one `share_norm: true` rather than four hand-kept-in-sync copies of a
 percentile calculation. When the copies drift, the comparison silently stops
 being a comparison, and nothing in the figure says so.
 
-Run it with an interpreter that has astropy, reproject and pyyaml, e.g.
+Run it in the repo's uv environment (pyproject.toml):
 
-    ~/software/pfb-imaging/.venv/bin/python scripts/figures/make_figures.py
+    uv run scripts/figures/make_figures.py
 """
 
 from __future__ import annotations

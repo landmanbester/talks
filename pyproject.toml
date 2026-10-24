@@ -4,7 +4,7 @@
 #   uv sync                                           # create .venv/
 #   uv run scripts/figures/make_figures.py --list     # figure pipeline
 #
-# The talk-video and overflow scripts are stdlib-only and run under any python3.
+# check_slides.py is stdlib-only; the talk-video scripts need only numpy.
 [project]
 name = "talks"
 version = "0"
@@ -16,6 +16,10 @@ dependencies = [
     "astropy>=7",
     "reproject>=0.14",
     "pyyaml>=6",
+    "regions>=0.8",        # compare_regions.py
+    "scikit-image>=0.24",  # filament_spix.py
+    # talk-video: declick_takes.py
+    # (numpy, above, is its only non-stdlib import)
 ]
 
 [dependency-groups]

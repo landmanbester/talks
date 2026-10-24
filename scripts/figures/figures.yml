@@ -1,8 +1,8 @@
 # Figures for contributions/sgr-a-complex-uhf.
 #
-# Render with an interpreter that has astropy + reproject + pyyaml:
-#   ~/software/pfb-imaging/.venv/bin/python scripts/figures/make_figures.py --list
-#   ~/software/pfb-imaging/.venv/bin/python scripts/figures/make_figures.py sgra-full
+# Render in the repo uv env (pyproject.toml):
+#   uv run scripts/figures/make_figures.py --list
+#   uv run scripts/figures/make_figures.py sgra-full
 #
 # The FITS live under fits_files/ and are gitignored; this file and the scripts
 # beside it are the tracked record of how each PNG in the deck was made.

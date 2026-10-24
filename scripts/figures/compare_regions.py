@@ -12,7 +12,7 @@ zoom on stays a scientific decision made in a viewer, not a set of magic numbers
 in a script. Rectangles, circles, ellipses and polygons all reduce to a box;
 points take `--default-size`.
 
-    PY=~/software/pfb-imaging/.venv/bin/python
+    PY="uv run"   # repo env, see pyproject.toml
 
     # the default pairing: UHF intrinsic model vs L-band restored
     $PY scripts/figures/compare_regions.py regions/superres.reg

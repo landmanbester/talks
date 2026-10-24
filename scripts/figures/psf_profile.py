@@ -14,7 +14,7 @@ For each logarithmic annulus this measures
 
 and integrates the sidelobe power beyond the main lobe into a single number.
 
-    PY=~/software/pfb-imaging/.venv/bin/python
+    PY="uv run"   # repo env, see pyproject.toml
     $PY scripts/figures/psf_profile.py \
         'Single pointing=fits_files/GC/norephase_..._psf_time0_mfs.fits' \
         'Joint / OTF=fits_files/GC/withbeam_..._psf_time0_mfs.fits' \

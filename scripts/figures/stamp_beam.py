@@ -8,7 +8,7 @@ still differences against another image without complaint -- it just silently
 compares Jy/beam values measured with different beams, which is not a comparison
 of anything. The values have to come from the inputs that went into the mosaic.
 
-    PY=~/software/pfb-imaging/.venv/bin/python
+    PY="uv run"   # repo env, see pyproject.toml
 
     $PY scripts/figures/stamp_beam.py IMAGE.fits \
         --bmaj 0.002111010951921344 --bmin 0.001486398930691199 --bpa 5.3e-07 \

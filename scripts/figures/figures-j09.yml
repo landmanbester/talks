@@ -1,6 +1,6 @@
 # Figures for contributions/pfb-imaging-galactic-centre (URSI GASS J09).
 #
-#   PY=~/software/pfb-imaging/.venv/bin/python
+#   PY="uv run"
 #   $PY scripts/figures/make_figures.py --spec scripts/figures/figures-j09.yml --list
 #   $PY scripts/figures/make_figures.py --spec scripts/figures/figures-j09.yml gc-uhf-sara
 #

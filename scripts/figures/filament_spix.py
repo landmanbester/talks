@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Do the non-thermal filaments share a spectral index? Figure and answer.
 
-    PY=~/software/pfb-imaging/.venv/bin/python
+    PY="uv run"   # repo env, see pyproject.toml
     $PY scripts/figures/filament_spix.py                     # figure + table
     $PY scripts/figures/filament_spix.py --table-only
 

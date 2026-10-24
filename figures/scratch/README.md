@@ -8,7 +8,7 @@ Nothing here is precious. Every one is declared in `scripts/figures/figures.yml`
 or produced by a documented command, so it regenerates in seconds:
 
 ```bash
-PY=~/software/pfb-imaging/.venv/bin/python
+PY="uv run"   # repo env, see pyproject.toml
 $PY scripts/figures/make_figures.py --list
 $PY scripts/figures/make_figures.py sgra-full
 ```

@@ -8,10 +8,10 @@ having to remember which percentile was used.
 
 ## Running
 
-Needs astropy, reproject and pyyaml. The `pfb-imaging` env has all three:
+Runs in the repo's uv environment (`uv sync` once; see `pyproject.toml`):
 
 ```bash
-PY=~/software/pfb-imaging/.venv/bin/python
+PY="uv run"
 
 $PY scripts/figures/make_figures.py --list         # what is declared
 $PY scripts/figures/make_figures.py --inspect      # what the FITS actually contain
