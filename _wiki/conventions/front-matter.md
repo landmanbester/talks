@@ -16,7 +16,15 @@ in that subtree. Read it before authoring.
 - **`contributions/`** — conference and workshop talks, each given once. Hard-coded event date.
 
 Front matter shared by a class — theme, revealjs options, title background, logos — is hoisted into
-`<class>/_metadata.yml`. A deck's own front matter carries only what is specific to it; the class
+`<class>/_metadata.yml`. What it supplies:
+
+- **Theme**: `[dark, ../../templates/dark-academic.scss, ../../templates/<class>.scss]` — the shared
+  theme plus the class layer (`lectures.scss` / `contributions.scss`)
+- **Title slide**: partial `templates/title-slide.html` (event line + logo strip); background
+  `/assets/logos/meerkat-milkyway.jpg` at opacity 0.5
+- **Logos**: `/assets/logos/sarao_logo.jpg` (already a combined NRF + SARAO lockup) and
+  `/assets/logos/rhodes_banner.jpg`
+- **revealjs options**, author, and for lectures `date: today` (contributions supply no date) A deck's own front matter carries only what is specific to it; the class
 `AGENTS.md` lists what that is. Relative paths in `_metadata.yml` resolve from the *document*
 (hence `../../templates/…`); `/`-prefixed paths resolve from the project root and Quarto rewrites
 them per deck.

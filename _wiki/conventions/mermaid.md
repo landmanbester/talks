@@ -13,7 +13,7 @@ slides — always style it. `mermaid-format: svg` is inherited from `_metadata.y
 format overrides custom themes).
 
 - Configure with a **YAML config block inside the cell** (not `%%{init:...}%%`), `theme: base`, and
-  `themeVariables` matching the dark-academic palette
+  `themeVariables` matching the dark-academic palette (hex values in [theme-classes](theme-classes.md))
 - **Always set both `%%| fig-width:` and `%%| fig-height:`** — without a height the SVG container
   reserves far more vertical space than the diagram needs and pushes content off the slide (a 4-node
   `flowchart LR` wants `fig-width: 9`, `fig-height: 1.8`). Too wide a `fig-width` adds a scrollbar
