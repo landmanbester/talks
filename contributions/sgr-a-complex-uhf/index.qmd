@@ -133,7 +133,7 @@ Not a workflow preference — the two are solving different problems.
 CLEAN does not minimise a stated objective, so there is no natural place to put $A(t)$ inside it. Forward modelling is available to an algorithm that solves an optimisation problem — which is **J09**.
 :::
 
-## $A(t)$ is not just time-dependent {.smaller}
+## *A*(*t*) is not just time-dependent {.smaller}
 
 To deconvolve every pointing together the data must first be **rephased to a common phase centre**. The primary beam does not come along.
 

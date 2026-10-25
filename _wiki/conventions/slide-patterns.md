@@ -40,6 +40,10 @@ Prioritize semantic structure and clean Markdown over pixel-perfect mimicry of t
   annotations building up on one image, see [build-up figures](../techniques/build-up-figures.md)
 - **Words for the presenter go in notes**: "one click per idea", "another animation", reminders —
   never on a slide. Put them in `::: {.notes}` (presenter view, `S`)
+- **No `$…$` math in slide titles** — the menu, the site listing, the overflow report and the
+  talk-video frame list all show a title's raw text, so `## Calibrating $\sigma$` reads as
+  "Calibrating σσ\sigma". Use Unicode (`## Calibrating σ`, `R²`, `β`) or Markdown emphasis
+  (`## *A*(*t*) is not just…`) instead
 - **Dense slides**: `{.smaller}` on the heading. Never a wrapping `{style="font-size:…"}` div — it
   breaks `. . .` pauses
 - **Closing slide**: `## Thanks! {background-color="#0d1117" .closing-slide}` with a `::: {.contact}`

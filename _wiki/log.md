@@ -10,6 +10,10 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-25 — conventions/slide-patterns, gotchas/index: no `$…$` in slide titles (raw TeX shows in
+  the menu and reports; idea from epilliat's quarto-presentations skill). Fixed the three titles in
+  deconvolution and sgr-a-complex-uhf. Removed the unused manimgl-best-practices skill (the repo
+  uses ManimCE only).
 - 2026-10-25 — conventions/mermaid: clarified that quotes as label delimiters are fine. Also fixed
   the quarto-revealjs skill where it contradicted the wiki (MathJax 3 macro example, Mermaid
   without `fig-height`, per-deck `mermaid-format`).

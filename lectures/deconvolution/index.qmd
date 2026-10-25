@@ -81,7 +81,7 @@ $$\nabla_x\bigl[f(x) + \lambda\|x\|^2\bigr] = 0
 A **linear system** — no proximal operator needed, just solve it directly!
 :::
 
-## Tikhonov — Choosing $\lambda$ {.smaller}
+## Tikhonov — Choosing λ {.smaller}
 
 $$\underset{x}{\minimize}\;\; f(x) + \lambda\,\|x\|^2$$
 
@@ -318,7 +318,7 @@ The denoiser encodes a prior learned from millions of images — far richer than
 - **Calibrate** $\sigma_{\min}$ to the actual noise floor — not a natural-image default
 :::
 
-## Calibrating $\sigma$ to the Noise Floor {.smaller}
+## Calibrating σ to the Noise Floor {.smaller}
 
 The denoiser expects $\sigma$ in **pixel units** (Jy/pixel), but we know the noise in **beam units** (Jy/beam). Two steps:
 

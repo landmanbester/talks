@@ -19,7 +19,7 @@ the J05 side.
 
 ### `## Every pointing that sees a pixel`
 
-Sat between `## $A(t)$ is not just time-dependent` and `## The PSF is where it
+Sat between `## *A*(*t*) is not just time-dependent` and `## The PSF is where it
 shows`. Five frames, ~34 s of narration.
 
 **Why cut:** J09 slide 49 makes the same claim ("the combined uv-coverage is

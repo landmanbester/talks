@@ -12,6 +12,7 @@ timestamp: 2026-10-25
 |---|---|
 | `. . .` renders as three literal dots | [slide-patterns](../conventions/slide-patterns.md) — only works at top level |
 | Left column's fragment always fires first | [slide-patterns](../conventions/slide-patterns.md) — `fragment-index` |
+| Title shows garbled TeX in the menu or reports (`σσ\sigma`, `A(t)A(t)A(t)`) | [slide-patterns](../conventions/slide-patterns.md) — no `$…$` in titles |
 | A stray empty slide before "Thanks!" | [slide-patterns](../conventions/slide-patterns.md) — closing slide |
 | Clickable image loses its link | [slide-patterns](../conventions/slide-patterns.md) — `[![alt](img)](url)` |
 | Deck silently missing from the site | [front-matter](../conventions/front-matter.md) — `_`-prefixed directory |
