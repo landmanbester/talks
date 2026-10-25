@@ -283,9 +283,9 @@ What about the **field of view** (i.e. `npix`)?
 :::
 
 ::: {.column width="45%"}
-![](images/primary-beam-diagram.png){height="280" fig-align="center"}
+![](images/primary-beam-diagram.png){height="220" fig-align="center"}
 
-![MeerKAT primary beam](images/meerkat-beam.png){height="280" fig-align="center"}
+![MeerKAT primary beam](images/meerkat-beam.png){height="220" fig-align="center"}
 :::
 ::::
 

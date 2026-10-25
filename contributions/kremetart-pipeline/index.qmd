@@ -106,7 +106,11 @@ Steady sources sit on fixed pixels; the horizon becomes a slowly sliding pixel m
 ## Painting the whole sphere {.smaller}
 
 ::: {.r-stack}
-<video src="videos/sphere-painting.webm" width="82%" autoplay loop muted playsinline data-autoplay></video>
+```{=html}
+<video width="78%" autoplay loop muted playsinline data-autoplay>
+<source src="videos/sphere-painting.webm" type="video/webm">
+</video>
+```
 :::
 
 ::: {.muted}
