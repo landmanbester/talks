@@ -422,11 +422,12 @@ Use `bmatrix` (brackets), `pmatrix` (parentheses), `vmatrix` (vertical bars), or
 
 Quarto renders Mermaid diagrams natively. Style them richly — plain unstyled Mermaid looks too bare on dark slides. Use YAML config blocks (not the older `%%{init:...}%%` syntax) with `theme: base` and custom `themeVariables` for full control over colors.
 
-**Important:** Set `mermaid-format: svg` in the YAML front matter (under `revealjs:`) — the default `js` format overrides custom themes.
+**Important:** `mermaid-format: svg` is required — the default `js` format overrides custom themes. In this repo it is inherited from the class `_metadata.yml`.
 
 ````markdown
 ```{mermaid}
 %%| fig-width: 4.5
+%%| fig-height: 2
 ---
 config:
   theme: base
@@ -446,14 +447,14 @@ flowchart LR
 
 **Styling tips:**
 
-- `mermaid-format: svg` required in YAML front matter for custom theming to work
+- `mermaid-format: svg` required for custom theming (inherited from `_metadata.yml` here)
 - Use `theme: base` with custom `themeVariables` for full control — never rely on Mermaid's default harsh black lines
 - Emoji prefixes convey meaning visually (e.g. `📦`, `⚙️`, `💾`, `📋`)
 - `&nbsp;` padding widens nodes: `["&nbsp; label &nbsp;"]`
 - `<br />` for line breaks in labels (not `\n`)
-- Do NOT use quotation marks or parentheses inside node labels — they break the Mermaid parser
+- Do NOT put quotation marks or parentheses in the label text — they break the Mermaid parser (quotes as delimiters, `C["…"]`, are fine)
 - Use `<-.->` for dashed bidirectional arrows (visually lighter than solid `-->`)
-- `%%|` cell options control sizing: `%%| fig-width: 4.5`
+- Always set both `%%| fig-width:` and `%%| fig-height:` — without a height the SVG reserves far more vertical space than it needs
 - Available themes: `default`, `forest`, `dark`, `neutral`, `base`
 - For comprehensive Mermaid syntax and diagrams, see Mermaid's official documentation.
 

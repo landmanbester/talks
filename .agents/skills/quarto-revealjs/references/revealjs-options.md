@@ -94,14 +94,14 @@ Per-slide override: `## Title {transition="zoom"}`
 format:
   revealjs:
     html-math-method: mathjax    # mathjax | katex | webtex
-    # MathJax config:
+    # MathJax config -- the bundled MathJax is version 2: uppercase TeX / Macros
     include-in-header:
       text: |
         <script>
         MathJax = {
-          tex: {
-            tags: 'ams',
-            macros: {
+          TeX: {
+            equationNumbers: { autoNumber: "AMS" },
+            Macros: {
               R: "{\\mathbb{R}}",
               bm: ["{\\boldsymbol{#1}}", 1]
             }

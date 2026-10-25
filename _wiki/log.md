@@ -10,6 +10,9 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-25 — conventions/mermaid: clarified that quotes as label delimiters are fine. Also fixed
+  the quarto-revealjs skill where it contradicted the wiki (MathJax 3 macro example, Mermaid
+  without `fig-height`, per-deck `mermaid-format`).
 - 2026-10-25 — infrastructure/repo-map (new), conventions/front-matter, conventions/mermaid:
   before/after agent test found the annotated directory tree and the theme/title-background file
   names had been dropped in the migration; restored. Mermaid page now links the palette.

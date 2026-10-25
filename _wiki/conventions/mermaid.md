@@ -18,6 +18,7 @@ format overrides custom themes).
   reserves far more vertical space than the diagram needs and pushes content off the slide (a 4-node
   `flowchart LR` wants `fig-width: 9`, `fig-height: 1.8`). Too wide a `fig-width` adds a scrollbar
 - The first line after the config declares the diagram type (`flowchart TD`, `sequenceDiagram`)
-- **No quotation marks or parentheses** inside node labels — they break the parser
+- **No quotation marks or parentheses** in the label text — they break the parser (quotes used as
+  delimiters, `C["📦 &nbsp; CABS &nbsp;"]` as in `stimela-fundamentals`, are fine)
 - `<br />` for line breaks in labels (not `\n`); `&nbsp;` padding for wider nodes
 - Start labels with a Unicode emoji for meaning (`📡 Array`, `📦 CABS`, `⚙️ Stimela`)
