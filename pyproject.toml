@@ -26,9 +26,9 @@ dependencies = [
 # _animations/ and deck clips. Opt-in because pycairo ships no Linux wheel and
 # compiles against system headers:
 #   sudo apt install libcairo2-dev libpango1.0-dev && uv sync --group manim
-# Until then manim runs from ~/software/manim/.venv (see AGENTS.md).
+# Until then manim runs from ~/software/manim/.venv (see _wiki/infrastructure/python-env.md).
 # The series was rendered on 0.20 — bump deliberately, and re-check a scene.
-# manim-slides: clicker-stepped animations in decks (see AGENTS.md).
+# manim-slides: clicker-stepped animations in decks (see _wiki/techniques/manim-slides-stepping.md).
 manim = ["manim~=0.20.1", "manim-slides~=5.7"]
 # Only scripts/figures/reference/ (copied from the papers) reads Measurement Sets
 casa = ["python-casacore"]

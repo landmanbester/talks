@@ -14,7 +14,7 @@ Create polished, technical presentations using Quarto's revealjs format. Optimiz
 | Scaffold a new talk | Read [references/scaffolding.md](references/scaffolding.md), run the scaffold script |
 | Create/edit slides | Follow the patterns below, consult [references/revealjs-options.md](references/revealjs-options.md) |
 | Port from Canva/PDF | Read [references/porting-guide.md](references/porting-guide.md) |
-| Build-up figure, interactive (OJS) figure, or manim animation stepped on the clicker | Repo `AGENTS.md`: "Build-up figures", "Interactive figures", "Stepping an animation on the clicker" |
+| Build-up figure, interactive (OJS) figure, or manim animation stepped on the clicker | `_wiki/techniques/` (build-up-figures, interactive-figures-ojs, manim-slides-stepping) |
 | Customize theme | Edit the SCSS file — see [templates/](templates/) |
 | Render to HTML | `quarto render index.qmd` |
 | Export to PDF | Read [references/pdf-export.md](references/pdf-export.md) |

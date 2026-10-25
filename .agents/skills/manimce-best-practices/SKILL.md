@@ -17,7 +17,8 @@ stale-partials cleanup + duration check), and `_animations/scaffold_video.py`
 (new episode with series boilerplate). Repo-specific ManimCE gotchas (always_redraw
 needs self.add, set_opacity vs set_stroke on curves, ThreeDScene fixed-frame /
 focal-distance / depth-sorting traps, partial_movie_files corruption) live in
-the **Manim animations** section of `AGENTS.md` — read it before writing code.
+`_wiki/gotchas/manim.md` (series conventions: `_wiki/techniques/explainer-videos.md`)
+— read them before writing code.
 
 ## How to use
 
