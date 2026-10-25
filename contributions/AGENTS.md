@@ -1,7 +1,7 @@
 # Contributions — Agent Context
 
 > Rules for conference and workshop talks. `CLAUDE.md` and `GEMINI.md` are symlinks to this file.
-> The repository-wide conventions in `../AGENTS.md` still apply — this file
+> The repository-wide rules in `../AGENTS.md` and the wiki it routes to (`../_wiki/`) still apply — this file
 > covers only what is specific to contributions.
 
 ## What a contribution is

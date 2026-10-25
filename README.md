@@ -19,7 +19,7 @@ formatting and the agent rules that apply to it:
 
 Each talk is `<class>/<talk-slug>/index.qmd` with its `images/` beside it. The
 full directory map, and where large data lives (`/data/talks/`, symlinked in),
-is in [AGENTS.md](AGENTS.md#directory-structure).
+is in [AGENTS.md](AGENTS.md) and the agent wiki under [`_wiki/`](_wiki/index.md).
 
 Python tooling (the FITS figure pipeline) runs from a uv environment:
 `uv sync`, then `uv run scripts/figures/make_figures.py --list`.

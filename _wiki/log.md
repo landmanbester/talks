@@ -1,0 +1,16 @@
+---
+type: Log
+title: Wiki change log
+description: Chronological record of changes to the wiki and the rules it holds.
+tags: [log]
+timestamp: 2026-10-25
+---
+
+# Change log
+
+Newest first. One line per change: date, page(s), what and why.
+
+- 2026-10-25 — all pages: wiki created from the monolithic `AGENTS.md` (453 lines, ~8k tokens per
+  turn), which now only routes and holds the always-on rules. Content moved, not rewritten.
+- 2026-10-25 — techniques/manim-slides-stepping, interactive-figures-ojs, build-up-figures,
+  tools/check-slides: added with the Visibility Space lecture (merge `d42e14f`).

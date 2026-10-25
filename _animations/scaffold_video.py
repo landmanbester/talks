@@ -97,7 +97,7 @@ class {cls}(Scene):
         self.scene_close()
 
     # ------------------------------------------------------------------
-    # one master clock drives every moving element (see AGENTS.md):
+    # one master clock drives every moving element (see _wiki/techniques/explainer-videos.md):
     # always_redraw mobjects read the trackers, so physics stays
     # consistent by construction. Remember: always_redraw mobjects are
     # invisible until self.add(...)ed.

@@ -431,7 +431,7 @@ def main() -> int:
               "they read as cramped.")
     if clipped_total:
         print(f"{clipped_total} slide(s) are visibly cut off. "
-              "See 'Fix overflow' in AGENTS.md.")
+              "See _wiki/tools/check-slides.md.")
         return 1
     if tight_total and args.strict:
         return 1

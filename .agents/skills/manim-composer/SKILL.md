@@ -19,8 +19,8 @@ python _animations/scaffold_video.py <slug> <SceneClassName> "<Title>" --subtitl
 ```
 
 Series conventions (palette, captions, the "next: ..." tease chain, the
-master-clock architecture) are documented in the **Manim animations** section
-of `AGENTS.md` — the plan should respect them, and each episode's scenes.md
+master-clock architecture) are documented in `_wiki/techniques/explainer-videos.md`
+— the plan should respect them, and each episode's scenes.md
 should include a *consistency checklist* of physically-verifiable facts the
 rendered frames must show.
 
