@@ -31,13 +31,16 @@ Exits 1 if any slide overflows, so it can gate a commit or a CI job.
 from __future__ import annotations
 
 import argparse
+import functools
 import html
+import http.server
 import json
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -105,7 +108,12 @@ PROBE_JS = r"""
           v: kids.length ? v : 0,
           anchor: kids.length ? h + '/' + v : String(h),
           title: headingOf(sec),
-          height: sec.offsetHeight
+          height: sec.offsetHeight,
+          // Nothing but hidden elements (a .plain-figure heading over a
+          // background video): 0px is the right answer, not a missed layout.
+          empty: Array.prototype.every.call(sec.children, function (el) {
+            return getComputedStyle(el).display === 'none';
+          })
         });
       });
     });
@@ -217,15 +225,56 @@ def build_probe_js(reveal_fragments: bool, timeout: int) -> str:
             .replace("__GIVE_UP_MS__", str(int(timeout * 0.5))))
 
 
+class _QuietHandler(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, *args):
+        pass
+
+
+class _QuietServer(http.server.ThreadingHTTPServer):
+    def handle_error(self, request, client_address):
+        pass   # Chrome drops connections (media range requests) on exit
+
+
+@functools.cache
+def _server() -> _QuietServer:
+    """Serve _site/ on a free local port for the life of this run.
+
+    Decks are loaded over HTTP, not file://: Quarto's OJS bootstrap raises an
+    alert() on file:// URLs, and a modal blocks headless Chrome until it times out.
+    """
+    handler = functools.partial(_QuietHandler, directory=str(SITE))
+    srv = _QuietServer(("127.0.0.1", 0), handler)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    return srv
+
+
+def probe_url(probe: Path) -> str:
+    return (f"http://127.0.0.1:{_server().server_port}/"
+            f"{probe.relative_to(SITE).as_posix()}")
+
+
+def probe_source(deck: Path, js: str, keep_video: bool) -> str:
+    """The deck's HTML with the probe injected.
+
+    Autoslide (manim-slides segments run into their hold loops) would move the
+    deck under the probe, so it goes. Background videos never affect layout,
+    and with every slide preloaded a deck of segments loads dozens of them and
+    the budget runs out -- the measuring pass drops them; screenshots keep them.
+    """
+    source = deck.read_text(encoding="utf-8")
+    if "</body>" not in source:
+        die(f"{deck} has no </body> to inject into")
+    attrs = r"autoslide" if keep_video else r"background-video[\w-]*|autoslide"
+    source = re.sub(rf'\sdata-(?:{attrs})="[^"]*"', "", source)
+    return source.replace("</body>", js + "</body>")
+
+
 def run_probe(deck: Path, reveal_fragments: bool, timeout: int, window: str,
               _retry: bool = True) -> dict:
     """Inject the probe into a copy of the deck and read back its report."""
     probe = deck.parent / PROBE_NAME
     js = build_probe_js(reveal_fragments, timeout)
-    source = deck.read_text(encoding="utf-8")
-    if "</body>" not in source:
-        die(f"{deck} has no </body> to inject into")
-    probe.write_text(source.replace("</body>", js + "</body>"), encoding="utf-8")
+    probe.write_text(probe_source(deck, js, keep_video=False), encoding="utf-8")
 
     # Chrome writes a profile into the cwd unless told otherwise; keep it out of
     # the repo and out of whatever the user's real profile is.
@@ -236,7 +285,7 @@ def run_probe(deck: Path, reveal_fragments: bool, timeout: int, window: str,
                  f"--user-data-dir={profile}",
                  f"--window-size={window.replace('x', ',')}",
                  f"--virtual-time-budget={timeout}",
-                 "--dump-dom", probe.as_uri()],
+                 "--dump-dom", probe_url(probe)],
                 capture_output=True, text=True, timeout=timeout / 1000 + 60,
             ).stdout
         except FileNotFoundError:
@@ -276,8 +325,7 @@ def shoot(deck: Path, slides: list[dict], outdir: Path, timeout: int,
     """Screenshot every slide of one deck with all fragments already revealed."""
     probe = deck.parent / PROBE_NAME
     js = build_probe_js(reveal_fragments=True, timeout=timeout)
-    probe.write_text(deck.read_text(encoding="utf-8").replace("</body>", js + "</body>"),
-                     encoding="utf-8")
+    probe.write_text(probe_source(deck, js, keep_video=True), encoding="utf-8")
     slug = "-".join(deck.parent.relative_to(SITE).parts)
     outdir.mkdir(parents=True, exist_ok=True)
 
@@ -291,7 +339,7 @@ def shoot(deck: Path, slides: list[dict], outdir: Path, timeout: int,
                      f"--screenshot={png}",
                      f"--window-size={window.replace('x', ',')}",
                      f"--virtual-time-budget={timeout}",
-                     f"{probe.as_uri()}#/{s['anchor']}"],
+                     f"{probe_url(probe)}#/{s['anchor']}"],
                     capture_output=True, timeout=timeout / 1000 + 60,
                 )
                 flag = "  <-- OVERFLOW" if s["over"] else ""
@@ -342,7 +390,7 @@ def main() -> int:
         limits.add(limit)
         # A zero-height slide was never laid out, so it was never checked. That
         # is how this tool silently passed a clipped deck once already.
-        unmeasured = [s for s in slides if s["height"] == 0]
+        unmeasured = [s for s in slides if s["height"] == 0 and not s.get("empty")]
         if unmeasured:
             die(f"{rel}: {len(unmeasured)} slide(s) measured 0px, so they were "
                 "not checked at all. Raise --timeout and re-run.")
