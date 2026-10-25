@@ -14,6 +14,7 @@ Create polished, technical presentations using Quarto's revealjs format. Optimiz
 | Scaffold a new talk | Read [references/scaffolding.md](references/scaffolding.md), run the scaffold script |
 | Create/edit slides | Follow the patterns below, consult [references/revealjs-options.md](references/revealjs-options.md) |
 | Port from Canva/PDF | Read [references/porting-guide.md](references/porting-guide.md) |
+| Build-up figure, interactive (OJS) figure, or manim animation stepped on the clicker | Repo `AGENTS.md`: "Build-up figures", "Interactive figures", "Stepping an animation on the clicker" |
 | Customize theme | Edit the SCSS file — see [templates/](templates/) |
 | Render to HTML | `quarto render index.qmd` |
 | Export to PDF | Read [references/pdf-export.md](references/pdf-export.md) |
@@ -227,6 +228,6 @@ See the SCSS file itself for all customizable variables.
 - **Mermaid diagrams** — use `mermaid-format: svg` in the YAML front matter (under `revealjs:`) to ensure custom theming works (the default `js` format overrides custom themes). Use YAML config blocks inside Mermaid cells (not the older `%%{init:...}%%` syntax) for theming — set `theme: base` with custom `themeVariables` for full control over colors. Use `%%|` cell options for sizing (e.g. `%%| fig-width: 4.5`). Use Unicode emoji prefixes in labels for semantic meaning (e.g. `📦 CABS`, `⚙️ Stimela`). Use `<br />` for line breaks in labels (not `\n`). Do NOT use quotation marks or parentheses inside node labels — they break the Mermaid parser. Use dashed arrows `<-.->` for bidirectional connections. Never use Mermaid's default harsh black lines — always apply a curated palette via `themeVariables`
 - **Dense slides** — use `{.smaller}` on the `## Heading` (not a wrapping div) to reduce font without breaking fragments
 - **fig-link bug** — `fig-link` is a known Quarto bug for standalone images in revealjs (images that are the only content on a slide). The link gets stripped. Workaround: use markdown linked images `[![alt](img.png)](url)` or ensure there is other text on the slide
-- **No inline HTML for layouts** — never use raw HTML `{=html}` blocks, inline style tags, CSS flexbox, or JavaScript for element positioning. Always use Quarto's native constructs (fenced divs, Mermaid blocks). See the project's AGENTS.md for presentation engineering standards
+- **No inline HTML for layouts** — never use raw HTML `{=html}` blocks, inline style tags, CSS flexbox, or JavaScript for element positioning. Always use Quarto's native constructs (fenced divs, Mermaid blocks). See the project's AGENTS.md for presentation engineering standards, including its documented exceptions (`{=html}` for autoplaying video, `{ojs}` cells, the manim-slides click cue)
 - **General Quarto authoring** — for cross-references, citations, tables, figures, callouts, shortcodes, layout, extensions, and YAML config, follow standard Quarto authoring conventions. This skill focuses specifically on revealjs presentation conventions
 - **AGENTS.md** — the project has an AGENTS.md file that defines presentation engineering standards. This skill should complement (not contradict) those standards
