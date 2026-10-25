@@ -57,10 +57,13 @@ talks/
 │   └── <talk-slug>/
 │       ├── index.qmd        # The presentation (always index.qmd)
 │       ├── images/          # Figures for this talk
-│       ├── videos/          # Embedded clips (manim webm, footage)
-│       └── custom.css       # Optional deck-local CSS — declare it (see below)
+│       ├── videos/          # Embedded clips (manim webm, footage, manim-slides segments)
+│       ├── custom.css       # Optional deck-local CSS — declare it (see below)
+│       ├── make_figures.py  # Optional: generates images/ (build-up overlays, plots)
+│       └── slides.py        # Optional: manim-slides wrappers for _animations/ scenes
 ├── scripts/
 │   ├── check_slides.py      # Measure every slide for overflow (verification harness)
+│   ├── manim_slides_qmd.py  # manim-slides render → one Quarto slide per segment
 │   ├── shoot-decks.sh       # Render + screenshot every deck's title slide
 │   ├── sync-data.sh         # /data/talks/ ⇄ Google Drive (see Large data)
 │   ├── backup-takes.sh      # Mirror raw narration takes to the other disk
@@ -87,6 +90,7 @@ repo at the paths above, so scripts see ordinary paths:
 | `fits_files` | FITS images for `scripts/figures/` |
 | `_video/<slug>/audio` | Narration takes and every processed stage |
 | `_animations/<video>/media`, `<deck>/media` | manim render output and caches |
+| `<deck>/slides` | manim-slides render output (segments + JSON) |
 
 Put new large inputs or outputs under `/data/talks/` and symlink them in the same way. `/tmp` is
 RAM on this machine — scratch output bigger than a few screenshots goes in `/data/tmp/`. The
@@ -119,7 +123,8 @@ the talk-video scripts need only numpy (so `uv run` them, or any python3 with nu
 
 manim is the opt-in `manim` dependency group, because pycairo needs system headers this machine
 does not have yet (`sudo apt install libcairo2-dev libpango1.0-dev && uv sync --group manim`).
-Until then manim runs from `~/software/manim/.venv/bin/manim`.
+Until then manim runs from `~/software/manim/.venv/bin/manim`; `manim-slides` is installed in the
+same venv (`~/software/manim/.venv/bin/manim-slides`).
 
 ## Authoring conventions
 
@@ -174,6 +179,14 @@ python3 .agents/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KA
   too: `![](img.png){.fragment fragment-index=1}`
 - **Progressive image swap**: stack images in `::: {.r-stack}` with `.fragment` on all but the
   first; pair with `fragment-index` on bullets to swap the image as each bullet appears
+- **Build-up figures** (annotations appearing one click at a time on a photo or diagram, as Canva
+  builds do): don't position HTML over the image. Draw each step as a **transparent PNG on the same
+  canvas, each a superset of the one before**, from a deck-local `make_figures.py`
+  (`uv run <deck>/make_figures.py`), and stack them as above. Draw in the theme palette and verify
+  each step composited on `#0d1117`. Pattern: `lectures/visibility-space` (resolution, sensitivity,
+  how to make an interferometer)
+- **Words for the presenter go in notes**: "one click per idea", "another animation", reminders —
+  never on a slide. Put them in `::: {.notes}` (presenter view, `S`)
 - **Dense slides**: `{.smaller}` on the heading. Never a wrapping `{style="font-size:…"}` div — it
   breaks `. . .` pauses
 - **Closing slide**: `## Thanks! {background-color="#0d1117" .closing-slide}` with a `::: {.contact}`
@@ -182,7 +195,14 @@ python3 .agents/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KA
 - **Embedded video**: `{{< video videos/clip.webm >}}`, not a raw `<video>` tag. The exception is a
   clip that must autoplay muted — browsers only honour `muted`/`autoplay` reliably as parse-time
   attributes, which the shortcode cannot emit. `contributions/kremetart-pipeline` does this twice:
-  a full-bleed background (`.bg-fill`) and an inline looping manim clip
+  a full-bleed background (`.bg-fill`) and an inline looping manim clip. A raw tag must name the
+  file in a `<source src>` child — Quarto does not copy a file referenced only by `<video src>`, so
+  it is missing from `_site/` — and inside a fenced div it must sit in a ```` ```{=html} ```` block,
+  or pandoc leaves the closing `:::` as literal text and the div swallows the following slides
+- **Explainer animations** the presenter talks over: step them on the clicker with manim-slides
+  rather than embedding one long clip — see
+  [Stepping an animation on the clicker](#stepping-an-animation-on-the-clicker-manim-slides)
+- **Interactive figures**: `{ojs}` cells — see [Interactive figures](#interactive-figures-observable-js)
 
 ### Theme classes (`dark-academic.scss`)
 
@@ -215,6 +235,25 @@ format overrides custom themes).
 - **No quotation marks or parentheses** inside node labels — they break the parser
 - `<br />` for line breaks in labels (not `\n`); `&nbsp;` padding for wider nodes
 - Start labels with a Unicode emoji for meaning (`📡 Array`, `📦 CABS`, `⚙️ Stimela`)
+
+### Interactive figures (Observable JS)
+
+For a figure the audience should *play with* (sliders driving a live plot), use Quarto's built-in
+`{ojs}` cells with Observable Plot and Inputs — no extension, no build step. Reference:
+`lectures/visibility-space`, "Try It: The Fringe Explorer". It re-implements the physics in a few
+lines of JS; it does not embed a manim video (for that, see manim-slides below).
+
+- `//| echo: false` on every cell, and set `code-copy: false` in the deck's front matter — the
+  inherited `code-copy: true` puts a copy button on every OJS cell
+- One slider per `.column` in a `:::::{.columns .ojs-controls}` row, with deck CSS hiding the
+  number box and putting the label above (`--label-width: auto`); the default inline label wraps
+  and the number box is white-on-white on the dark theme
+- Plots: `style: {background: "transparent", color: "#c9d1d9"}` and explicit `width`/`height` in
+  slide pixels (the slide is 1050 wide); marks in the palette. Check the slide with
+  `check_slides.py` — OJS output is measured after it renders
+- **OJS only runs over HTTP.** Opened as `file://`, Quarto's OJS bootstrap raises an `alert()`;
+  in headless Chrome that modal blocks until timeout. Use `quarto preview` or a server on `_site/`
+- Colour legends: classes in `custom.css` (`[gold]{.key-source}`), not inline `style=` spans
 
 ## Render, inspect, fix
 
@@ -261,7 +300,11 @@ scripts/check_slides.py --no-render --shots /data/tmp/shots deconvolution   # + 
 - **tight** — over the 700px design height but still visible inside reveal's 10% margin. A
   judgement call; it reads as cramped. `--strict` fails on these too.
 
-Deck sources are never modified — the probe runs on a throwaway copy inside `_site/`.
+Deck sources are never modified — the probe runs on a throwaway copy inside `_site/`, loaded over
+a local HTTP server (OJS refuses `file://`). That copy drops background videos and `data-autoslide`
+(neither affects layout; dozens of preloaded segments exhaust the time budget, and autoslide would
+move the deck under the probe). A slide with no visible content — a manim-slides segment — measures
+0px and is accepted; any other 0px slide means the page never laid out, and the run fails.
 
 | Cause of overflow | Fix |
 |---|---|
@@ -301,6 +344,45 @@ ffmpeg -y -i media/videos/script/720p30/SceneName.mov \
 
 `-auto-alt-ref 0` is required for the alpha channel. Symlink the deck's `media/` to `/data/talks/`
 before a long render (see [Large data](#large-data)).
+
+### Stepping an animation on the clicker (manim-slides)
+
+An `_animations/` explainer can play inside a deck one beat per click, without forking its script.
+[manim-slides](https://manim-slides.eyllanesc.io) splits a render into segments at each
+`self.next_slide()`; `scripts/manim_slides_qmd.py` turns the segments into one Quarto slide each.
+Reference: `lectures/visibility-space` (both series videos).
+
+1. **Wrap, don't fork.** A deck-local `slides.py` puts `_animations/<video>/` on `sys.path`,
+   imports the scene and subclasses it with `Slide`. A mixin overrides the scene's `caption()` to
+   call `next_slide()` first — every caption is a narrative beat, so the pauses fall where the
+   narration does. Copy `lectures/visibility-space/slides.py`; the series scenes all have
+   `caption()`, `rate` and `t_now()`.
+2. **Holds loop seamlessly.** While the wave machinery is running (`rate > 0`), a pause is a loop of
+   exactly **7 wave periods** (λ/c = 1/0.7 s, so 10 s = 300 frames at 30 fps) — wavefronts and
+   traces cycle without a jump. A frozen scene (`rate == 0`) just holds its last frame. Before the
+   leading wavefront has reached every antenna nothing is periodic yet, so a beat that falls there
+   is skipped (`steady` on the subclass).
+3. **Render** from the deck directory, with `media` and `slides` symlinked into
+   `/data/talks/<class>/<slug>/` first:
+   ```bash
+   ~/software/manim/.venv/bin/manim-slides render -qm slides.py SceneSlides
+   python3 ../../scripts/manim_slides_qmd.py SceneSlides <name>
+   ```
+   `-qm` (720p30) is plenty for a slide and keeps a video near 10 MB; the segments are tracked.
+   The script copies them to `videos/<name>/NN.mp4` and writes `_<name>.qmd`; pull it into
+   `index.qmd` with `{{< include _<name>.qmd >}}`. Never edit `_<name>.qmd` — re-run the script
+4. **What the generated slides do**: headless `.plain-figure` slides with the segment as
+   `background-video` (`contain`, muted), `transition="none"` and `background-transition="none"`
+   so the cuts are invisible. A play-once segment holds its last frame until the click; a loop
+   repeats until the click; a segment followed by a loop gets `data-autoslide` (its duration) so
+   it runs straight into the hold
+5. **Click cue.** Copy `segment-cue.html` and its CSS block from `lectures/visibility-space`, and
+   add `include-after-body: segment-cue.html` to the deck's front matter: a small green dot pulses
+   in the top-right corner whenever a segment is waiting for the click (during a loop, or once a
+   play-once segment ends), and never on autoslide segments. Deck-local by choice; moving it into
+   `templates/` is a shared-theme change — ask first
+6. **Verify**: `check_slides.py`, then click through in a browser — confirm each autoslide segment
+   lands in its loop and the cue comes on only while waiting
 
 ### Standalone explainer videos (`_animations/`)
 

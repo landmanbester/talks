@@ -1,0 +1,29 @@
+<!-- Presenter cue for manim-slides segments (scripts/manim_slides_qmd.py): a dot
+     pulses in the corner while a segment is waiting for the click, i.e. during
+     a hold loop, or once a play-once segment has ended. Segments that run
+     straight into a loop (data-autoslide) never show it. Styled in custom.css. -->
+<div class="segment-cue" aria-hidden="true"></div>
+<script>
+(function () {
+  var cue = document.querySelector(".segment-cue");
+  function update() {
+    cue.classList.remove("on");
+    var slide = Reveal.getCurrentSlide();
+    if (!slide || !slide.hasAttribute("data-background-video")
+        || slide.hasAttribute("data-autoslide")) return;
+    if (slide.hasAttribute("data-background-video-loop")) {
+      cue.classList.add("on");
+      return;
+    }
+    var bg = Reveal.getSlideBackground(slide);
+    var video = bg && bg.querySelector("video");
+    if (!video) return;
+    if (video.ended) { cue.classList.add("on"); return; }
+    video.addEventListener("ended", function () {
+      if (Reveal.getCurrentSlide() === slide) cue.classList.add("on");
+    }, { once: true });
+  }
+  Reveal.on("ready", update);
+  Reveal.on("slidechanged", update);
+})();
+</script>

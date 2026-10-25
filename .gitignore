@@ -2,6 +2,8 @@
 *_files/
 *.html
 !templates/*.html
+# Deck-local include (manim-slides click cue), not rendered output
+!*/*/segment-cue.html
 
 # Quarto cache
 .quarto/
@@ -12,6 +14,9 @@ _freeze/
 # matches real directories.
 media
 __pycache__/
+# manim-slides render output (segments + JSON); scripts/manim_slides_qmd.py copies
+# what a deck needs into its videos/. Symlinked into /data/talks/ like media.
+*/*/slides
 
 # OS files
 .DS_Store
