@@ -1,0 +1,51 @@
+/* manim-slides segments auto-advance into their hold loops (data-autoslide);
+   reveal's autoslide pie would otherwise flicker in the corner on each one. */
+.reveal .playback {
+  display: none;
+}
+
+/* Fringe explorer legend: colours match the plot marks. */
+.key-fringe  { color: #8b949e; }
+.key-source  { color: #d29922; }
+.key-product { color: #3fb950; }
+
+/* Fringe explorer sliders: one per column, label above, no number box. */
+.reveal .ojs-controls form {
+  --label-width: auto;
+  display: block;
+  width: 100%;
+  font-size: 0.8em;
+}
+.reveal .ojs-controls form label {
+  display: block;
+  width: auto;
+  padding: 0;
+}
+.reveal .ojs-controls input[type="number"] {
+  display: none;
+}
+.reveal .ojs-controls input[type="range"] {
+  width: 90%;
+}
+
+/* Presenter cue (segment-cue.html): pulses while a segment waits for the click. */
+.segment-cue {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #3fb950;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 30;
+  transition: opacity 0.3s;
+}
+.segment-cue.on {
+  animation: segment-cue-pulse 1.2s ease-in-out infinite;
+}
+@keyframes segment-cue-pulse {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 0.9; }
+}
