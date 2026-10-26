@@ -7,6 +7,7 @@ format:
     css: custom.css
     code-copy: false   # nothing to copy, and it puts a button on every OJS cell
     include-after-body: segment-cue.html
+    auto-slide-stoppable: false
 ---
 
 # Why interferometry?

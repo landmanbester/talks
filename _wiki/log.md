@@ -10,6 +10,10 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-26 — gotchas/manim, gotchas/index, techniques/manim-slides-stepping: stepped videos froze
+  after any click during a step (reveal.js `autoSlideStoppable` pauses autoslide deck-wide; the
+  playback control that would resume it is hidden). `auto-slide-stoppable: false` in rime and
+  visibility-space; now part of the stepping recipe.
 - 2026-10-26 — decks/rime: polarisation primer (`_animations/polarisation-ellipse`), journey
   reworked to one effect per click with a wiggle strip, a magnified Faraday row and a
   "why only at the receiver" beat; `OneNumberToABox` makes the scalar-G → J rename explicit

@@ -48,7 +48,9 @@ clip for any explainer the presenter talks over.
    repeats until the click; a segment followed by a loop gets `data-autoslide` (its duration) so
    it runs straight into the hold.
 5. **Click cue.** Copy `segment-cue.html` and its CSS block from `lectures/visibility-space`, and
-   add `include-after-body: segment-cue.html` to the deck's front matter: a small green dot pulses
+   add `include-after-body: segment-cue.html` **and `auto-slide-stoppable: false`** to the deck's
+   front matter (without the latter, one click during a step freezes every later step — see
+   [manim gotchas](../gotchas/manim.md)): a small green dot pulses
    in the top-right corner whenever a segment is waiting for the click (during a loop, or once a
    play-once segment ends), and never on autoslide segments. Deck-local by choice; moving it into
    `templates/` is a shared-theme change — ask first.

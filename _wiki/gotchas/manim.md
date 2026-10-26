@@ -24,6 +24,14 @@ timestamp: 2026-10-26
   overrides `play()` to beat before an all-`FadeOut` play that removes the current caption, then
   skips the next caption's pause. Check the last frame of every segment (ffmpeg `-sseof -0.1`)
 
+- A step video stops on its last frame and needs a click to continue (just before the green cue
+  dot appears), on some slides only. reveal.js's `autoSlideStoppable` defaults to true: any key
+  or click while an autoslide timer runs pauses autoslide **for the rest of the deck**, and the
+  only resumes are the A key or the playback control (hidden in these decks). So one click during
+  any step segment strands every later step-into-loop hand-off. Fix: `auto-slide-stoppable: false`
+  under `format: revealjs:` in every deck with stepped segments. Testing with `Reveal.slide()`
+  from a script never shows it — reproduce with real key presses
+
 ## ManimCE API
 
 - `always_redraw` mobjects only render after an explicit `self.add(...)` — invisible, no error
