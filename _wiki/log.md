@@ -10,6 +10,10 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-26 — decks/rime: polarisation primer (`_animations/polarisation-ellipse`), journey
+  reworked to one effect per click with a wiggle strip, a magnified Faraday row and a
+  "why only at the receiver" beat; `OneNumberToABox` makes the scalar-G → J rename explicit
+  (the letter G was doing double duty). Two-antennas multiplication-table figure.
 - 2026-10-26 — tools/publish, gotchas/index: first CI run hung on Mermaid (runner Chrome sandbox under
   Ubuntu 24.04 AppArmor); workflow installs chrome-headless-shell, lifts the restriction, 20-min timeout.
 - 2026-10-26 — tools/publish (new), tools/render, infrastructure/large-data, infrastructure/repo-map,

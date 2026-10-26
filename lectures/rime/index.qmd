@@ -104,7 +104,7 @@ $$
 ::: {.incremental}
 - [$V_{pq}$]{.key-measured} — what the correlator gives us, for antennas $p$ and $q$
 - [$B_s$]{.key-sky} — the brightness of source $s$: **what we want**
-- [$G_p$, $G_q^*$]{.key-gain} — what each antenna and its electronics do to the signal
+- [$G_p$, $G_q^*$]{.key-gain} — everything that happens to the signal on its way to each antenna (one number, for now)
 - $K_{pq,s}$ — the delay between the antennas: **known geometry**
 - $\sum_s$ — add up every source in the sky
 :::
@@ -116,31 +116,71 @@ multiplies p's signal by the mirror image of q's. Don't dwell on it.
 
 # What's hiding in G?
 
-## G Is a Whole Journey
+## What Can Happen to a Wiggle
 
-The signal does not just pass through "an antenna". On the way from the source it crosses space, the ionosphere, the dish and the receiver — and **each one changes it**.
+Before we follow the signal on its journey: there are only **four** things that can happen to a wave on the way — and only **one** of them changes its shape.
 
 ::: {.notes}
-Next animation: follow one wave from the source to the receiver and watch
-its polarisation change at every stage. Each stage gets a letter; the letters
-chain up into the Jones matrix J.
+Next animation: a primer on polarisation, with no maths. The tip of the
+electric field traces a shape — a line, an ellipse or a circle: the
+polarisation ellipse. Split the wiggle into an x part and a y part (the
+traces beside and below the panel). Then four moves, one per click:
+
+- delay both parts equally: the same line, just later (K, Z)
+- twist: the line turns (F, P)
+- shrink: the line gets smaller (E)
+- delay y more than x: the line opens into an ellipse; a quarter wave makes a
+  circle (D, G)
+
+The faint ghost in the panel is the state before each move. The point to land:
+only an *uneven* delay between x and y changes the shape. Hold on to that for
+the next animation.
+:::
+
+{{< include _wiggle.qmd >}}
+
+## G Is a Whole Journey
+
+So far, $G$ stood for **everything** that happens to the signal on its way. Let's open it up: follow one wave through space, the ionosphere, the dish and the receiver. Each stage makes one of those four moves.
+
+::: {.notes}
+Next animation: the panel shows the wiggle at the wavefront, with a ghost of
+the state before each step; the row of little wiggles along the path shows
+the state everywhere the wave has been. Each stage gets a letter, and the
+letters chain up into J — the full name of the journey. From here on, G means
+just the electronics at the end.
+
+Faraday rotation (F): the Earth's magnetic field in the ionosphere twists the
+wave, and the twist builds up the further it travels through the plasma — the
+magnified row above the cloud. It is stronger at longer wavelengths, which is
+why it matters so much for LOFAR (the Trotsky slide later).
+
+The question to ask the room before the receiver: why does the line only open
+into an ellipse at the very end? Because D and G are the only stages that
+treat x and y differently.
 :::
 
 {{< include _journey.qmd >}}
 
 ## The Jones Zoo {.smaller}
 
-| | Where | What it does to the wiggle |
-|:---:|---|---|
-| **K** | space | delays it — geometry, known |
-| **Z** | ionosphere | delays it more — changes with the weather |
-| **F** | ionosphere + magnetic field | twists it — *Faraday rotation* |
-| **P** | dish mount | the sky turns as the dish tracks — known |
-| **E** | dish | favours some directions — *primary beam* |
-| **D** | feed | leaks one direction into the other |
-| **G** | electronics | amplifies and delays each channel — *gain* |
+| | Where | Move | Known as |
+|:---:|---|---|---|
+| **K** | space | delay | geometry — known |
+| **Z** | ionosphere | delay | ionospheric phase |
+| **F** | ionosphere | twist | Faraday rotation |
+| **P** | dish mount | twist | parallactic angle — known |
+| **E** | dish | shrink | primary beam |
+| **D** | feed | uneven | leakage |
+| **G** | electronics | uneven | gain |
 
 ::: {.notes}
+What the moves are (from the wiggle animation): Z changes with the weather;
+F needs the Earth's magnetic field as well as the ionosphere; P is the sky
+turning as the dish tracks; E means the dish favours some directions; D leaks
+x into y, out of step; G amplifies and delays x and y differently. Only the
+"uneven" ones, D and G, change the shape of the wiggle.
+
 J = G D E P F Z K is just an example chain — which letters you need depends on
 the telescope and on how accurate you need to be. Read it right to left: K
 happens first. Order matters because these are matrices.
@@ -188,7 +228,13 @@ Read the figure as a multiplication table: antenna p's two voltages (x, y) run
 along the rows, antenna q's down the columns, and each cell is one product the
 correlator forms and averages. Four cells, so four numbers per pair of
 antennas: that little 2×2 box is the visibility matrix.
+
+Next clip (four clicks): the scalar equation from the start of the hour, then
+every number in it grows into a 2×2 box like this one. G was shorthand for the
+whole journey: its full name is J. Same shape of equation, bigger pieces.
 :::
+
+{{< include _one-number-to-a-box.qmd >}}
 
 ## The RIME {.smaller}
 
@@ -204,12 +250,6 @@ $$
 - [$\mathbf{B}$]{.key-sky} — the **source**: its brightness and polarisation
 - [$\mathbf{J}_p$]{.key-gain} — everything that happens on the way to antenna $p$
 - [$\mathbf{J}_q^H$]{.key-gain} — the same for antenna $q$, in mirror image
-:::
-
-. . .
-
-::: {.highlight-box}
-Same shape as before — $G_p\,B\,G_q^*$ — with each number grown into a 2×2 box.
 :::
 
 ::: {.notes}

@@ -3,15 +3,18 @@
 The scenes live in _animations/ and are imported unchanged apart from
 `standalone = False`, which drops their title and closing cards. Every
 caption marks a narrative beat, so the only change is a pause before each new
-caption. While a wave is flowing (JourneyOfAWave), the pause is a loop of
+caption. While a wave is flowing (WhatCanHappenToAWiggle, JourneyOfAWave), the pause is a loop of
 whole wave periods that holds until the next click; the other scenes are
 static between beats and simply hold their last frame.
 
 Render (from this directory), then lay the segments out as slides:
     ~/software/manim/.venv/bin/manim-slides render -qm slides.py \
-        RimeDiagramSlides JourneySlides TransferSlides RimeTartSlides
+        RimeDiagramSlides WiggleSlides JourneySlides OneNumberToABoxSlides \
+        TransferSlides RimeTartSlides
     python3 ../../scripts/manim_slides_qmd.py RimeDiagramSlides rime-diagram
+    python3 ../../scripts/manim_slides_qmd.py WiggleSlides wiggle
     python3 ../../scripts/manim_slides_qmd.py JourneySlides journey
+    python3 ../../scripts/manim_slides_qmd.py OneNumberToABoxSlides one-number-to-a-box
     python3 ../../scripts/manim_slides_qmd.py TransferSlides transfer
     python3 ../../scripts/manim_slides_qmd.py RimeTartSlides rime-tart
 """
@@ -21,12 +24,14 @@ from pathlib import Path
 
 ANIM = Path(__file__).resolve().parents[2] / "_animations"
 sys.path[:0] = [str(ANIM / "rime-interferometer"),
+                str(ANIM / "polarisation-ellipse"),
                 str(ANIM / "journey-of-a-wave"),
                 str(ANIM / "calibrator-transfer")]
 
 from manim_slides import Slide  # noqa: E402
 
 import journey  # noqa: E402
+import polarisation_ellipse  # noqa: E402
 import rime_interferometer  # noqa: E402
 import transfer  # noqa: E402
 
@@ -69,8 +74,16 @@ class RimeTartSlides(Beats, Slide, rime_interferometer.RimeForTart):
     pass
 
 
+class WiggleSlides(Beats, Slide, polarisation_ellipse.WhatCanHappenToAWiggle):
+    hold = polarisation_ellipse.HOLD   # 3 wave periods = 6 s
+
+
 class JourneySlides(Beats, Slide, journey.JourneyOfAWave):
     hold = journey.HOLD   # 3 wave periods = 6 s
+
+
+class OneNumberToABoxSlides(Beats, Slide, rime_interferometer.OneNumberToABox):
+    pass
 
 
 class TransferSlides(Beats, Slide, transfer.CalibratorTransfer):

@@ -9,6 +9,7 @@ is left to solve for TART (RimeForTart).
 Render (from this directory):
     ../preview.sh rime_interferometer.py RimeOnTheInterferometer
     ../final.sh rime_interferometer.py RimeOnTheInterferometer
+    ../preview.sh rime_interferometer.py OneNumberToABox     # G (one number) to J (a 2x2 box)
 """
 
 import numpy as np
@@ -389,3 +390,106 @@ class RimeForTart(RimeDiagram, Scene):
         for r in rows:
             self.play(FadeIn(r, shift=0.2 * RIGHT), run_time=0.7)
         self.wait(1.0)
+
+
+def cell_grid(color, entries=("xx", "xy", "yx", "yy"), size=0.85):
+    """A 2x2 box, the shape of the visibility matrix: one cell per pairing."""
+    cells = VGroup()
+    for i, e in enumerate(entries):
+        r, c = divmod(i, 2)
+        sq = RoundedRectangle(width=size - 0.06, height=size - 0.06,
+                              corner_radius=0.05, stroke_color=color,
+                              stroke_width=2.5).move_to([c * size, -r * size, 0])
+        lab = Text(e, font_size=26, color=color).move_to(sq)
+        cells.add(VGroup(sq, lab))
+    return cells.move_to(ORIGIN)
+
+
+class OneNumberToABox(RimeDiagram, Scene):
+    """From the scalar equation to the RIME: with two wiggles per antenna,
+    every number in G_p B G_q* grows into a 2x2 box, and G is renamed J."""
+
+    def construct(self):
+        self.cap = None
+        if self.standalone:
+            self.title_card("One Number Becomes a Box",
+                            "from the scalar equation to the RIME")
+        self.beat_scalar()
+        self.beat_boxes()
+        self.beat_rename()
+        self.beat_rime()
+        if self.standalone:
+            self.closing_card("Same equation —",
+                              "bigger pieces.",
+                              "next: peeling the onion")
+        else:
+            self.wait(0.5)
+
+    def beat_scalar(self):
+        self.show_caption("One wiggle per antenna: every term is one number")
+        parts = [r"V_{pq}", r"=", r"G_p", r"B", r"G_q^*"]
+        eq = MathTex(*parts, font_size=72, color=FRONT,
+                     arg_separator=r"\quad").move_to(0.6 * UP)
+        for i, tex in enumerate(parts):
+            if tex in TERM_COLORS:
+                eq[i].set_color(TERM_COLORS[tex])
+        words = ["measured", None, "antenna p", "sky", "antenna q"]
+        labels = VGroup(*[
+            Text(w, font_size=22, color=MUTED).next_to(eq[i], DOWN, buff=0.45)
+            for i, w in enumerate(words) if w])
+        self.play(Write(eq), run_time=1.2)
+        self.play(FadeIn(labels, lag_ratio=0.2), run_time=0.8)
+        self.scalar, self.scalar_labels = eq, labels
+        self.wait(1.0)
+
+    def beat_boxes(self):
+        self.show_caption("Two wiggles per antenna (x and y): "
+                          "each number grows into a 2×2 box")
+        cols = [GOOD, SIG_P, SIG_Q, SIG_P]
+        grids = [cell_grid(c) for c in cols]
+        syms = [r"\mathbf{V}_{pq}", r"\mathbf{J}_p", r"\mathbf{B}",
+                r"\mathbf{J}_q^H"]
+        row = VGroup(grids[0], MathTex("=", font_size=60, color=FRONT),
+                     *grids[1:]).arrange(RIGHT, buff=0.7).move_to(0.7 * UP)
+        names = VGroup(*[MathTex(s, font_size=56, color=c).next_to(
+            g, DOWN, buff=0.35) for s, c, g in zip(syms, cols, grids)])
+        self.play(FadeOut(self.scalar_labels), run_time=0.4)
+        src = [self.scalar[i] for i in (0, 2, 3, 4)]
+        self.play(*[ReplacementTransform(s, g) for s, g in zip(src, grids)],
+                  ReplacementTransform(self.scalar[1], row[1]), run_time=1.6)
+        self.play(FadeIn(names, shift=0.15 * UP, lag_ratio=0.2), run_time=1.0)
+        self.row, self.names = row, names
+        self.wait(1.0)
+
+    def beat_rename(self):
+        self.show_caption("G was shorthand for the whole journey: "
+                          "its full name is J")
+        jp = self.names[1]
+        chain = MathTex(r"\mathbf{J} = G\,D\,E\,P\,F\,Z\,K", font_size=44,
+                        color=SIG_P).move_to(2.4 * DOWN)
+        note = Text("from here on, G means just the electronics",
+                    font_size=22, color=MUTED).next_to(chain, DOWN, buff=0.25)
+        self.play(Indicate(jp, color=SIG_P, scale_factor=1.25),
+                  Indicate(self.names[3], color=SIG_P, scale_factor=1.25),
+                  run_time=1.0)
+        self.play(FadeIn(chain, shift=0.2 * UP), run_time=0.8)
+        self.play(FadeIn(note), run_time=0.6)
+        self.rename = VGroup(chain, note)
+        self.wait(1.0)
+
+    def beat_rime(self):
+        self.show_caption("The RIME: the same shape as before, "
+                          "with boxes instead of numbers")
+        old = MathTex(r"V_{pq}", r"=", r"G_p", r"B", r"G_q^*", font_size=44,
+                      color=MUTED, arg_separator=r"\,").move_to(1.7 * UP)
+        rime = MathTex(r"\mathbf{V}_{pq}", r"=", r"\mathbf{J}_p", r"\mathbf{B}",
+                       r"\mathbf{J}_q^H", font_size=84, color=FRONT,
+                       arg_separator=r"\,").move_to(0.1 * DOWN)
+        for i, c in zip((0, 2, 3, 4), (GOOD, SIG_P, SIG_Q, SIG_P)):
+            rime[i].set_color(c)
+        self.play(FadeOut(self.row), FadeOut(self.rename), run_time=0.6)
+        self.play(*[ReplacementTransform(n, rime[i])
+                    for n, i in zip(self.names, (0, 2, 3, 4))],
+                  FadeIn(rime[1]), run_time=1.4)
+        self.play(FadeIn(old, shift=0.2 * DOWN), run_time=0.8)
+        self.wait(1.5)
