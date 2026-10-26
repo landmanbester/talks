@@ -170,7 +170,7 @@ The RIME tells us exactly **which** numbers are unknown — and how they enter w
 
 :::: {.columns}
 ::: {.column width="38%"}
-![](images/correlator.jpg){height="480"}
+![](images/two-antennas.png){width="100%"}
 :::
 
 ::: {.column width="62%"}
@@ -184,8 +184,10 @@ The RIME tells us exactly **which** numbers are unknown — and how they enter w
 ::::
 
 ::: {.notes}
-Photo: a correlator — all the cables bring antenna voltages to one place where
-every pair is multiplied and averaged.
+Read the figure as a multiplication table: antenna p's two voltages (x, y) run
+along the rows, antenna q's down the columns, and each cell is one product the
+correlator forms and averages. Four cells, so four numbers per pair of
+antennas: that little 2×2 box is the visibility matrix.
 :::
 
 ## The RIME {.smaller}

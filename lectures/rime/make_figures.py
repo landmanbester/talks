@@ -4,6 +4,8 @@
   one panel per click (a build-up: each frame a superset of the one before)
 - calibration-before-after.png: a simulated MeerKAT-like snapshot of a few
   point sources, imaged with the gains left in and with them corrected
+- two-antennas.png: two dual-polarisation antennas feeding a correlator that
+  forms all four products, the 2x2 visibility matrix
 
     uv run lectures/rime/make_figures.py
 """
@@ -16,6 +18,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 from matplotlib.colors import PowerNorm  # noqa: E402
+from matplotlib.patches import FancyBboxPatch, Polygon  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 IMG = HERE / "images"
@@ -174,6 +177,67 @@ def simulate_before_after():
     print("wrote calibration-before-after.png")
 
 
+def two_antennas():
+    """A multiplication table: p's two voltages feed the rows, q's the columns,
+    and every cell is one product -- the correlator and the 2x2 matrix at once."""
+    fig, ax = plt.subplots(figsize=(6, 6.6))
+    fig.patch.set_alpha(0)
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 11)
+    ax.set_aspect("equal")
+    ax.axis("off")
+
+    cell, gx, gy = 1.8, 4.6, 1.6           # grid: 2x2 cells, lower-left corner
+    rows = {"x": gy + 1.5 * cell, "y": gy + 0.5 * cell}   # p feeds the rows
+    cols = {"x": gx + 0.5 * cell, "y": gx + 1.5 * cell}   # q feeds the columns
+    arrow = dict(arrowstyle="-|>", color=BLUE, lw=2.2, mutation_scale=18)
+
+    def dish(cx, cy, name):
+        th = np.linspace(np.pi * 1.15, np.pi * 1.85, 40)
+        bowl = np.c_[cx + 1.3 * np.cos(th), cy + 1.3 * np.sin(th)]
+        ax.add_patch(Polygon(bowl, closed=True, fc=BLUE, ec=BLUE))
+        ax.text(cx, cy + 0.15, name, ha="center", va="bottom", fontsize=26,
+                color=FG, style="italic")
+
+    def box(x, y, w, h):
+        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.05",
+                                    fc=BG, ec=BLUE, lw=2))
+
+    # antenna p, on the left: a vertical receiver whose outputs run right
+    dish(1.6, 9.6, "p")
+    ax.plot([1.6, 1.6], [8.4, 5.45], color=BLUE, lw=3)
+    box(1.15, gy + 0.2, 0.9, 2 * cell - 0.4)
+    for pol, y in rows.items():
+        ax.text(1.6, y, pol, ha="center", va="center", fontsize=21, color=BLUE)
+        ax.annotate("", xy=(gx - 0.1, y), xytext=(2.15, y), arrowprops=arrow)
+
+    # antenna q, on top: a horizontal receiver whose outputs run down
+    dish(cols["x"] + cell / 2, 9.6, "q")
+    ax.plot([gx + cell] * 2, [8.4, 7.55], color=BLUE, lw=3)
+    box(gx + 0.2, 6.6, 2 * cell - 0.4, 0.9)
+    for pol, x in cols.items():
+        ax.text(x, 7.05, pol, ha="center", va="center", fontsize=21, color=BLUE)
+        ax.annotate("", xy=(x, gy + 2 * cell + 0.1), xytext=(x, 6.5),
+                    arrowprops=arrow)
+
+    # the cells: one product each
+    for pp, y in rows.items():
+        for qq, x in cols.items():
+            ax.add_patch(FancyBboxPatch((x - cell / 2 + 0.07, y - cell / 2 + 0.07),
+                                        cell - 0.14, cell - 0.14,
+                                        boxstyle="round,pad=0.02", fc=BG,
+                                        ec=GREEN, lw=2.2))
+            ax.text(x, y, pp + qq, ha="center", va="center", fontsize=24,
+                    color=GREEN)
+    ax.text(gx + cell, gy - 0.3, "multiply, then average:\nthe visibility matrix",
+            ha="center", va="top", fontsize=15, color=GREEN, linespacing=1.4)
+
+    fig.savefig(IMG / "two-antennas.png", dpi=200, bbox_inches="tight",
+                transparent=True)
+    plt.close(fig)
+
+
 if __name__ == "__main__":
     kgb()
     simulate_before_after()
+    two_antennas()
