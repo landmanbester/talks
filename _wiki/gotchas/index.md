@@ -29,4 +29,5 @@ timestamp: 2026-10-26
 | `always_redraw` mobject invisible, `Group` vs `VGroup`, curve looks closed | [manim](manim.md) |
 | A stepped manim segment holds on a frame with no caption | [manim](manim.md) — pause before the section-ending fade |
 | Published deck has blank/black video slides, or the publish workflow fails with "missing …/videos/…" | [publish](../tools/publish.md) — run `scripts/publish-videos.sh` before pushing |
+| Publish workflow hangs on the Render step at a deck with Mermaid | [publish](../tools/publish.md) — runner Chrome sandbox; install chrome-headless-shell |
 | `.gitignore` pattern doesn't match a `/data` symlink | [large-data](../infrastructure/large-data.md) — no trailing slash |

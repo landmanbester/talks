@@ -24,6 +24,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -51,6 +52,14 @@ jobs:
       - uses: quarto-dev/quarto-actions/setup@v2
         with:
           version: 1.10.18
+
+      # Mermaid renders through headless Chrome. The runner's system Chrome hangs
+      # on Ubuntu 24.04 (AppArmor blocks its sandbox's user namespaces), so lift
+      # the restriction and give Quarto its own headless shell.
+      - name: Headless Chrome for Mermaid
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          quarto install chrome-headless-shell --no-prompt
 
       - name: Render
         run: quarto render

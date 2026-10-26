@@ -10,6 +10,8 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-26 — tools/publish, gotchas/index: first CI run hung on Mermaid (runner Chrome sandbox under
+  Ubuntu 24.04 AppArmor); workflow installs chrome-headless-shell, lifts the restriction, 20-min timeout.
 - 2026-10-26 — tools/publish (new), tools/render, infrastructure/large-data, infrastructure/repo-map,
   conventions/front-matter, techniques/manim-slides-stepping, techniques/manim-slide-clips, AGENTS.md:
   deck `videos/` moved to `/data/talks/` and untracked (history grew a full copy per re-render).

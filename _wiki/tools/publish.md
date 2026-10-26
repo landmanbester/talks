@@ -44,4 +44,10 @@ GitHub Pages: published site ≤ 1 GB, ~100 GB/month bandwidth (soft), deploy �
 Anything gitignored besides videos: `media`, `slides`, `fits_files`, `reference_pdfs/`, `*.pdf`.
 A deck must only reference tracked files (images, CSS) and its `videos/` — never a path into
 `media/` or `slides/`. No deck executes code cells; if one ever does, the workflow needs a Python
-setup step. Mermaid renders with the runner's preinstalled Chrome.
+setup step.
+
+**Mermaid hang:** the first run sat silently on the first deck with a Mermaid diagram until
+cancelled. Quarto renders Mermaid through headless Chrome; locally it uses its own bundled
+Chromium, on the runner it fell back to the system Chrome, which stalls on Ubuntu 24.04 (AppArmor
+restricts the unprivileged user namespaces its sandbox needs). The workflow now lifts that
+restriction and runs `quarto install chrome-headless-shell`, and the job has a 20-minute timeout.
