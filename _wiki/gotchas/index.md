@@ -3,7 +3,7 @@ type: Index
 title: Gotchas
 description: Traps already hit in this repo, by symptom, with the page that holds the fix.
 tags: [index, gotcha]
-timestamp: 2026-10-25
+timestamp: 2026-10-26
 ---
 
 # Gotchas — by symptom
@@ -27,4 +27,5 @@ timestamp: 2026-10-25
 | Transparent webm has no alpha | [manim-slide-clips](../techniques/manim-slide-clips.md) — two-step render, `-auto-alt-ref 0` |
 | Short mp4 / `InvalidDataError` after a killed render | [manim](manim.md) |
 | `always_redraw` mobject invisible, `Group` vs `VGroup`, curve looks closed | [manim](manim.md) |
+| A stepped manim segment holds on a frame with no caption | [manim](manim.md) — pause before the section-ending fade |
 | `.gitignore` pattern doesn't match a `/data` symlink | [large-data](../infrastructure/large-data.md) — no trailing slash |
