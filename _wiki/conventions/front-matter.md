@@ -47,7 +47,7 @@ python3 .agents/skills/quarto-revealjs/scripts/scaffold_talk.py contribution "KA
 <class>/<talk-slug>/
 ├── index.qmd        # The presentation (always index.qmd)
 ├── images/          # Figures for this talk
-├── videos/          # Embedded clips (manim webm, footage, manim-slides segments)
+├── videos → /data/… # Embedded clips + manim-slides segments (untracked symlink, tools/publish.md)
 ├── custom.css       # Optional deck-local CSS — declare it (see below)
 ├── make_figures.py  # Optional: generates images/ (see techniques/build-up-figures.md)
 └── slides.py        # Optional: manim-slides wrappers (see techniques/manim-slides-stepping.md)

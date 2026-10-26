@@ -52,6 +52,9 @@ def main():
         sys.exit(f"{cfg_path} not found: run `manim-slides render` first")
     segments = json.loads(cfg_path.read_text())["slides"]
 
+    if not Path("videos").is_symlink():
+        print("warning: videos/ is not a symlink into /data/talks/ "
+              "(see _wiki/infrastructure/large-data.md)", file=sys.stderr)
     out_dir = Path("videos") / args.name
     if out_dir.exists():
         shutil.rmtree(out_dir)   # a re-render can produce fewer segments

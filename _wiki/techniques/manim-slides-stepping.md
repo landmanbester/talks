@@ -37,7 +37,9 @@ clip for any explainer the presenter talks over.
    ~/software/manim/.venv/bin/manim-slides render -qm slides.py SceneSlides
    python3 ../../scripts/manim_slides_qmd.py SceneSlides <name>
    ```
-   `-qm` (720p30) is plenty for a slide and keeps a video near 10 MB; the segments are tracked.
+   `-qm` (720p30) is plenty for a slide and keeps a video near 10 MB. `videos/` must already be a
+   symlink into `/data/talks/` (segments are not tracked); afterwards run
+   `scripts/publish-videos.sh` so the site build has them ([publish](../tools/publish.md)).
    The script copies them to `videos/<name>/NN.mp4` and writes `_<name>.qmd`; pull it into
    `index.qmd` with `{{< include _<name>.qmd >}}`. Never edit `_<name>.qmd` — re-run the script.
 4. **What the generated slides do**: headless `.plain-figure` slides with the segment as

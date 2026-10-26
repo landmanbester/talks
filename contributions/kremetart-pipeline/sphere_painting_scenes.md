@@ -147,5 +147,6 @@ ready by talk time.
 
 ## Files
 - `sphere_painting.py` — standalone script, one `SpherePainting(ThreeDScene)`.
-- `videos/sphere-painting.webm` — committed final render (embedded).
+- `videos/sphere-painting.webm` — final render (embedded); lives on `/data/talks/`, published via
+  `scripts/publish-videos.sh`.
 - `media/` — manim intermediates (gitignored).

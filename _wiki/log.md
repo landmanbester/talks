@@ -10,6 +10,11 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-26 — tools/publish (new), tools/render, infrastructure/large-data, infrastructure/repo-map,
+  conventions/front-matter, techniques/manim-slides-stepping, techniques/manim-slide-clips, AGENTS.md:
+  deck `videos/` moved to `/data/talks/` and untracked (history grew a full copy per re-render).
+  The site now publishes via GitHub Actions on push to `main`; videos reach the runner through the
+  `site-videos` release (`scripts/publish-videos.sh`). `quarto publish gh-pages` retired.
 - 2026-10-26 — decks/visibility-space, techniques/manim-slides-stepping: the deck now steps all
   three series explainers; the aperture-synthesis one replaces the static "Filling Visibility
   Space" slide. Its scene gained `standalone = True` (title/closing cards; the wrapper turns them

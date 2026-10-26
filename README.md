@@ -393,7 +393,8 @@ the duration should match what the dev render reported.
 
 ### 2. Transparent clips embedded in talk slides
 
-The script lives beside the deck's `index.qmd`; the clip goes in its `videos/`.
+The script lives beside the deck's `index.qmd`; the clip goes in its `videos/`
+(a symlink into `/data/talks/` — see Publishing for how videos reach the site).
 
 ```bash
 # 1. Render scene with transparent background to .mov
@@ -409,11 +410,21 @@ Embed in the `.qmd` with `{{< video videos/clip.webm >}}`.
 
 ## Publishing
 
-The repo's GitHub remote is set up; to publish the built site:
+Every push to `main` runs `.github/workflows/publish.yml`, which renders the
+whole site and deploys it to GitHub Pages at
+<https://landmanbester.github.io/talks/> — one shareable URL per deck
+(e.g. `…/talks/lectures/visibility-space/`). It can also be run by hand from the
+repo's Actions tab.
+
+Videos are not in git. Each deck's `videos/` is a symlink into `/data/talks/`,
+and the workflow downloads them from the `site-videos` release. When you add or
+re-render a video, upload the set **before** pushing:
 
 ```bash
-quarto publish gh-pages
+scripts/publish-videos.sh       # tar every */*/videos and upload to the release
+git push origin main            # the workflow renders and deploys
 ```
 
-This pushes `_site/` to GitHub Pages — a permanent, shareable archive of every
-talk at one URL.
+The workflow fails (rather than publishing a broken deck) if a deck references
+a video that is not in the release. One-time setup: Settings → Pages → Source:
+"GitHub Actions".

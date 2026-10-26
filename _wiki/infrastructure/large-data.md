@@ -1,7 +1,7 @@
 ---
 type: Infrastructure
 title: Large data, scratch space and Drive sync
-description: Where big files live (/data/talks symlinks), /tmp is RAM, Drive sync with sync-data.sh, irreplaceable raw takes.
+description: Where big files live (/data/talks symlinks, including deck videos), /tmp is RAM, Drive sync with sync-data.sh, irreplaceable raw takes.
 tags: [data, storage, backup]
 timestamp: 2026-10-25
 ---
@@ -17,11 +17,18 @@ repo, so scripts see ordinary paths:
 | `_video/<slug>/audio` | Narration takes and every processed stage |
 | `_animations/<video>/media`, `<deck>/media` | manim render output and caches |
 | `<deck>/slides` | manim-slides render output (segments + JSON) |
+| `<deck>/videos` | Every video a deck plays: manim-slides segments, webm clips, footage |
 
 Put new large inputs or outputs under `/data/talks/` and symlink them in the same way. `/tmp` is
 RAM on this machine — scratch output bigger than a few screenshots goes in `/data/tmp/`. The
 `.gitignore` patterns for these have **no trailing slash** on purpose — `dir/` only matches real
-directories, not symlinks. `reference_pdfs/` (Canva PDF exports to port from) is gitignored too.
+directories, not symlinks.
+
+A deck's `videos/` is the one store the published site needs. It is not in git (the history only
+grows with every re-render), so before a deck change that adds or replaces a video reaches `main`,
+upload the set with `scripts/publish-videos.sh` — see [publish](../tools/publish.md). A new deck
+that plays videos: `mkdir -p /data/talks/<class>/<slug>/videos` and symlink it in as `videos`
+before writing into it (`manim_slides_qmd.py` warns if `videos/` is a real directory). `reference_pdfs/` (Canva PDF exports to port from) is gitignored too.
 
 ## Google Drive copy
 

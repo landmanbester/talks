@@ -1,7 +1,7 @@
 ---
 type: Tool
 title: Render, preview, publish and screenshot
-description: Quarto website render/preview/publish commands, PDF export pointer, and headless screenshots of a slide.
+description: Quarto website render/preview commands, pointer to publishing, PDF export pointer, and headless screenshots of a slide.
 tags: [quarto, render, screenshots]
 timestamp: 2026-10-25
 ---
@@ -15,8 +15,10 @@ goes to `_site/<class>/<talk-slug>/` (gitignored).
 ```bash
 cd lectures/<talk-slug> && quarto preview index.qmd   # edit loop; serves /lectures/<talk-slug>/
 quarto render                                         # from the root: listing + every deck
-quarto publish gh-pages                               # publish _site/ to GitHub Pages
 ```
+
+Publishing is a GitHub Actions workflow on push to `main`, not `quarto publish` — see
+[publish](publish.md).
 
 PDF export (decktape, print-to-PDF, self-contained HTML):
 `.agents/skills/quarto-revealjs/references/pdf-export.md`. `scripts/shoot-decks.sh` renders and

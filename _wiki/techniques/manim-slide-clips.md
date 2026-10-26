@@ -12,7 +12,8 @@ Plan with the `manim-composer` skill before writing code; implement with `manimc
 Interpreter: see [Python environment](../infrastructure/python-env.md).
 
 The script lives beside the deck's `index.qmd` (with its `scenes.md` plan if it has one); the clip
-goes in the deck's `videos/`. Render in two steps — manim's direct `--format=webm` does not encode
+goes in the deck's `videos/` (an untracked symlink into `/data/talks/`; upload new clips with
+`scripts/publish-videos.sh` — [publish](../tools/publish.md)). Render in two steps — manim's direct `--format=webm` does not encode
 VP9 alpha properly:
 
 ```bash

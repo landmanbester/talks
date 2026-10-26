@@ -25,10 +25,12 @@ the original deck. Never recreate Canva's visual layouts with custom HTML/JS pos
   the wiki pages linked below
 - **Words for the presenter go in `::: {.notes}`**, never on a slide
 - **Large files live on `/data/talks/`**, symlinked into the repo; `/tmp` is RAM, so scratch goes in
-  `/data/tmp/`. `.gitignore` patterns for these symlinks have no trailing slash
+  `/data/tmp/`. `.gitignore` patterns for these symlinks have no trailing slash. That includes every
+  deck's `videos/` — never commit a video; the site build fetches them from a release
+  (`scripts/publish-videos.sh`)
 - **Measure, don't eyeball**: run `scripts/check_slides.py` on a deck before calling it done
 - Repo structure at a glance: `templates/` (shared theme + title partial), `assets/logos/`,
-  `scripts/` (tooling), `_animations/` (manim explainers), `_video/` (talk-video builds),
+  `scripts/` (tooling), `.github/workflows/` (site publish), `_animations/` (manim explainers), `_video/` (talk-video builds),
   `.agents/skills/` (skills), `_wiki/` (knowledge base), `docs/superpowers/` (past design specs)
 
 ## Before you… read
@@ -49,6 +51,7 @@ Open `_wiki/index.md` for the map; open only the pages a task needs.
 | make a transparent manim clip for a slide | `_wiki/techniques/manim-slide-clips.md` |
 | write or render an `_animations/` explainer video | `_wiki/techniques/explainer-videos.md`, `_wiki/gotchas/manim.md` |
 | render, preview, publish, or screenshot a slide | `_wiki/tools/render.md` |
+| add or change a deck's videos, or publish the site | `_wiki/tools/publish.md` |
 | check or fix overflow | `_wiki/tools/check-slides.md` |
 | record narration / build a talk video | `_wiki/tools/talk-videos.md` |
 | create or move large files, sync with Drive, touch recordings | `_wiki/infrastructure/large-data.md` |

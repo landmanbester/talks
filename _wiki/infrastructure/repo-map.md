@@ -26,7 +26,7 @@ talks/
 │   └── <talk-slug>/
 │       ├── index.qmd        # The presentation (always index.qmd)
 │       ├── images/          # Figures for this talk
-│       ├── videos/          # Embedded clips (manim webm, footage, manim-slides segments)
+│       ├── videos → /data/… # Embedded clips + manim-slides segments (gitignored; published via release)
 │       ├── custom.css       # Optional deck-local CSS — declare it (conventions/front-matter.md)
 │       ├── make_figures.py  # Optional: generates images/ (build-up overlays, plots)
 │       └── slides.py        # Optional: manim-slides wrappers for _animations/ scenes
@@ -35,6 +35,7 @@ talks/
 │   ├── manim_slides_qmd.py  # manim-slides render → one Quarto slide per segment
 │   ├── shoot-decks.sh       # Render + screenshot every deck's title slide
 │   ├── sync-data.sh         # /data/talks/ ⇄ Google Drive (see Large data)
+│   ├── publish-videos.sh    # Deck videos → `site-videos` release for the publish workflow
 │   ├── backup-takes.sh      # Mirror raw narration takes to the other disk
 │   └── figures/             # FITS → slide-ready PNGs from a YAML spec (own README)
 ├── figures/scratch/         # Generated figures not currently on a slide
@@ -43,6 +44,7 @@ talks/
 ├── _animations/<video>/     # Standalone manim explainer: scenes.md + one script
 ├── _video/<talk-slug>/      # Talk-video build: spec.json + script/ tracked, rest gitignored
 ├── _wiki/                   # Agent knowledge base (this wiki)
+├── .github/workflows/publish.yml  # Push to main → render → GitHub Pages
 ├── docs/superpowers/        # Design specs and plans for past repo-wide changes
 └── .agents/skills/          # Agent skills (.claude/skills symlinks here)
 ```

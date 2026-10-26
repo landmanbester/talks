@@ -1,0 +1,70 @@
+# Render the site and publish it to GitHub Pages.
+#
+# Deck videos are not in git: they come from the `site-videos` release, which
+# scripts/publish-videos.sh uploads from /data/talks/. Upload them before
+# pushing a deck change that needs new videos.
+#
+# One-time setup: repo Settings → Pages → Source: "GitHub Actions".
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch deck videos
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download site-videos --pattern videos.tar --dir "$RUNNER_TEMP"
+          tar -xf "$RUNNER_TEMP/videos.tar"
+
+      - name: Check every video a deck references exists
+        run: |
+          missing=0
+          for qmd in lectures/*/*.qmd contributions/*/*.qmd; do
+            dir=$(dirname "$qmd")
+            for v in $(grep -oE 'videos/[^"'"'"' )>]+\.(mp4|webm|mov)' "$qmd" | sort -u); do
+              if [ ! -f "$dir/$v" ]; then echo "::error file=$qmd::missing $dir/$v"; missing=1; fi
+            done
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Run scripts/publish-videos.sh, then re-run this workflow."
+            exit 1
+          fi
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.10.18
+
+      - name: Render
+        run: quarto render
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

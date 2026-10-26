@@ -40,9 +40,13 @@ fits_files
 # Rendered deck exports (regenerate with decktape — see README)
 *.pdf
 
+# Videos a deck plays (manim-slides segments, embedded clips). A symlink into
+# /data/talks/ like media; the publish workflow fetches them from the
+# `site-videos` release (scripts/publish-videos.sh). No trailing slash.
+*/*/videos
+
 # Talk-video build artifacts: slide PNGs, recorded/processed audio, muxed MP4.
-# Scoped to the build areas — clips embedded in a deck (`<talk>/videos/*.webm|mp4`)
-# must stay tracked. The narration scripts and spec.json under _video/<slug>/ are tracked too.
+# The narration scripts and spec.json under _video/<slug>/ are tracked.
 _video/*/slide-*.png
 _video/*/*.mp4
 _video/*/audio

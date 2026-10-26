@@ -42,7 +42,8 @@ link_into_repo() {
     local targets=()
     [ -d "$DATA/fits_files" ] && targets+=("fits_files")
     for p in "$DATA"/_video/*/audio "$DATA"/_animations/*/media \
-             "$DATA"/lectures/*/media "$DATA"/contributions/*/media; do
+             "$DATA"/lectures/*/media "$DATA"/contributions/*/media \
+             "$DATA"/lectures/*/videos "$DATA"/contributions/*/videos; do
         [ -d "$p" ] && targets+=("${p#"$DATA"/}")
     done
     for rel in "${targets[@]}"; do
