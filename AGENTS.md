@@ -55,6 +55,7 @@ Open `_wiki/index.md` for the map; open only the pages a task needs.
 | run Python tooling or manim | `_wiki/infrastructure/python-env.md` |
 | hit something odd | `_wiki/gotchas/index.md` (symptom → fix) |
 | port a deck or work on an existing one | `_wiki/decks/index.md` |
+| pull text or images out of a Google Slides or Canva source deck | `_wiki/techniques/porting-source-decks.md` |
 | need to know where something lives in the repo | `_wiki/infrastructure/repo-map.md` |
 
 ## Skills

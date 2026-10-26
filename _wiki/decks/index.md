@@ -3,7 +3,7 @@ type: Index
 title: Decks
 description: Every deck in the repo with its source and notable techniques; one page per deck when there is more to say.
 tags: [index, decks]
-timestamp: 2026-10-25
+timestamp: 2026-10-26
 ---
 
 # Decks
@@ -17,6 +17,7 @@ Record the Canva design ID of a port's source so later passes can pull images fr
 | `lectures/covariance-toeplitz` |  |
 | `lectures/cultcargo-fundamentals` |  |
 | `lectures/deconvolution` |  |
+| `lectures/rime` | See [rime.md](rime.md). Oleg Smirnov's Google Slides + Canva `DAF75-Z8qDM` pp. 71–80. |
 | `lectures/stimela-fundamentals` |  |
 | `lectures/visibility-space` | See [visibility-space.md](visibility-space.md). |
 | `contributions/kremetart-pipeline` | Raw `<video>` autoplay pattern (background + inline manim clip). |

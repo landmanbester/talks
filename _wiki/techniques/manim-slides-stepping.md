@@ -3,7 +3,7 @@ type: Technique
 title: Stepping an animation on the clicker (manim-slides)
 description: Play an _animations/ explainer inside a deck one beat per click: slides.py wrapper, seamless hold loops, generated slides, click cue.
 tags: [manim, manim-slides, video]
-timestamp: 2026-10-25
+timestamp: 2026-10-26
 ---
 
 # Stepping an animation on the clicker (manim-slides)
@@ -19,6 +19,10 @@ clip for any explainer the presenter talks over.
    call `next_slide()` first — every caption is a narrative beat, so the pauses fall where the
    narration does. Copy `lectures/visibility-space/slides.py`; the series scenes all have
    `caption()`, `rate` and `t_now()`.
+   Scenes written for a deck (`lectures/rime`) carry a `standalone = True` class attribute that
+   gates their title and closing cards; the wrapper sets it `False`. A scene without a wave
+   clock (no `rate`) just holds its last frame at every beat. In a print-to-PDF of the deck every
+   segment slide is black (background videos at frame 0) — that is not an empty segment.
 2. **Holds loop seamlessly.** While the wave machinery is running (`rate > 0`), a pause is a loop of
    exactly **7 wave periods** (λ/c = 1/0.7 s, so 10 s = 300 frames at 30 fps) — wavefronts and
    traces cycle without a jump. A frozen scene (`rate == 0`) just holds its last frame. Before the

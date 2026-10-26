@@ -10,6 +10,10 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-26 — decks/rime (new), techniques/porting-source-decks (new), techniques/manim-slides-stepping:
+  RIME lecture. Google Slides export via `rclone backend copyid` (PPTX + PDF), `scripts/pptx_media.py`
+  to map media to slides; Canva page PNGs via `export-design` work. `slides.py` Beats holds without a
+  wave clock; `standalone` gates title/closing cards.
 - 2026-10-25 — conventions/slide-patterns, gotchas/index: no `$…$` in slide titles (raw TeX shows in
   the menu and reports; idea from epilliat's quarto-presentations skill). Fixed the three titles in
   deconvolution and sgr-a-complex-uhf. Removed the unused manimgl-best-practices skill (the repo
