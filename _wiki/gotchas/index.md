@@ -29,6 +29,7 @@ timestamp: 2026-10-26
 | `always_redraw` mobject invisible, `Group` vs `VGroup`, curve looks closed | [manim](manim.md) |
 | A stepped manim segment holds on a frame with no caption | [manim](manim.md) — pause before the section-ending fade |
 | Stepped manim video freezes on its last frame until clicked, just before the green cue dot, on some slides | [manim gotchas](manim.md) — `auto-slide-stoppable: false` in the deck front matter |
+| `publish-videos.sh` uploads far less than expected, or a deck's `videos` link is gone after a checkout | [publish](../tools/publish.md) — old commits track videos; recreate the link, the script now refuses partial uploads |
 | Published deck has blank/black video slides, or the publish workflow fails with "missing …/videos/…" | [publish](../tools/publish.md) — run `scripts/publish-videos.sh` before pushing |
 | Publish workflow hangs on the Render step at a deck with Mermaid | [publish](../tools/publish.md) — runner Chrome sandbox; install chrome-headless-shell |
 | `.gitignore` pattern doesn't match a `/data` symlink | [large-data](../infrastructure/large-data.md) — no trailing slash |

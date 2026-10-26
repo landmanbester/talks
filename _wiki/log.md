@@ -10,6 +10,10 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-26 — tools/publish, gotchas/index: three decks' `videos` links were lost in a checkout of
+  pre-migration `main` (git replaced the ignored symlinks with tracked files), so the next
+  `publish-videos.sh` uploaded RIME only and the workflow failed. Links restored; the script now
+  refuses to upload when any referenced video is missing.
 - 2026-10-26 — gotchas/manim, gotchas/index, techniques/manim-slides-stepping: stepped videos froze
   after any click during a step (reveal.js `autoSlideStoppable` pauses autoslide deck-wide; the
   playback control that would resume it is hidden). `auto-slide-stoppable: false` in rime and

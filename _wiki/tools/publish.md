@@ -34,6 +34,14 @@ greps every `videos/….mp4|webm|mov` reference in `lectures/*/*.qmd` and `contr
 (including the generated `_<name>.qmd` segment includes) and fails with the missing paths rather
 than publish a deck with blank slides; fix by running the script and re-running the workflow.
 
+**The upload replaces the whole set.** If a deck's `videos` symlink is missing, that deck silently
+drops out of the tarball, and the workflow then fails on every one of its videos. The script now
+runs the workflow's reference check locally and refuses to upload. Links vanish when git checks
+out a commit from before 2026-10-26 that still tracked videos: git replaces the (ignored) symlink
+with real files, and the next checkout deletes them along with the link. `/data` is untouched;
+`scripts/sync-data.sh pull` (or `ln -s /data/talks/<class>/<slug>/videos <class>/<slug>/videos`)
+puts the links back.
+
 ## Limits worth knowing
 
 GitHub Pages: published site ≤ 1 GB, ~100 GB/month bandwidth (soft), deploy ≤ 10 min. At

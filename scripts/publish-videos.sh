@@ -21,6 +21,22 @@ for d in lectures/*/videos contributions/*/videos; do
 done
 [ ${#dirs[@]} -gt 0 ] || { echo "error: no */*/videos directories found" >&2; exit 1; }
 
+# The upload replaces the whole set, so a missing videos/ link would silently
+# drop that deck from the site. Same check as the publish workflow: every
+# video a deck references must exist here before anything is uploaded.
+missing=0
+for qmd in lectures/*/*.qmd contributions/*/*.qmd; do
+    dir=$(dirname "$qmd")
+    for v in $(grep -oE 'videos/[^"'"'"' )>]+\.(mp4|webm|mov)' "$qmd" | sort -u); do
+        if [ ! -f "$dir/$v" ]; then echo "missing $dir/$v" >&2; missing=1; fi
+    done
+done
+if [ "$missing" -ne 0 ]; then
+    echo "error: not uploading. Is a videos/ symlink into /data/talks/ missing?" \
+         "scripts/sync-data.sh pull recreates them." >&2
+    exit 1
+fi
+
 if [ "${1:-}" = "-n" ]; then
     du -shL "${dirs[@]}"
     exit 0
