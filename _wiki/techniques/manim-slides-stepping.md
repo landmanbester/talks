@@ -3,7 +3,7 @@ type: Technique
 title: Stepping an animation on the clicker (manim-slides)
 description: Play an _animations/ explainer inside a deck one beat per click: slides.py wrapper, seamless hold loops, generated slides, click cue.
 tags: [manim, manim-slides, video]
-timestamp: 2026-10-25
+timestamp: 2026-10-26
 ---
 
 # Stepping an animation on the clicker (manim-slides)
@@ -11,14 +11,19 @@ timestamp: 2026-10-25
 An `_animations/` explainer can play inside a deck one beat per click, without forking its script.
 [manim-slides](https://manim-slides.eyllanesc.io) splits a render into segments at each
 `self.next_slide()`; `scripts/manim_slides_qmd.py` turns the segments into one Quarto slide each.
-Reference: `lectures/visibility-space` (both series videos). Prefer this to embedding one long
+Reference: `lectures/visibility-space` (all three series videos). Prefer this to embedding one long
 clip for any explainer the presenter talks over.
 
 1. **Wrap, don't fork.** A deck-local `slides.py` puts `_animations/<video>/` on `sys.path`,
    imports the scene and subclasses it with `Slide`. A mixin overrides the scene's `caption()` to
    call `next_slide()` first — every caption is a narrative beat, so the pauses fall where the
-   narration does. Copy `lectures/visibility-space/slides.py`; the series scenes all have
-   `caption()`, `rate` and `t_now()`.
+   narration does. Copy `lectures/visibility-space/slides.py`. The wave scenes have `caption()`,
+   `rate` and `t_now()`; a scene with no `rate` (aperture-synthesis) is static, so every pause
+   is a frozen hold. Check what `caption()` does: in some scenes it only *builds* the Text and
+   the scene plays it later, so the pause lands just before that play. Title/closing cards that
+   don't fit a deck: gate them on a `standalone = True` class attribute in the scene and set it
+   `False` in the wrapper (the standalone video is unchanged); skip a whole unwanted opening beat
+   by overriding that method with `pass` in the wrapper.
 2. **Holds loop seamlessly.** While the wave machinery is running (`rate > 0`), a pause is a loop of
    exactly **7 wave periods** (λ/c = 1/0.7 s, so 10 s = 300 frames at 30 fps) — wavefronts and
    traces cycle without a jump. A frozen scene (`rate == 0`) just holds its last frame. Before the

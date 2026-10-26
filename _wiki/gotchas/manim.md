@@ -3,7 +3,7 @@ type: Gotcha
 title: Manim gotchas (hit in this repo)
 description: ManimCE API traps and manual-render pitfalls: killed renders, piped exit codes, duration drift, ThreeDScene.
 tags: [manim, gotcha]
-timestamp: 2026-10-25
+timestamp: 2026-10-26
 ---
 
 # Manim gotchas (hit in this repo)
@@ -15,6 +15,14 @@ timestamp: 2026-10-25
   (short mp4 or `InvalidDataError`; `--flush_cache` does NOT fix it) — delete that quality's
   `partial_movie_files/` before a final render (`_animations/final.sh` clears partials itself)
 - Always ffprobe the final duration: 15 vs 60 fps renders drift ~1s; a broken stitch loses tens
+
+## Stepping with manim-slides
+
+- Pausing "before each caption" holds on a captionless frame when a section ends by fading its
+  caption out on its own (`self.play(FadeOut(cap))`) before the next section starts. Move that
+  pause to just before the fade: `ApertureSynthesisSlides` in `lectures/visibility-space/slides.py`
+  overrides `play()` to beat before an all-`FadeOut` play that removes the current caption, then
+  skips the next caption's pause. Check the last frame of every segment (ffmpeg `-sseof -0.1`)
 
 ## ManimCE API
 

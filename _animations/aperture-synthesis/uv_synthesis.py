@@ -87,6 +87,8 @@ def uv_of(b, h, s=1.0, sign=1):
 
 
 class ApertureSynthesis(Scene):
+    standalone = True   # title / closing cards (the deck wrapper turns them off)
+
     def construct(self):
         self.setup_trackers()
         self.scene1_plane()
@@ -189,12 +191,13 @@ class ApertureSynthesis(Scene):
     # Scene 1: from a line to a plane
     # ------------------------------------------------------------------
     def scene1_plane(self):
-        title = Text("Aperture Synthesis", font_size=44, color=FRONT)
-        sub = Text("many dishes, one giant eye", font_size=28,
-                   color=MUTED).next_to(title, DOWN, buff=0.3)
-        self.play(FadeIn(title, shift=0.3 * UP), FadeIn(sub), run_time=1.2)
-        self.wait(1.6)
-        self.play(FadeOut(title), FadeOut(sub), run_time=0.8)
+        if self.standalone:
+            title = Text("Aperture Synthesis", font_size=44, color=FRONT)
+            sub = Text("many dishes, one giant eye", font_size=28,
+                       color=MUTED).next_to(title, DOWN, buff=0.3)
+            self.play(FadeIn(title, shift=0.3 * UP), FadeIn(sub), run_time=1.2)
+            self.wait(1.6)
+            self.play(FadeOut(title), FadeOut(sub), run_time=0.8)
 
         cap = self.caption("last time: one baseline measures one Fourier component")
         eq1 = MathTex(
@@ -417,6 +420,8 @@ class ApertureSynthesis(Scene):
         )
         self.play(FadeOut(self.rlbl), FadeIn(dirty), run_time=0.8)
         self.wait(2.5)
+        if not self.standalone:
+            return   # the deck holds on the dirty image
 
         # closing card
         self.play(FadeOut(cap), run_time=0.5)

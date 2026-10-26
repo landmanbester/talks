@@ -10,6 +10,11 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-26 — decks/visibility-space, techniques/manim-slides-stepping: the deck now steps all
+  three series explainers; the aperture-synthesis one replaces the static "Filling Visibility
+  Space" slide. Its scene gained `standalone = True` (title/closing cards; the wrapper turns them
+  off), and `Beats` now treats a scene without a `rate` clock as static (frozen holds).
+  gotchas/manim, gotchas/index: a pause before a caption can land after a section-ending fade.
 - 2026-10-25 — conventions/slide-patterns, gotchas/index: no `$…$` in slide titles (raw TeX shows in
   the menu and reports; idea from epilliat's quarto-presentations skill). Fixed the three titles in
   deconvolution and sgr-a-complex-uhf. Removed the unused manimgl-best-practices skill (the repo

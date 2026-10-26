@@ -326,48 +326,41 @@ We need **many** baselines, of many **lengths** and **orientations**.
 ## One Pair, One Point
 
 ::: {.incremental}
-- Each pair of antennas measures **one** visibility: one stripe spacing, at one orientation
-- Plot it as a point: **how long** the baseline is and **which way** it points
+- The sky is **two-dimensional**: each pair's stripes have a spacing **and** a direction
+- Plot each pair as a point: **how long** the baseline is and **which way** it points
 - That map of everything we measured is **visibility space** — the *uv-plane*
-- $N$ antennas make $N(N-1)/2$ pairs: MeerKAT's **64** dishes give **2016** baselines
+- Every new dish pairs up with **all** the others: the points multiply quickly
 :::
 
 ## The MeerKAT Array
 
 ![MeerKAT — 64 dishes, baselines up to 8 km](images/meerkat-layout.png){width="75%" fig-align="center"}
 
-## Filling Visibility Space {.smaller}
-
-:::: {.columns}
-::: {.column width="40%"}
-The pattern is set by **where the antennas are**
-
-::: {.fragment fragment-index=1}
-**Earth rotation** turns each baseline, tracing out arcs
+::: {.muted}
+64 dishes make **2016** pairs: 2016 points in visibility space at every instant.
 :::
 
-::: {.fragment fragment-index=2}
-**More frequencies** stretch each baseline, filling outwards
-:::
+::: {.notes}
+Next, the same idea with a toy array of just seven dishes. Watch three things fill
+visibility space: more dishes, the Earth turning, and more frequencies. Then watch
+what picture we can make from what we measured.
 :::
 
-::: {.column width="60%"}
-::: {.r-stack}
-![](images/uv-snapshot.png){height="550"}
-
-![](images/uv-tracks.png){.fragment fragment-index=1 height="550"}
-
-![](images/uv-freq.png){.fragment fragment-index=2 height="550"}
-:::
-:::
-::::
+{{< include _aperture-synthesis.qmd >}}
 
 ## What the Holes Cost Us
 
-![The PSF (left) is how the array sees a single point; the dirty image (right) is the sky seen through it](images/psf-and-dirty.png){width="90%" fig-align="center"}
+![The PSF (left) is how MeerKAT sees a single point; the dirty image (right) is a real source seen through it](images/psf-and-dirty.png){width="90%" fig-align="center"}
 
 ::: {.muted}
-Gaps in visibility space become ripples in the image. Removing them is the job of **imaging and deconvolution**.
+Even 64 dishes leave gaps in visibility space, and the gaps become ripples in the image.
+Removing them is the job of **imaging and deconvolution**.
+:::
+
+::: {.notes}
+The animation ended on the dirty image of a toy sky. Here is the real thing.
+Left: the dirty image of a single point source, the PSF. Those rings are the holes in
+visibility space. Right: every point of a real source is smeared by that same pattern.
 :::
 
 ## Summary {.smaller}
