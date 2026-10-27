@@ -10,6 +10,8 @@ timestamp: 2026-10-25
 
 Newest first. One line per change: date, page(s), what and why.
 
+- 2026-10-27 — decks/rime: added the fixed-vs-steerable slides (back at TART) and the
+  ⟨v_p v_q^H⟩ matrix as the last click on "Two Antennas, Two Journeys".
 - 2026-10-26 — tools/publish, gotchas/index: three decks' `videos` links were lost in a checkout of
   pre-migration `main` (git replaced the ignored symlinks with tracked files), so the next
   `publish-videos.sh` uploaded RIME only and the workflow failed. Links restored; the script now

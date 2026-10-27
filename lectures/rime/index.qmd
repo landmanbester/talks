@@ -213,6 +213,17 @@ The RIME tells us exactly **which** numbers are unknown — and how they enter w
 - The correlator multiplies every pairing: $x x$, $x y$, $y x$, $y y$
 - Four numbers per pair of antennas: a little **2×2 box**, the **visibility matrix**
 :::
+
+::: {.fragment}
+$$
+{\color{#3fb950}{\mathbf{V}_{pq}}} =
+\big\langle \mathbf{v}_p \mathbf{v}_q^H \big\rangle =
+\begin{pmatrix}
+\langle x_p x_q^* \rangle & \langle x_p y_q^* \rangle \\
+\langle y_p x_q^* \rangle & \langle y_p y_q^* \rangle
+\end{pmatrix}
+$$
+:::
 :::
 ::::
 
@@ -221,6 +232,10 @@ Read the figure as a multiplication table: antenna p's two voltages (x, y) run
 along the rows, antenna q's down the columns, and each cell is one product the
 correlator forms and averages. Four cells, so four numbers per pair of
 antennas: that little 2×2 box is the visibility matrix.
+
+Last click: the same table as an equation. Stack each antenna's two voltages
+into a vector v = (x, y); the column-times-row product v_p v_q^H is every
+pairing at once, and the angle brackets are the correlator's average.
 
 Next clip (four clicks): the scalar equation from the start of the hour, then
 every number in it grows into a 2×2 box like this one. G was shorthand for the
@@ -540,6 +555,109 @@ $$
 - **Calibration**: find the [$G$]{.key-gain}'s, given a sky we know
 - **Imaging**: find the [$B$]{.key-sky}'s, given the gains — later this week
 
+## Fixed or Steerable? {.smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+**Fixed to the ground** — TART, LOFAR, MWA, SKA-Low
+
+::: {.incremental}
+- Antennas are bolted down and look straight up
+- They see (almost) the **whole sky** at once
+- The sky **drifts across** them as the Earth turns
+- No moving parts: **cheap and robust**, so build many
+:::
+:::
+
+::: {.column width="50%"}
+**Steerable dishes** — MeerKAT, VLA, SKA-Mid
+
+::: {.incremental}
+- The dish turns to **point at** a target and **track** it
+- It sees a **small patch** of sky…
+- …but collects far more signal from it
+- Motors, gears, pointing: **expensive** to build and maintain
+:::
+:::
+::::
+
+::: {.notes}
+Two answers to the same question: where should the telescope look? A dish
+picks one place and follows it across the sky. A fixed array looks everywhere
+at once and lets the sky come to it.
+
+LOFAR and SKA-Low can still "point" without moving: adding delays to the
+signals from a station's elements steers its beam electronically (a phased
+array). The elements themselves never move, so everything on the next two
+slides still applies. TART skips even that and images the whole sky.
+:::
+
+## What Changes in the RIME {.smaller}
+
+| | Steerable dish | Fixed array |
+|---|---|---|
+| Beam $\mathbf{E}$ | target stays mid-beam: $\mathbf{E}$ barely changes | every source drifts through: $\mathbf{E}$ changes for each |
+| Twist $\mathbf{P}$ | alt-az dish turns against the sky | sky turns over the antennas, differently per direction |
+| Ionosphere $\mathbf{Z}, \mathbf{F}$ | one patch, above the target | many patches across the whole sky |
+| Pointing | can point slightly wrong: one more unknown | nothing to point |
+
+: {tbl-colwidths="[20,40,40]"}
+
+. . .
+
+::: {.highlight-box}
+For a dish, direction-dependent effects matter away from the centre. For a fixed array, **everything** is away from the centre.
+:::
+
+::: {.notes}
+Same equation, different terms dominate. A dish keeps its target where the
+beam is best understood; the troublemakers are the bright sources out in the
+sidelobes (the "one direction at a time" slide). A fixed all-sky array has no
+"centre" worth speaking of: every source sees a different, changing slice of
+the beam, so the direction-dependent terms are the main story, not a
+correction.
+
+Equatorially mounted dishes (the old Westerbork) don't have the P rotation,
+which is one reason they were built that way.
+:::
+
+## What Changes for Calibration {.smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+**Steerable**
+
+::: {.incremental}
+- **Choose** a calibrator: slew to it, then back to the target
+- The MeerKAT pattern: calibrator, target, calibrator, …
+- Time on the calibrator is time **off** the target
+:::
+:::
+
+::: {.column width="50%"}
+**Fixed**
+
+::: {.incremental}
+- Can't point, so use **whatever known sources are up**
+- TART: the **GPS satellites**, several always overhead, at known positions
+- The calibrator is in **every snapshot**, so calibrate continuously
+:::
+:::
+::::
+
+. . .
+
+::: {.highlight-box}
+A dish chooses what it looks at. A fixed array takes whatever the sky offers, and gets all of it.
+:::
+
+::: {.notes}
+Tie back to "A Typical MeerKAT Observation" and "Calibrating TART". The
+dish has to schedule its calibrators; TART never stops seeing its own. The
+price is that TART's calibrators move across the sky, so the model has to
+know where every satellite is at every moment.
+:::
+
 ## Summary {.smaller}
 
 ::: {.incremental}
@@ -548,6 +666,7 @@ $$
 - Every effect on the way — space, ionosphere, dish, receiver — is a **Jones matrix**; chain them up
 - **Calibration** solves for the unknown ones, using sources we know, and then the target itself
 - For **TART**: one complex number per antenna
+- **Fixed or steerable**: a dish picks its patch of sky and its calibrators; a fixed array sees the whole sky, so direction-dependent effects are the main story
 :::
 
 ## Thanks! {background-color="#0d1117" .closing-slide}

@@ -3,7 +3,7 @@ type: Deck
 title: The RIME (lecture)
 description: East Africa TART training lecture on the measurement equation and calibration; adapted from Oleg Smirnov's decks; four manim explainers.
 tags: [decks, lecture]
-timestamp: 2026-10-26
+timestamp: 2026-10-27
 ---
 
 # The RIME: the radio interferometer measurement equation, and calibration
@@ -24,6 +24,9 @@ standalone explainers in `_animations/` as well as stepped segments.
   the Jones chain (animation) → J_p B J_q^H, the onion, KGB, direction-dependent effects →
   calibration: KGB panels, calibrators, transfer (animation), selfcal → "let's break it down":
   the same picture for TART (one complex number per antenna; GPS satellites as known sky)
+  → fixed vs steerable: three slides contrasting ground-fixed arrays (TART) with tracking dishes
+  (MeerKAT): what each sees, which RIME terms change (E, P, ionosphere, pointing), and how each
+  gets its calibrators
 - **Animations** (`slides.py` wraps them all; see [stepping](../techniques/manim-slides-stepping.md)):
   `rime-interferometer` (three scenes: `RimeOnTheInterferometer`, `OneNumberToABox` — scalar G
   grows into the 2×2 J — and `RimeForTart`), `polarisation-ellipse` (`WhatCanHappenToAWiggle`:
