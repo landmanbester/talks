@@ -57,14 +57,6 @@ Oleg's ungraduated thermometer. The mercury moves, but until we know what
 each position means, the reading is just a number.
 :::
 
-## A Calibration Test {background-image="images/trinity-calibration-test.jpg" background-size="contain" background-color="#000000"}
-
-::: {.notes}
-Personnel stack 4,000 boxes of TNT, 50 pounds a box, for a 100-ton
-"calibration test" on 7 May 1945. Calibration done properly: blow up
-something you understand before you measure something you don't.
-Ours is gentler: we point at sources we know.
-:::
 
 ## The Measurement Equation {.smaller}
 
